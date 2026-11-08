@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { VoiceBank } from "./bank";
-import { CATALOG, currentMultiPosition, DROPPED_BY_EAR, engineKnobs, engineLevel, engineModelIndex, MULTI, PAD, PAD_SHAPE, RECORDED } from "./catalog";
+import { CATALOG, DROPPED_BY_EAR, engineKnobs, engineLevel, engineModelIndex, MULTI, PAD, PAD_SHAPE, RECORDED } from "./catalog";
 import { existsSync } from "node:fs";
 import { INSTRUMENTS, nearestRoot, PIANO_ROOTS, rateFor } from "./recorded";
 import type { ISynthEngine } from "../../vendor/parallax/src/audio/types";
@@ -209,17 +209,6 @@ describe("catalog", () => {
     const all = CATALOG.flatMap((e) => e.models);
     for (const gone of DROPPED_BY_EAR) expect(all).not.toContain(gone);
     expect(MULTI_ENTRY.models).toContain("Wavetable");
-  });
-  it("moves a saved multi-model choice from the old list to the shorter one", () => {
-    const under = (saved: number, version: 4 | 5) => MULTI[currentMultiPosition(saved, version)].name;
-    expect(under(0, 4)).toBe("Classic Waveshapes + Filter");
-    expect(under(6, 4)).toBe("Wavetable"); // Wave Terrain's old place
-    expect(under(7, 4)).toBe("Wavetable"); // Waveshaper's
-    expect(under(8, 4)).toBe("Wide Saw");
-    expect(under(1, 5)).toBe("Classic Waveshapes + Filter"); // Virtual Analog's
-    expect(under(4, 5)).toBe("6-Op FM · Bank C"); // Bank A's
-    expect(under(6, 5)).toBe("Wide Saw");
-    expect(MULTI).toHaveLength(5);
   });
   it("gives every recorded note a file, and keeps the piano from sliding", () => {
     expect(RECORDED.map((s) => INSTRUMENTS[s.index].dir)).toEqual(["piano", "strings"]);

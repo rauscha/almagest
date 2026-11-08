@@ -77,22 +77,6 @@ export const CATALOG: EngineEntry[] = [
   { id: "recorded", label: "Recorded", models: RECORDED.map((m) => m.name) },
 ];
 
-const V5_MULTI = ["Classic Waveshapes + Filter", "Virtual Analog", "Wavetable", "Granular Formant", "6-Op FM · Bank A", "6-Op FM · Bank C", "Wide Saw"];
-const V4_MULTI = [...V5_MULTI.slice(0, 6), "Wave Terrain", "Waveshaper", "Wide Saw"];
-/** Where a dropped sound's saved choice goes. */
-const NEAREST: Record<string, string> = {
-  "Virtual Analog": "Classic Waveshapes + Filter",
-  "6-Op FM · Bank A": "6-Op FM · Bank C",
-  "Wave Terrain": "Wavetable",
-  Waveshaper: "Wavetable",
-};
-/** A multi-model choice saved under an earlier settings version, as a place in today's list. */
-export function currentMultiPosition(saved: number, version: 4 | 5): number {
-  const name = (version === 4 ? V4_MULTI : V5_MULTI)[saved];
-  const at = MULTI.findIndex((m) => m.name === (NEAREST[name] ?? name));
-  return Math.max(at, 0);
-}
-
 /** The bus level for a sound: its engine's level, times its own trim if it has one. */
 export const engineLevel = (engine: string, position = 0) =>
   (engine === "pad" ? PAD_LEVEL : 1) * (BY_ENGINE[engine]?.[position]?.level ?? 1);

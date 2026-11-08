@@ -4,6 +4,8 @@ A chord instrument for your phone, drawn as a star chart of the circle of fifths
 
 ![Almagest in landscape: the pads on the left, the voices in the middle, the circle of fifths on the right](docs/screenshot.png)
 
+**Play it:** [almagest.andrewrausch.com](https://almagest.andrewrausch.com). It's made for an Android phone held sideways; add it to your home screen to install it.
+
 The name comes from Ptolemy's star catalog. The same Ptolemy also wrote the *Harmonics*.
 
 ## What it does

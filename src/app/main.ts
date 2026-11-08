@@ -14,7 +14,7 @@ import { get, set } from "idb-keyval";
 import App from "./App.svelte";
 import { createCore, type Sound } from "../core/core";
 import { MidiLink } from "../voices/midi";
-import { CATALOG, currentMultiPosition, engineKnobs, engineLevel, engineModelIndex } from "../voices/catalog";
+import { CATALOG, engineKnobs, engineLevel, engineModelIndex } from "../voices/catalog";
 import { Space } from "../voices/space";
 import { makeEngine } from "../voices/engines";
 import { VoiceBank } from "../voices/bank";
@@ -34,21 +34,10 @@ function wear(skin: Skin) {
 type Saved = Pick<State, "key" | "preset" | "space" | "engine" | "models" | "ringMs" | "spread" | "slide" | "slideMs" | "colored" | "sevenInKey" | "midiOn" | "midiChannel">;
 // Bump this when a default or the sound list changes. Every change saves all settings, so an old
 // default would otherwise stay stored and the new one would never reach a phone that's been used.
-// The key keeps the app's old name, so installs from before the rename keep their settings.
-const SETTINGS = "tend-settings-v6";
+const SETTINGS = "almagest-settings-v1";
 async function load(): Promise<Partial<Saved>> {
   try {
-    const saved = await get<Saved>(SETTINGS);
-    if (saved) return saved;
-    // Each earlier version's multi-model list was longer, so a place in it has to be moved.
-    for (const version of [5, 4] as const) {
-      const earlier = await get<Saved & { revive?: unknown }>(`tend-settings-v${version}`);
-      if (!earlier) continue;
-      const { revive: _gone, ...kept } = earlier; // a setting that went with Six-op FM
-      const multi = kept.models?.multi;
-      return multi === undefined ? kept : { ...kept, models: { ...kept.models, multi: currentMultiPosition(multi, version) } };
-    }
-    return {};
+    return (await get<Saved>(SETTINGS)) ?? {};
   } catch {
     return {}; // private windows can refuse storage, and the defaults are fine
   }

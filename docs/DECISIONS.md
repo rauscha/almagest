@@ -54,3 +54,8 @@ What was decided, why, and how it was checked. Newest at the bottom.
 - **Safety:** every note ends when the app is hidden, MIDI is turned off, or the channel or port changes. Unplugging brings the app's own sound back. Whether the app's sound is silenced isn't saved, so a launch with the cable out can't be silent.
 - **Left out:** clock, CCs, MPE, Bluetooth, and sending to more than one device.
 - **Checked:** unit tests of the notes sent and the Menu's states, the type check, `tools/verify/layout.cjs`, `tools/verify/drive_app.cjs`, `tools/verify/midi.cjs` in a browser against a stand-in for Web MIDI, and on a real groovebox over USB-C from the installed app on a phone, moving between tracks by changing channel.
+
+## D9: Public at its own address
+- **Date:** 2026-11-08.
+- **What:** Almagest moves to `almagest.andrewrausch.com`, on GitHub Pages, built by a workflow on every push to `main`. It's a new origin, so it installs as a new app with settings starting fresh, under a new key with no migration from the earlier ones.
+- **Checked:** a fresh public clone with its submodule builds and passes its tests.
