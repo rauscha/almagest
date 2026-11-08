@@ -63,7 +63,7 @@
   .pad.shaded { background: var(--chart-lo); }
   /* Pinned in place, whatever appears beneath. */
   .label { position: absolute; left: 0; right: 0; top: 42%; transform: translateY(-50%); text-align: center; white-space: nowrap; }
-  .ring { display: inline-block; font-size: 25px; line-height: 1; padding: 4px 9px 6px; border: 1.6px solid transparent; border-radius: 999px; }
+  .ring { display: inline-block; font-size: 25px; line-height: 1; padding: 4px 5px 6px; border: 1.6px solid transparent; border-radius: 999px; }
   .word .ring { font-size: 17px; padding: 3px 7px 4px; }
   .chord {
     position: absolute; left: 0; right: 0; top: calc(42% + 20px); text-align: center; white-space: nowrap;

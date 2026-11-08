@@ -105,9 +105,9 @@ function loadedOf(s: State): TendView["circle"]["loaded"] {
   if (!placed) return null;
   const { def, steps, tonic } = placed;
   const tonicName = chordOf(cellOf(tonic.root, tonic.ring), s.key).name.replace(/m$/, "");
-  const drawn = steps.map((st) => {
+  const drawn = steps.map((st, i) => {
     const ref = cellOf(st.root, st.ring);
-    const color = s.colored ? st.color : null;
+    const color = s.colored && !s.declined.includes(i) ? st.color : null;
     // The name is what a press gives when the step comes up: the shape's pad, unless a latched one wins.
     const name = chordOf(ref, s.key, altsWith(s, ref, color)).name;
     if (!color) return { ref, numeral: st.numeral, top: "", name };

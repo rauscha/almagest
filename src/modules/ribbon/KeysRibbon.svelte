@@ -48,6 +48,12 @@
   const lit = $derived(new Set($view.sounding.map((n) => n.midi)));
   const ringing = $derived($view.sounding.length > 0);
 
+  const SLANT_BEFORE = 4; // how far before its chord's column a slant starts
+  /** A chord's numeral without what a pad added, for the older chords' narrow columns: vi for vi7. */
+  const bareNumeral = (n: string) => n.match(/^[♭♯]*[IVXivx]+°?/)?.[0] ?? n;
+  /** How far right a long numeral under the chord now sits, so it clears the older numeral beside it. */
+  const clearOfOlder = (n: string) => (last > 0 ? Math.max(0, (n.length * 5.5) / 2 + 9 - pastW) : 0);
+
   /** Each voice's path through the trail: held tones continue, changes slant in from the note before. */
   type Seg = { kind: "line" | "slant"; x1: number; y1: number; x2: number; y2: number; now: boolean };
   type Head = { x: number; y: number; now: boolean };
@@ -61,11 +67,13 @@
         if (note === undefined) continue;
         const prev = j > 0 ? notesOf(columns[j - 1])[v] : undefined;
         const now = j === last && ringing;
-        const x = colX(j), y = yOf(note), end = colEnd(j) - (j === last ? 0 : 0);
+        // A note that's about to change stops where its slant begins, so nothing overhangs the slant.
+        const after = j < last ? notesOf(columns[j + 1])[v] : undefined;
+        const x = colX(j), y = yOf(note), end = colEnd(j) - (after !== undefined && after !== note ? SLANT_BEFORE : 0);
         if (prev === note) {
           segs.push({ kind: "line", x1: x, y1: y, x2: end, y2: y, now });
         } else {
-          if (prev !== undefined) segs.push({ kind: "slant", x1: x - 4, y1: yOf(prev), x2: x + 6, y2: y, now });
+          if (prev !== undefined) segs.push({ kind: "slant", x1: x - SLANT_BEFORE, y1: yOf(prev), x2: x + 6, y2: y, now });
           segs.push({ kind: "line", x1: x + 6, y1: y, x2: end, y2: y, now });
           heads.push({ x: x + 6, y, now });
         }
@@ -152,8 +160,8 @@
     {@const x = colX(j) + 6}
     {@const now = j === last}
     <!-- Crowded, the older chords give up their names and keep their numerals. -->
-    {#if now || pastW >= 26}<text class="trail-name" class:now {x} y="262" font-size={now ? 15 : 13}>{c.name}</text>{/if}
-    <text class="trail-num" class:now {x} y="277" font-size={now ? 12 : pastW >= 26 ? 11 : 10}>{c.numeral}</text>
+    {#if now || pastW >= 26}<text class="trail-name" class:now x={now && pastW >= 26 ? x + Math.max(0, c.name.length * 5 + 19 - pastW) : x} y="262" font-size={now ? 15 : 13}>{c.name}</text>{/if}
+    <text class="trail-num" class:now x={now ? x + clearOfOlder(c.numeral) : x} y="277" font-size={now ? 12 : pastW >= 26 ? 11 : 10}>{now ? c.numeral : bareNumeral(c.numeral)}</text>
   {/each}
   {#if columns.length}
     {#if $view.shapes.length}

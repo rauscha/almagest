@@ -1811,6 +1811,42 @@ describe("a progression loaded from the library", () => {
     expect(names(n)).toEqual(["Dm", "G"]);
   });
 
+  it("tapping off the pad a shape put on a chord leaves that step plain, and latches nothing", () => {
+    const tapAdd9 = (r: ReturnType<typeof rig>) => {
+      r.core.send({ type: "padDown", pad: "add9", pointer: 20 });
+      r.core.send({ type: "padUp", pointer: 20 });
+    };
+    const r = rig();
+    r.core.send({ type: "shapeChosen", shape: "axis" });
+    r.press(C);
+    expect(r.core.state.get().current?.alts.top).toBe("add9");
+    tapAdd9(r);
+    expect(r.core.state.get().current?.alts.top).toBeNull();
+    expect(r.core.state.get().latched.top).toBeNull();
+    r.lift();
+    // It stays off for that step, on the circle and under the finger, and the other chords aren't touched.
+    expect(r.core.views.circle.get().loaded?.steps[0]).toMatchObject({ top: "", name: "C" });
+    r.press(C);
+    expect(r.core.state.get().current?.alts.top).toBeNull();
+    r.lift();
+    play(r, G, Am);
+    expect(r.core.views.ribbon.get().columns.map((c) => c.name).slice(-3)).toEqual(["C", "G", "Am7"]);
+    // A second tap on that chord brings it back, still without latching.
+    r.press(C);
+    tapAdd9(r);
+    expect(r.core.state.get().current?.alts.top).toBe("add9");
+    expect(r.core.state.get().latched.top).toBeNull();
+    r.lift();
+    expect(r.core.views.circle.get().loaded?.steps[0]).toMatchObject({ top: "add9", name: "Cadd9" });
+    // Reloading the shape starts it over.
+    r.press(C);
+    tapAdd9(r);
+    r.lift();
+    r.core.send({ type: "shapeChosen", shape: null });
+    r.core.send({ type: "shapeChosen", shape: "axis" });
+    expect(r.core.views.circle.get().loaded?.steps[0]).toMatchObject({ top: "add9" });
+  });
+
   it("a latched 7th or 9th pad wins over the shape's, and the next chord is named for it", () => {
     const r = rig();
     r.core.send({ type: "shapeChosen", shape: "two-five-one" });

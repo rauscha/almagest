@@ -89,6 +89,8 @@ export interface State {
   loaded: string | null;
   /** Whether a loaded progression is drawn with its usual 7ths and add9s (ii7–V7–Imaj7) or plain. */
   colored: boolean;
+  /** Steps of the loaded progression whose 7th or add9 has been tapped off, by index. */
+  declined: number[];
   /** Whether the sound is running while the app's in view. The app reports it. */
   audioOk: boolean;
   /** How the app is running: what the app says, for the menu to show. */
@@ -125,6 +127,7 @@ export function initialState(over: Partial<State> = {}): State {
     menuOpen: false,
     loaded: null,
     colored: true, // shapes carry their 7ths unless turned off
+    declined: [],
     audioOk: true,
     about: "",
     engine: "pad", // the pads are what chord changes want
@@ -209,9 +212,16 @@ function shapeColor(state: State, ref: ChordRef): Top | null {
   const played = stepsPlayed(placed, shapeChords(state));
   for (const i of [played, played - 1]) {
     const st = placed.steps[i];
-    if (st?.color && sameChord(cellOf(st.root, st.ring), ref)) return st.color;
+    if (st?.color && !state.declined.includes(i) && sameChord(cellOf(st.root, st.ring), ref)) return st.color;
   }
   return null;
+}
+
+/** Which step of the loaded shape is this chord and writes this pad, or -1. */
+function stepWriting(state: State, ref: ChordRef, pad: Alteration): number {
+  if (!state.loaded || !state.colored) return -1;
+  const placed = placeShape(state.loaded, state.key);
+  return placed ? placed.steps.findIndex((st) => st.color === pad && sameChord(cellOf(st.root, st.ring), ref)) : -1;
 }
 
 /** What a newly pressed chord takes: whatever's latched, and a loaded shape's pad, where the cell allows them. */
@@ -379,6 +389,17 @@ function swipe(state: State, r: number, theta: number): Step {
  */
 function padDown(state: State, pad: Alteration, pointer: number): Step {
   const before = state.latched;
+  // On a chord whose pad came from the loaded shape, the pad turns that step's color off or back on.
+  // Going through the latch would take it off this chord and put it on every chord after.
+  const sounding = state.sounding ? state.current : null;
+  if (sounding && canAlter(sounding.ref.ring, pad) && !hasAlteration(before, pad)) {
+    const step = stepWriting(state, sounding.ref, pad);
+    const wasDeclined = state.declined.includes(step);
+    if (step >= 0 && (wasDeclined || hasAlteration(sounding.alts, pad))) {
+      const declined = wasDeclined ? state.declined.filter((i) => i !== step) : [...state.declined, step];
+      return alter({ ...state, declined, pads: [...state.pads, { pad, pointer, used: false, before }] }, toggleAlteration(sounding.alts, pad));
+    }
+  }
   const latched = toggleAlteration(before, pad);
   const held = { ...state, latched, pads: [...state.pads, { pad, pointer, used: false, before }] };
   const current = state.current;
@@ -476,9 +497,9 @@ export function reduce(state: State, intent: Internal): Step {
     case "trailCleared":
       return { state: { ...state, history: state.current && state.sounding ? state.history.slice(-1) : [] }, commands: [], effects: [] };
     case "shapeChosen":
-      return state.loaded === intent.shape ? none : { state: { ...state, loaded: intent.shape }, commands: [], effects: [] };
+      return state.loaded === intent.shape ? none : { state: { ...state, loaded: intent.shape, declined: [] }, commands: [], effects: [] };
     case "shapeColored":
-      return state.colored === intent.colored ? none : { state: { ...state, colored: intent.colored }, commands: [], effects: [] };
+      return state.colored === intent.colored ? none : { state: { ...state, colored: intent.colored, declined: [] }, commands: [], effects: [] };
     case "menuToggled":
       return { state: { ...state, menuOpen: !state.menuOpen }, commands: [], effects: [] };
     case "ringEnded":

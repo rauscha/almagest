@@ -128,8 +128,8 @@ function about() {
   const parts = [
     mode === "browser" ? "In a tab" : mode === "fullscreen" ? "Installed" : `Installed, ${mode}`,
     `build ${__BUILD__}`,
-    state === "running" ? "audio on" : `audio ${state}`,
   ];
+  if (state !== "running") parts.push(`audio ${state}`); // running is the normal case, and the room goes to the wake time
   if (keeper.lastResumeMs !== null) parts.push(`wake ${keeper.lastResumeMs} ms`);
   if (keeper.rebuilds) parts.push(`rebuilt ${keeper.rebuilds}`);
   return parts.join(" · ");

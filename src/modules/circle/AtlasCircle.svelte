@@ -203,6 +203,20 @@
     {/if}
   {/each}
 
+  <!-- A loaded progression's lines run beneath the names, so one crossing a cell doesn't strike out its label. -->
+  {#if figure}
+    <g class="figure">
+      <defs>
+        <marker id="figure-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M1,1 L9,5 L1,9" />
+        </marker>
+      </defs>
+      {#each figure.lines as l, i (i)}
+        <line class="step-line" class:lit={l.lit} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} marker-end={l.lit ? "url(#figure-head)" : undefined} />
+      {/each}
+    </g>
+  {/if}
+
   <!-- Names: numeral over name inside the key, the name alone (quieter) outside it. -->
   {#each $view.chords as c (`t-${c.ref.ring}-${isHome(c) ? "home" : c.ref.col}`)}
     {@const [x, y] = at(c.ref)}
@@ -223,14 +237,6 @@
   <!-- A progression from the library, as a constellation still to trace. -->
   {#if figure}
     <g class="figure">
-      <defs>
-        <marker id="figure-head" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
-          <path d="M1,1 L9,5 L1,9" />
-        </marker>
-      </defs>
-      {#each figure.lines as l, i (i)}
-        <line class="step-line" class:lit={l.lit} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} marker-end={l.lit ? "url(#figure-head)" : undefined} />
-      {/each}
       {#each figure.rings as r (r.n)}
         <circle class="step-ring" class:lit={r.lit} data-step={r.n} cx={r.x} cy={r.y} r={r.r} />
         <text class="step-n" class:lit={r.lit} x={r.nx} y={r.ny + 3}>{r.n}</text>

@@ -13,3 +13,9 @@ What was decided, why, and how it was checked. Newest at the bottom.
 - **What:** `src/theory/corpus.json` keeps each next-chord percentage and drops the totals for each chord and table, which could be multiplied back into the source counts. Each corpus's song total stays, as a description of its size.
 - **Why:** the percentages are measured facts about the corpora and contain none of their annotations. The sources' terms: McGill Billboard, CC0; the iRb corpus, CC BY 4.0; the Hooktheory dataset released with Sheet Sage, CC BY-NC-SA 3.0. All three are credited in the README, and the app is free.
 - **Checked:** every percentage is identical to the previous file, and a test fails if a total comes back.
+
+## D3: A tap takes off the color a shape added
+- **Date:** 2026-11-08.
+- **What:** on a chord that took its 7th or add9 from the loaded shape, tapping that pad now turns the color off for that step of the shape, and a second tap restores it. The step's name in the corner and on the circle follows. Choosing a shape, or switching Shape chords, starts over.
+- **Why:** playing the Axis, the I couldn't be played without its add9. A tap went through the latch, so it took the add9 off the sounding chord and turned it on for every chord after.
+- **Checked:** a unit test written to fail first, the type check, `tools/verify/layout.cjs`, `tools/verify/drive_app.cjs`, and a screenshot of the Axis after the tap.
