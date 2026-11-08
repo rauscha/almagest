@@ -432,6 +432,9 @@ describe("contract.test: every real module behaves", () => {
     expect(core.state.get().sustain).toBe(true);
     expect(target.querySelector(".sustain-ring")).not.toBeNull();
     expect(core.state.get().current).toBeNull(); // the corner plays no chord
+    const tap = new MouseEvent("mousedown", { bubbles: true, cancelable: true });
+    target.querySelector(".sustain-disc")!.dispatchEvent(tap);
+    expect(tap.defaultPrevented).toBe(true); // so a tap doesn't leave a focus box on it
     done();
   });
 

@@ -333,6 +333,7 @@
   <!-- Sustain, in the corner under the right thumb. It acts on touch, like the pads. -->
   <g class="sustain" role="button" tabindex="0" aria-label="Sustain" aria-pressed={$view.sustain}
     onpointerdown={() => send({ type: "sustainToggled" })}
+    onmousedown={(e) => e.preventDefault()}
     onkeydown={(e) => (e.key === "Enter" || e.key === " ") && send({ type: "sustainToggled" })}>
     <circle class="sustain-disc" class:on={$view.sustain} cx="201" cy="188" r="30" />
     {#if $view.sustain}<circle class="sustain-ring" cx="201" cy="188" r="25.5" />{/if}
@@ -390,6 +391,8 @@
   .loaded-numerals { font: 400 19px var(--font-serif); fill: var(--ink); text-anchor: start; }
   .loaded-name { font: italic 400 10.5px var(--font-serif); fill: var(--ink-2); text-anchor: start; }
   .sustain { cursor: pointer; }
+  /* A tap mustn't leave the browser's focus box on it. A keyboard still gets one. */
+  .sustain:focus:not(:focus-visible) { outline: none; }
   .sustain-disc { fill: var(--chart-lo); stroke: var(--rule-2); stroke-width: 1; pointer-events: all; }
   .sustain-disc.on { stroke: var(--faint); }
   .sustain-ring { fill: none; stroke: var(--ink); stroke-width: 2; pointer-events: none; }
