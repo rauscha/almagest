@@ -4,7 +4,7 @@
   import type { Core } from "../core/core";
   import type { Box, Modules } from "../skins/skins";
   import type { Slot } from "../core/contract";
-  import { enterFullscreen } from "./install";
+  import { enterFullscreen, isInstalled } from "./install";
 
   let { core, look, start }: {
     core: Core;
@@ -57,7 +57,10 @@
 
 <svelte:window onresize={fit} oncontextmenu={(e) => e.preventDefault()} />
 
-<div class="turn">Turn the phone sideways.</div>
+<div class="turn">
+  <div>Turn the phone sideways.</div>
+  {#if !isInstalled()}<div class="install">To install: in your browser's menu, choose Add to Home screen.</div>{/if}
+</div>
 
 <div class="stage" style="transform: translate(-50%, -50%) scale({scale})">
   {#each slots as [slot, [x, y, w, h]] (slot)}
@@ -84,8 +87,9 @@
   }
   .start:disabled { font-weight: 600; font-size: 18px; color: var(--ink-2); }
   .turn {
-    display: none; position: fixed; inset: 0; z-index: 20; place-items: center;
+    display: none; position: fixed; inset: 0; z-index: 20; place-content: center; text-align: center;
     background: var(--ground); color: var(--ink); font: 500 16px var(--font-text);
   }
+  .install { margin-top: 12px; padding: 0 32px; font: 400 15px/1.35 var(--font-text); color: var(--ink-2); text-wrap: balance; }
   @media (orientation: portrait) { .turn { display: grid; } }
 </style>
