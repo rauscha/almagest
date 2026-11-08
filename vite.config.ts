@@ -113,7 +113,7 @@ export default defineConfig({
         // The name can change without touching identity.
         name: "Almagest",
         short_name: "Almagest",
-        description: "A circle-of-fifths chord instrument that teaches harmony.",
+        description: "A star chart of the circle of fifths, where chords are stars and progressions are constellations you play.",
         // The app's own window state: no system bars, and no toast on wake. See src/app/install.ts.
         display: "fullscreen",
         orientation: "landscape",

@@ -1,6 +1,6 @@
 # Almagest
 
-A chord instrument for your phone, drawn as a star chart of the circle of fifths. You play chords on the circle, and it shows you why harmony moves while you play: which chords belong to the key, which ones usually come next, and how each voice gets from one chord to the next.
+A chord instrument for your phone, drawn as a star chart of the circle of fifths. Each chord is a star, and each progression is a constellation you trace as you play. Along the way it shows you why harmony moves: which chords belong to the key, which ones usually come next, and how each voice gets from one chord to the next.
 
 ![Almagest in landscape: the pads on the left, the voices in the middle, the circle of fifths on the right](docs/screenshot.png)
 
