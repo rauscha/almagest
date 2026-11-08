@@ -125,8 +125,8 @@ function loadedOf(s: State): TendView["circle"]["loaded"] {
   };
 }
 
-/** The Menu's order: shortest first, as they'd be learned. */
-const SHAPE_LIST = ["two-five-one", "circle", "axis", "andalusian"].map((id) => {
+/** The Menu's order, as they'd be learned. */
+const SHAPE_LIST = ["two-five-one", "circle", "axis", "andalusian", "doo-wop", "canon", "blues", "ragtime", "rock"].map((id) => {
   const d = SHAPES.find((x) => x.id === id)!;
   return { id: d.id, label: d.label };
 });

@@ -115,16 +115,16 @@
   .numeral.mode { font-style: italic; font-weight: 300; color: var(--ink-2); }
   .shape { display: inline-flex; flex-direction: column; align-self: center; margin-left: 16px; }
   .shape-numerals { font-size: 24px; line-height: 1.1; }
-  .shape-name { font: 500 9px var(--font-text); letter-spacing: 0.14em; text-transform: uppercase; color: var(--lamp); margin-top: 4px; }
+  .shape-name { font: 500 9px var(--font-caps); letter-spacing: 0.14em; text-transform: uppercase; color: var(--lamp); margin-top: 4px; }
   .shape-below { margin-left: auto; padding-left: 12px; font-size: 17px; }
-  .shape-where { font: 400 10px var(--font-text); color: var(--ink-3); margin-top: 3px; }
+  .shape-where { font: 400 12.5px var(--font-text); color: var(--ink-3); margin-top: 3px; }
   .fn { display: flex; align-items: baseline; gap: 8px; margin-top: 6px; white-space: nowrap; }
   .mark { width: 24px; height: 6px; flex: none; align-self: center; }
   .mark line { stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; }
   .word { font-style: italic; font-size: 17px; }
   .word.quiet { font-size: 13.5px; color: var(--ink-2); }
-  .term { font: 400 10px var(--font-text); color: var(--ink-3); }
-  .moved { font: 400 10px var(--font-text); color: var(--ink-3); margin-top: 8px; white-space: nowrap; }
+  .term { font: 400 12.5px var(--font-text); color: var(--ink-3); }
+  .moved { font: 400 12.5px var(--font-text); color: var(--ink-3); margin-top: 8px; white-space: nowrap; }
   .audio {
     position: absolute; right: 0; top: 0; font: 400 10px var(--font-text); color: var(--ink); white-space: nowrap;
     padding: 3px 7px; border: 1px solid var(--ink-2); border-radius: 999px;

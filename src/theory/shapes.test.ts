@@ -84,6 +84,39 @@ describe("named shapes", () => {
     expect(stepsPlayed(ii, chords("Dm", "G"))).toBe(2);
   });
 
+  it("names the classics, each with its own numerals", () => {
+    const named = (...names: string[]) => brief(findShapes(chords(...names), C_MAJOR));
+    expect(named("C", "Am", "F", "G")).toEqual(["I–vi–IV–V@0-3"]);
+    expect(named("C", "G", "Am", "Em", "F", "C", "F", "G")).toEqual(["I–V–vi–iii–IV–I–IV–V@0-7"]);
+    expect(named("C", "F", "C", "G", "F")).toEqual(["I–IV–I–V–IV@0-4"]);
+    expect(named("E", "A", "D", "G", "C")).toEqual(["III–VI–II–V–I@0-4"]);
+    expect(named("C", "B♭", "F")).toEqual(["I–♭VII–IV@0-2"]);
+    expect(findShapes(chords("E", "A", "D", "G", "C"), C_MAJOR)[0].id).toBe("ragtime");
+  });
+
+  it("follows a progression that comes back to a chord, step by step", () => {
+    const canon = placeShape("canon", C_MAJOR)!;
+    const path = ["C", "G", "Am", "Em", "F", "C", "F", "G"];
+    path.forEach((_, k) => {
+      if (k + 1 < path.length) expect(stepsPlayed(canon, chords(...path.slice(0, k + 1))), path[k]).toBe(k + 1);
+    });
+    expect(stepsPlayed(canon, chords(...path))).toBe(0);
+    expect(stepsPlayed(canon, chords(...path, "C"))).toBe(1);
+    // The blues comes round again: its last chord leads back to the first.
+    const blues = placeShape("blues", C_MAJOR)!;
+    expect(stepsPlayed(blues, chords("C", "F", "C", "G", "F"))).toBe(0);
+    expect(stepsPlayed(blues, chords("C", "F", "C", "G", "F", "C"))).toBe(1);
+  });
+
+  it("sets the new classics in any key", () => {
+    const where = (id: string, key: Key) => placeShape(id, key)!.steps.map((s) => `${s.root}${s.ring === "min" ? "m" : ""}`).join(" ");
+    expect(where("ragtime", C_MAJOR)).toBe("4 9 2 7 0"); // E A D G C
+    expect(where("ragtime", { col: 1, mode: "major" })).toBe("11 4 9 2 7"); // B E A D G
+    expect(where("rock", { col: 2, mode: "major" })).toBe("2 0 7"); // D C G
+    expect(where("doo-wop", A_MINOR)).toBe("0 9m 5 7"); // a major-aimed shape goes to the relative major
+    expect(placeShape("ragtime", C_MAJOR)!.tonic).toEqual({ root: 0, ring: "maj" });
+  });
+
   it("needs the qualities as well as the roots", () => {
     expect(findShapes(chords("D", "G", "C"), C_MAJOR)).toEqual([]); // II–V–I is a chain of dominants, not this shape
     expect(findShapes(chords("Dm", "Gm", "C"), C_MAJOR)).toEqual([]);

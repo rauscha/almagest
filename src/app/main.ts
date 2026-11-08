@@ -34,18 +34,20 @@ type Saved = Pick<State, "key" | "preset" | "space" | "engine" | "models" | "rin
 // Bump this when a default or the sound list changes. Every change saves all settings, so an old
 // default would otherwise stay stored and the new one would never reach a phone that's been used.
 // The key keeps the app's old name, so installs from before the rename keep their settings.
-const SETTINGS = "tend-settings-v5";
-const PREVIOUS_SETTINGS = "tend-settings-v4";
+const SETTINGS = "tend-settings-v6";
 async function load(): Promise<Partial<Saved>> {
   try {
     const saved = await get<Saved>(SETTINGS);
     if (saved) return saved;
-    const previous = await get<Saved & { revive?: unknown }>(PREVIOUS_SETTINGS);
-    if (!previous) return {};
-    const { revive: _gone, ...kept } = previous; // a setting that went with Six-op FM
-    // v5 shortened the multi-model list, so a place in the old one has to be moved.
-    const multi = kept.models?.multi;
-    return multi === undefined ? kept : { ...kept, models: { ...kept.models, multi: currentMultiPosition(multi) } };
+    // Each earlier version's multi-model list was longer, so a place in it has to be moved.
+    for (const version of [5, 4] as const) {
+      const earlier = await get<Saved & { revive?: unknown }>(`tend-settings-v${version}`);
+      if (!earlier) continue;
+      const { revive: _gone, ...kept } = earlier; // a setting that went with Six-op FM
+      const multi = kept.models?.multi;
+      return multi === undefined ? kept : { ...kept, models: { ...kept.models, multi: currentMultiPosition(multi, version) } };
+    }
+    return {};
   } catch {
     return {}; // private windows can refuse storage, and the defaults are fine
   }

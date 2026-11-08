@@ -48,7 +48,8 @@ export const atlas: Skin = {
     "--constellation": "#6F7A95",
     "--line": "#3B4663",
     "--font-serif": '"Newsreader", "Noto Music", serif',
-    "--font-text": '"IBM Plex Mono", "Noto Music", monospace',
+    "--font-text": '"Newsreader", "Noto Music", serif',
+    "--font-caps": '"IBM Plex Mono", "Noto Music", monospace',
     "--font-display": '"Newsreader", "Noto Music", serif',
   },
   modules: {

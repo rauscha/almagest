@@ -52,11 +52,11 @@ The pads add a 7, maj7, 9 or add9, suspend the chord (sus2, sus4), or switch its
 
 ## Progressions
 
-`shapes.ts` holds the named progressions: ii–V–I, the circle progression (vi–ii–V–I), the axis progression (I–V–vi–IV) and the Andalusian cadence (i–♭VII–♭VI–V).
+`shapes.ts` holds the named progressions: ii–V–I, the circle progression (vi–ii–V–I), the axis progression (I–V–vi–IV), the Andalusian cadence (i–♭VII–♭VI–V), the doo-wop changes (I–vi–IV–V), Pachelbel's Canon (I–V–vi–iii–IV–I–IV–V), the twelve-bar blues (I–IV–I–V–IV), the ragtime progression (III–VI–II–V–I) and the rock vamp (I–♭VII–IV).
 
 - **Recognized.** A progression is matched by root motion and chord quality, measured from its own tonic, so it's found in any key. When you play one, the readout names it, and if it isn't in the home key, says where it is ("in D minor").
 - **Loaded.** Pick one in the Menu and it's drawn on the circle as a constellation still to trace, with the next move lit. Steps you play leave the figure and become the trail.
-- **With its 7ths.** Each progression carries the color it's usually played with: ii7–V7–Imaj7, vi7–ii7–V7–Imaj7, Iadd9–V–vi7–IVmaj7, and V7 to end the Andalusian. Pressing the next step plays it that way without touching a pad. A pad you've tapped or are holding wins. A Menu setting turns this off.
+- **With its 7ths.** Each progression carries the color it's usually played with: ii7–V7–Imaj7, vi7–ii7–V7–Imaj7, Iadd9–V–vi7–IVmaj7, I7–IV7–I7–V7–IV7, E7–A7–D7–G7–C in C, and V7 to end the Andalusian and the doo-wop changes. Pressing the next step plays it that way without touching a pad. A pad you've tapped or are holding wins. A Menu setting turns this off.
 
 ## Secondary dominants
 

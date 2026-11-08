@@ -116,12 +116,20 @@
       const from = steps[k - 1].ref, to = steps[k].ref;
       lines.push({ ...between(from, to, STEP_R[from.ring] + (lit ? 7 : 2), STEP_R[to.ring] + 2), lit });
     }
-    const rings = steps.flatMap((s, i) => {
-      if (i < played) return [];
+    // A chord the progression comes back to (the Canon's I, V and IV) gets one ring carrying each step's number.
+    const rings: { ref: ChordRef; x: number; y: number; r: number; lit: boolean; n: number; ns: number[]; nx: number; ny: number }[] = [];
+    steps.forEach((s, i) => {
+      if (i < played) return;
+      const again = rings.find((r) => same(r.ref, s.ref));
+      if (again) {
+        again.ns.push(i + 1);
+        again.lit ||= i === played;
+        return;
+      }
       const [x, y] = stepAt(s.ref);
       // The step's number sits just outside its ring, toward the upper left of the cell.
       const [nx, ny] = pol(ANCHOR[s.ref.ring] + (s.ref.ring === "maj" ? 6 : 8), s.ref.col * 30 - (s.ref.ring === "maj" ? 10.5 : 14));
-      return [{ x, y, r: STEP_R[s.ref.ring], lit: i === played, n: i + 1, nx, ny }];
+      rings.push({ ref: s.ref, x, y, r: STEP_R[s.ref.ring], lit: i === played, n: i + 1, ns: [i + 1], nx, ny });
     });
     return { lines, rings, next: steps[played] };
   });
@@ -239,7 +247,7 @@
     <g class="figure">
       {#each figure.rings as r (r.n)}
         <circle class="step-ring" class:lit={r.lit} data-step={r.n} cx={r.x} cy={r.y} r={r.r} />
-        <text class="step-n" class:lit={r.lit} x={r.nx} y={r.ny + 3}>{r.n}</text>
+        <text class="step-n" class:lit={r.lit} x={r.nx - (r.ns.length > 1 ? 8 : 0)} y={r.ny + 3}>{r.ns.join("·")}</text>
       {/each}
     </g>
   {/if}
@@ -285,18 +293,16 @@
   <!-- What's loaded, in the open corner, and how to put it away. -->
   {#if loaded && figure}
     <g class="legend loaded" data-loaded={loaded.numerals}>
-      <text class="cap left" x="-216" y="-203">SHAPE</text>
-      <text class="loaded-numerals" x="-216" y="-184" style:font-size="{cornerSize}px"
+      <text class="loaded-numerals" x="-216" y="-203" style:font-size="{cornerSize}px"
         >{#each loaded.steps as st, i (i)}<tspan dy={i && loaded.steps[i - 1].top ? cornerSize * 0.38 : 0}>{i ? "–" : ""}{st.numeral}</tspan
           >{#if st.top}<tspan class="sup" dy={-cornerSize * 0.38} font-size={cornerSize * 0.62}>{st.top}</tspan>{/if}{/each}</text>
-      <text class="loaded-name" x="-216" y="-170">{loaded.name}</text>
-      <text class="loaded-name" x="-216" y="-157">in {loaded.where}</text>
-      <text class="cap left" x="-216" y="-139">NEXT · {figure.next.numeral}{figure.next.top}</text>
+      <text class="loaded-name" x="-216" y="-189">{loaded.name}</text>
+      <text class="loaded-name" x="-216" y="-176">in {loaded.where}</text>
       <g class="put-away" role="button" tabindex="0" aria-label="Put the shape away"
         onclick={() => send({ type: "shapeChosen", shape: null })}
         onkeydown={(e) => (e.key === "Enter" || e.key === " ") && send({ type: "shapeChosen", shape: null })}>
-        <rect x="-220" y="-134" width="74" height="22" />
-        <text class="small left" x="-216" y="-119">× put away</text>
+        <rect x="-220" y="-173" width="74" height="22" />
+        <text class="small left" x="-216" y="-158">× put away</text>
       </g>
     </g>
   {/if}
@@ -345,22 +351,22 @@
   .out.now { fill: var(--ink); font-weight: 500; }
   .ring { fill: none; stroke: var(--ink); stroke-width: 2; pointer-events: none; }
   .leads { fill: none; stroke: var(--ink); stroke-width: 2.2; stroke-linecap: round; pointer-events: none; }
-  .leads-word { font: 500 8px var(--font-text); letter-spacing: 0.12em; fill: var(--lamp); }
+  .leads-word { font: 500 8px var(--font-caps); letter-spacing: 0.12em; fill: var(--lamp); }
   .ring-outer { fill: none; stroke: var(--faint); stroke-width: 1; pointer-events: none; }
   .mode-line { fill: none; stroke: var(--ink); stroke-width: 1; pointer-events: none; }
-  .mode-word { font: 400 9px var(--font-text); fill: var(--ink-3); stroke: var(--ground); }
+  .mode-word { font: 400 11px var(--font-text); fill: var(--ink-3); stroke: var(--ground); }
   .hub { fill: var(--hub); stroke: var(--rule-2); stroke-width: 1; pointer-events: all; }
   .tick { stroke: var(--rule-2); stroke-width: 1; pointer-events: none; }
   .tick.major { stroke: var(--faint); }
   .pointer { fill: var(--ink); pointer-events: none; }
   .dial text { stroke: var(--hub); }
-  .dial-cap { font: 500 9px var(--font-text); letter-spacing: 0.14em; fill: var(--lamp); }
+  .dial-cap { font: 500 9px var(--font-caps); letter-spacing: 0.14em; fill: var(--lamp); }
   .dial-key { font: italic 300 34px var(--font-serif); fill: var(--ink); }
   .dial-mode { font: italic 400 12px var(--font-serif); fill: var(--ink-2); }
-  .dial-hint { font: 400 9px var(--font-text); letter-spacing: 0.04em; fill: var(--ink-3); }
+  .dial-hint { font: 400 11px var(--font-text); letter-spacing: 0.04em; fill: var(--ink-3); }
   .legend text { stroke: var(--ground); }
-  .cap { font: 500 9px var(--font-text); letter-spacing: 0.14em; fill: var(--lamp); }
-  .small { font: 400 9px var(--font-text); fill: var(--ink-3); }
+  .cap { font: 500 9px var(--font-caps); letter-spacing: 0.14em; fill: var(--lamp); }
+  .small { font: 400 11px var(--font-text); fill: var(--ink-3); }
   .small.left { text-anchor: start; }
   .end { text-anchor: end; }
   .left { text-anchor: start; }
@@ -369,7 +375,7 @@
   .figure marker path { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linejoin: round; }
   .step-ring { fill: none; stroke: var(--constellation); stroke-width: 0.8; pointer-events: none; }
   .step-ring.lit { stroke: var(--ink); stroke-width: 1.3; }
-  .step-n { font: 500 9.5px var(--font-text); fill: var(--ink-3); stroke-width: 3px; }
+  .step-n { font: 500 12.5px var(--font-text); fill: var(--ink-3); stroke-width: 3px; }
   .step-n.lit { fill: var(--ink); }
   .loaded-numerals { font: 400 19px var(--font-serif); fill: var(--ink); text-anchor: start; }
   .loaded-name { font: italic 400 10.5px var(--font-serif); fill: var(--ink-2); text-anchor: start; }

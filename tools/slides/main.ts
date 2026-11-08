@@ -102,7 +102,7 @@ async function surveySounds(): Promise<SoundRow[]> {
 interface Check { engine: string; name: string; pass: boolean; detail: string }
 
 /** A plain sustained sound for each engine, so the traps aren't hidden by a decay. */
-const PLAIN: Record<string, string> = { multi: "Virtual Analog", pad: "Soft Saw" };
+const PLAIN: Record<string, string> = { multi: "Classic Waveshapes + Filter", pad: "Soft Saw" };
 
 async function traps(engine: string): Promise<Check[]> {
   const out: Check[] = [];

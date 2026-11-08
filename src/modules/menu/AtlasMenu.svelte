@@ -6,6 +6,7 @@
 
   let { view, send }: ModuleProps<"menu"> = $props();
 
+  const FIRST_ROW = 4; // the shapes that share a row with Off
   const ringLabel = (ms: number) => (ms === 0 ? "Off" : `${ms / 1000}`);
   const SHORT: Record<string, string> = { "Classic Waveshapes + Filter": "Classic + Filter" };
   function slideAt(ms: number) {
@@ -43,7 +44,12 @@
         <div class="cap">SHAPE · DRAW ONE ON THE CIRCLE</div>
         <div class="seg">
           <button class="shape" class:on={$view.shape === null} onclick={() => send({ type: "shapeChosen", shape: null })}>Off</button>
-          {#each $view.shapes as s (s.id)}
+          {#each $view.shapes.slice(0, FIRST_ROW) as s (s.id)}
+            <button class="shape" class:on={s.id === $view.shape} data-shape={s.id} onclick={() => send({ type: "shapeChosen", shape: s.id })}>{s.label}</button>
+          {/each}
+        </div>
+        <div class="seg second">
+          {#each $view.shapes.slice(FIRST_ROW) as s (s.id)}
             <button class="shape" class:on={s.id === $view.shape} data-shape={s.id} onclick={() => send({ type: "shapeChosen", shape: s.id })}>{s.label}</button>
           {/each}
         </div>
@@ -106,30 +112,32 @@
   .group { display: flex; flex-direction: column; gap: 2px; }
   .pair { display: flex; gap: 8px; }
   .pair > .group { min-width: 0; }
-  .space { flex: 3 1 0; }
-  .ring { flex: 4 1 0; }
+  .space { flex: 1 1 0; }
+  .ring { flex: 1.25 1 0; }
   button {
     all: unset; flex: 1 1 0; min-width: 0; height: 24px; text-align: center; box-sizing: border-box;
     font: 400 13px/24px var(--font-serif); color: var(--ink); white-space: nowrap; overflow: hidden;
   }
-  button.fig { font: 400 11px/24px var(--font-text); }
+  button.fig { font: 400 14px/24px var(--font-text); }
   button:disabled { color: var(--ink-3); }
   button.on { background: var(--ink); color: var(--ground); }
   .seg, .sounds { border: 1px solid var(--rule-2); overflow: hidden; }
   .seg { display: flex; flex: none; }
+  .group > .seg + .seg { margin-top: -3px; }
   .seg > button + button { border-left: 1px solid var(--rule-2); }
   .restrike { flex-grow: 1.7; }
   .colored { flex-grow: 2.4; }
   /* The shapes' names differ in length, so each takes what it needs and the rest is shared. */
   .seg > .shape { flex: 1 1 auto; padding: 0 5px; }
+  .second > .shape { padding: 0 3px; }
   .sounds { display: grid; grid-template-columns: 1fr 1fr; flex: none; }
   .sound { height: 21px; font-size: 12px; line-height: 21px; font-style: italic; padding: 0 4px; border-bottom: 1px solid var(--rule); }
   .sound:nth-child(odd) { border-right: 1px solid var(--rule); }
   .sound:last-child:nth-child(odd) { grid-column: span 2; border-right: none; }
   .sound:last-child, .sound:nth-last-child(2):nth-child(odd) { border-bottom: none; }
-  .cap { font: 500 9px/11px var(--font-text); letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
+  .cap { font: 500 9px/11px var(--font-caps); letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
   .actions { margin-top: auto; display: flex; gap: 6px; }
   .act { height: 24px; border: 1px solid var(--rule-2); font-size: 12.5px; line-height: 22px; }
   .done { flex: 0 0 64px; }
-  .about { font: 400 8.5px/1.2 var(--font-text); color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .about { font: 400 10.5px/1.2 var(--font-text); color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>

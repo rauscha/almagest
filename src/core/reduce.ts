@@ -217,11 +217,11 @@ function shapeColor(state: State, ref: ChordRef): Top | null {
   return null;
 }
 
-/** Which step of the loaded shape is this chord and writes this pad, or -1. */
-function stepWriting(state: State, ref: ChordRef, pad: Alteration): number {
-  if (!state.loaded || !state.colored) return -1;
+/** The steps of the loaded shape that are this chord and write this pad. A shape can come back to a chord. */
+function stepsWriting(state: State, ref: ChordRef, pad: Alteration): number[] {
+  if (!state.loaded || !state.colored) return [];
   const placed = placeShape(state.loaded, state.key);
-  return placed ? placed.steps.findIndex((st) => st.color === pad && sameChord(cellOf(st.root, st.ring), ref)) : -1;
+  return (placed?.steps ?? []).flatMap((st, i) => (st.color === pad && sameChord(cellOf(st.root, st.ring), ref) ? [i] : []));
 }
 
 /** What a newly pressed chord takes: whatever's latched, and a loaded shape's pad, where the cell allows them. */
@@ -393,10 +393,10 @@ function padDown(state: State, pad: Alteration, pointer: number): Step {
   // Going through the latch would take it off this chord and put it on every chord after.
   const sounding = state.sounding ? state.current : null;
   if (sounding && canAlter(sounding.ref.ring, pad) && !hasAlteration(before, pad)) {
-    const step = stepWriting(state, sounding.ref, pad);
-    const wasDeclined = state.declined.includes(step);
-    if (step >= 0 && (wasDeclined || hasAlteration(sounding.alts, pad))) {
-      const declined = wasDeclined ? state.declined.filter((i) => i !== step) : [...state.declined, step];
+    const steps = stepsWriting(state, sounding.ref, pad);
+    const wasDeclined = steps.some((i) => state.declined.includes(i));
+    if (steps.length && (wasDeclined || hasAlteration(sounding.alts, pad))) {
+      const declined = wasDeclined ? state.declined.filter((i) => !steps.includes(i)) : [...state.declined, ...steps];
       return alter({ ...state, declined, pads: [...state.pads, { pad, pointer, used: false, before }] }, toggleAlteration(sounding.alts, pad));
     }
   }

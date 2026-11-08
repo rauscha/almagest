@@ -11,7 +11,7 @@
   const W = 258;
   const TOP = 26; // below the section rule
   const BOTTOM = 238; // the keyboard's lowest edge
-  const KEY_X = 20, KEY_W = 22, ROLL_X = KEY_X + KEY_W + 4, ROLL_END = 230;
+  const KEY_X = 20, KEY_W = 22, ROLL_X = KEY_X + KEY_W + 4, ROLL_END = 222;
   const MIN_ROWS = 28;
   const ACCIDENTAL = new Set([1, 3, 6, 8, 10]);
 
@@ -160,7 +160,7 @@
     {@const x = colX(j) + 6}
     {@const now = j === last}
     <!-- Crowded, the older chords give up their names and keep their numerals. -->
-    {#if now || pastW >= 26}<text class="trail-name" class:now x={now && pastW >= 26 ? x + Math.max(0, c.name.length * 5 + 19 - pastW) : x} y="262" font-size={now ? 15 : 13}>{c.name}</text>{/if}
+    {#if now || pastW >= 26}<text class="trail-name" class:now x={now && pastW >= 26 ? x + Math.max(0, c.name.length * 5 + 19 - pastW) : x} y="262" font-size={now ? 15 : 12}>{c.name}</text>{/if}
     <text class="trail-num" class:now x={now ? x + clearOfOlder(c.numeral) : x} y="277" font-size={now ? 12 : pastW >= 26 ? 11 : 10}>{now ? c.numeral : bareNumeral(c.numeral)}</text>
   {/each}
   {#if columns.length}
@@ -183,7 +183,7 @@
 
 <style>
   .ribbon { display: block; width: 100%; height: 100%; overflow: visible; }
-  .cap { font: 500 9px var(--font-text); letter-spacing: 0.14em; fill: var(--lamp); }
+  .cap { font: 500 9px var(--font-caps); letter-spacing: 0.14em; fill: var(--lamp); }
   .rule { stroke: var(--rule-2); stroke-width: 1; }
   .node { fill: var(--faint); }
   .row-acc { fill: var(--chart-lo); }
@@ -199,9 +199,9 @@
   .head { fill: var(--ink-3); }
   .head.now { fill: var(--ink); }
   .head-ring { fill: none; stroke: var(--ink); stroke-width: 1; }
-  .small { font: 400 9px var(--font-text); fill: var(--ink-3); }
+  .small { font: 400 11px var(--font-text); fill: var(--ink-3); }
   .small.end, .note { text-anchor: end; }
-  .note { font: 400 9px var(--font-text); fill: var(--ink-2); }
+  .note { font: 400 11.5px var(--font-text); fill: var(--ink-2); }
   .note.held { fill: var(--ink-3); }
   .role { fill: var(--ink); font-weight: 500; }
   .trail-name { font-family: var(--font-serif); font-style: italic; fill: var(--ink-2); text-anchor: middle; }
@@ -211,6 +211,6 @@
   .tick { stroke: var(--faint); stroke-width: 1; }
   .bracket { fill: none; stroke: var(--ink-3); stroke-width: 0.8; }
   .bracket.now { stroke: var(--ink); stroke-width: 1.1; }
-  .bracket-name { font: 500 7px var(--font-text); letter-spacing: 0.12em; fill: var(--ink-3); text-anchor: middle; }
+  .bracket-name { font: 500 7px var(--font-caps); letter-spacing: 0.12em; fill: var(--ink-3); text-anchor: middle; }
   .bracket-name.now { fill: var(--lamp); }
 </style>

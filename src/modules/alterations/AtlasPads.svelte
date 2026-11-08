@@ -35,7 +35,7 @@
         onpointerdown={(e) => down(e, o.id)}
       >
         <span class="label" class:word={!!LABEL[o.id]}><span class="ring">{LABEL[o.id] ?? o.id}</span></span>
-        <span class="chord">{o.available ? o.chord : "—"}{#if o.inKey === false}<span class="out">out</span>{/if}</span>
+        <span class="chord" class:long={o.chord.length + (o.inKey === false ? 4 : 0) > 11}>{o.available ? o.chord : "—"}{#if o.inKey === false}<span class="out">out</span>{/if}</span>
       </button>
     {/each}
     <button class="pad shaded sustain" class:engaged={$view.sustain} aria-pressed={$view.sustain} onclick={() => send({ type: "sustainToggled" })}>
@@ -48,7 +48,7 @@
 <style>
   .wrap { height: 100%; display: flex; flex-direction: column; font-family: var(--font-serif); }
   .section { display: flex; align-items: center; gap: 8px; height: 14px; margin-bottom: 8px; }
-  .cap { font: 500 9px var(--font-text); letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
+  .cap { font: 500 9px var(--font-caps); letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
   .hair { flex: 1; height: 1px; background: var(--rule-2); }
   .pads {
     flex: 1; min-height: 0; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr);
@@ -66,10 +66,12 @@
   .ring { display: inline-block; font-size: 25px; line-height: 1; padding: 4px 5px 6px; border: 1.6px solid transparent; border-radius: 999px; }
   .word .ring { font-size: 17px; padding: 3px 7px 4px; }
   .chord {
-    position: absolute; left: 0; right: 0; top: calc(42% + 20px); text-align: center; white-space: nowrap;
-    font: 400 9.5px var(--font-text); color: var(--ink-2);
+    position: absolute; left: 0; right: 0; top: calc(42% + 19px); text-align: center; white-space: nowrap;
+    font: italic 400 12px var(--font-text); color: var(--ink-2);
   }
-  .out { color: var(--lamp); margin-left: 0.6em; }
+  /* The longest names, Amaj7sus2 out among them, still have to clear the cell's edges. */
+  .chord.long { font-size: 10.5px; top: calc(42% + 20px); }
+  .out { color: var(--lamp); margin-left: 0.4em; font-style: normal; }
   .pad.engaged .ring { border-color: var(--ink); }
   .pad:disabled { color: var(--ink-3); }
   .pad:disabled .chord { color: var(--ink-3); }

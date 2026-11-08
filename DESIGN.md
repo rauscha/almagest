@@ -40,8 +40,8 @@ typography:
     fontWeight: 500
     letterSpacing: "0.14em"
   figure:
-    fontFamily: "IBM Plex Mono, Noto Music, monospace"
-    fontSize: "11px"
+    fontFamily: "Newsreader, Noto Music, serif"
+    fontSize: "12px"
     fontWeight: 400
 rounded:
   none: "0px"
@@ -87,7 +87,7 @@ Calm and precise, also warm and musical. Nothing bounces, nothing glows all at o
 
 **Key Characteristics:**
 - A deep night ground, chalk-white type and points, three steps of dimmer chalk for hierarchy.
-- A light serif (Newsreader) for every musical word, italic for chord names, upright for numerals; a mono only for figures and captions.
+- A light serif (Newsreader) for every musical word, italic for chord names, upright for numerals, the small figures too; a mono only for the small spaced capitals.
 - One meaning per mark: size is likelihood, a ring is engaged, line style is function, shading is the key.
 - Shared hairline dividers everywhere, never boxes with gaps.
 - A warm lamp tint on captions only, never on a state.
@@ -108,7 +108,7 @@ A night chart: near-black ground, chalk ink, hairlines in two steps, and one war
 - **Dial** (#141B2F): the hub and the keyboard's natural keys.
 - **Rule** (#2A3450) and **Rule bright** (#3B4663): dividers, rings, the key's outline, frames.
 - **Faint** (#5C6782): unlit marks only, never text.
-- **Fog** (#8C95AB): captions in mono, out-of-key chord names, held tones, at least 4.5:1 on night.
+- **Fog** (#8C95AB): captions, out-of-key chord names, held tones, at least 4.5:1 on night.
 - **Dim chalk** (#B9BDC7): secondary names, a trail star, chord names under pads.
 - **Constellation** (#6F7A95): the ghostly steps still to come of a loaded progression. The trail itself is chalk, fading by opacity.
 
@@ -122,9 +122,9 @@ A night chart: near-black ground, chalk ink, hairlines in two steps, and one war
 ## Typography
 
 **Display and body:** Newsreader (with Noto Music for ♭ ♯ 𝄪), self-hosted.
-**Figures and captions:** IBM Plex Mono (with Noto Music), self-hosted.
+**Spaced capitals:** IBM Plex Mono (with Noto Music), self-hosted.
 
-**Character:** a light optical serif makes the chord names and numerals read like a score's, and the italics give the names a hand; the mono keeps numbers and captions measured. Accidentals come from the music font and are set small and raised, as engraved.
+**Character:** a light optical serif makes the chord names and numerals read like a score's, and the italics give the names a hand; the mono is kept for the small spaced capitals that label each part. Accidentals come from the music font and are set small and raised, as engraved.
 
 ### Hierarchy
 - **Display** (300 italic, 64px, line-height 0.95): the sounding chord in the readout; its quality set at 40px.
@@ -133,7 +133,7 @@ A night chart: near-black ground, chalk ink, hairlines in two steps, and one war
 - **Numerals on the circle** (400, 23px major, 18px minor, 13px diminished; 500 while sounding), chord names beneath in italic at 11.5, 10.5 and 9.5px.
 - **Body** (400, 13px): Menu choices; sound names in italic at 12px.
 - **Label** (500, 9px, 0.14em, uppercase, lamp): captions.
-- **Figure** (400, 9 to 12px mono): odds, semitones, note names, octave labels.
+- **Figure** (400, 11 to 14px serif, lining numerals): odds, semitones, note names, octave labels.
 
 ### Named Rules
 **The No-Wrap Rule.** No label breaks onto a second line, and no label moves when something appears beside it (`tools/verify/layout.cjs`).
@@ -161,7 +161,7 @@ True circles and straight hairlines. No corner radius on frames; a pill (999px) 
 Twelve columns of major, minor and diminished chords in three rings, divided by hairlines. The key's seven chords form a lit wedge with a brighter outline. Each in-key cell carries its numeral over its italic name, and a function arc inside its outer edge (solid home, dashed away, dotted tension; iii half solid, half dotted). Out-of-key chords show their names only, in fog. The sounding chord wears a chalk ring. Every chord the counts say might come next carries a star left of its numeral, brighter and larger for a stronger connection, on one absolute scale shown in the corner (60, 30, 10, 3%); earlier trail chords carry a small dim star, and a thin constellation line joins the trail beneath everything, fading as it ages: the newest move in chalk, each older one 0.6 as bright at the same width, so it goes ghostly within a few moves. A progression loaded from the Menu is drawn as a constellation still to trace: each step's chord ringed and numbered, joined by straight lines; the next move is lit (its line in chalk with an arrowhead, its chord's ring in chalk) and the moves after it are ghostly in the constellation tone, the reverse of the trail fading behind. Steps played leave the figure and become the trail; while a progression is loaded, the trail shows only those steps, dimmed, so nothing outshines the move to come. Its numerals, name and key sit in the chart's open top-left corner, with NEXT and the next numeral in lamp caps, and "× put away". Drawn with its 7ths (the Menu's default), the corner writes each step's 7th or add9 raised and small, as a jazz chart does (ii⁷–V⁷–I^maj7), NEXT names the whole chord, and the lit next chord on the circle is named as it would play (Cmaj7); a press on it plays exactly that, unless a latched 7th or 9th pad wins. While a pad is held, every cell is named as a press would give it. After a long press, the chord that leads to the one held (its secondary dominant) wears a dotted chalk ring, LEADS HERE in lamp caps above it, and its name as the 7th it plays; the dotted line is tension, as in the function arcs. The hub is the key dial: graduated, with a pointer at the key's column, "KEY", the key in italic and its mode, and the word "drag".
 
 ### Readout
-The sounding chord at display size, its numeral beside it, then the function's own mark and plain word with the term in mono ("Tension (dominant)"), and a quiet "Moved N semitones". At rest it shows the key; after the sound ends it keeps the last chord, a step dimmer. If the sound stops while the app is in view, a pill says "sound stopped · touch a chord to wake it". When the trail ends in a named progression, its numerals sit beside the chord's numeral at 24px with its name in lamp caps beneath (CIRCLE PROGRESSION) and, when it isn't in the home key, where it is in mono ("in D minor"). Short of room it steps down: numerals alone, then numerals at the end of the function row, then nothing, leaving the trail's bracket to name it.
+The sounding chord at display size, its numeral beside it, then the function's own mark and plain word with the term beside it ("Tension (dominant)"), and a quiet "Moved N semitones". At rest it shows the key; after the sound ends it keeps the last chord, a step dimmer. If the sound stops while the app is in view, a pill says "sound stopped · touch a chord to wake it". When the trail ends in a named progression, its numerals sit beside the chord's numeral at 24px with its name in lamp caps beneath (CIRCLE PROGRESSION) and, when it isn't in the home key, where it is ("in D minor"). Short of room it steps down: numerals alone, then numerals at the end of the function row, then nothing, leaving the trail's bracket to name it.
 
 ### Voices
 A vertical keyboard, one row per semitone, accidental rows shaded across the roll, C rows ruled and labeled, the keys of sounding notes lit. Each voice is a line: a held tone continues without a new point, a change slants in and starts a point. All points the same size; the sounding chord's points wear rings, and its lines fade toward the right with the release. The window of pitches widens and narrows without jitter, never under 28 rows. At the right, the sounding notes are named; a note a pad added carries its figure after the name in chalk, 7 or 9, as the leading tone carries LT. Two notes a semitone apart spread their names evenly so they never overlap. Beneath: the trail's names and numerals; crowded, older chords keep only their numerals. Under them, a ruled line with a tick per chord, or, once the trail holds a named progression, brackets in its place, as analysis marks on a jazz chart: each spans its chords with a short name in mono caps beneath (AXIS, CIRCLE), the one the chord now completes in chalk with its name in lamp, older ones in fog. Two that share a chord meet under it.
@@ -180,7 +180,7 @@ Engines and sounds in ruled frames, then Next chords, Shape (Off, ii–V–I, Ci
 ### Do:
 - **Do** pass the grayscale test on every state.
 - **Do** give every mark one meaning, and draw the legend beside what it explains.
-- **Do** set musical words in the serif and figures in the mono.
+- **Do** set musical words and figures in the serif, and only the small spaced capitals in the mono.
 - **Do** divide groups with shared hairlines in one frame.
 - **Do** keep the theory words large; they are what's being learned.
 

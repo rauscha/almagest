@@ -96,7 +96,7 @@
   .top { display: flex; gap: 18px; align-items: flex-start; }
   .menu {
     all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 8px; height: 28px; padding: 0 10px;
-    border: 1px solid var(--rule-2); font: 400 11px var(--font-text); color: var(--ink); white-space: nowrap;
+    border: 1px solid var(--rule-2); font: 400 13px var(--font-text); color: var(--ink); white-space: nowrap;
   }
   .menu svg { width: 14px; height: 11px; }
   .menu svg line { stroke: var(--ink); stroke-width: 1.4; }
@@ -104,7 +104,7 @@
   .menu.on svg line { stroke: var(--ground); }
   .voicing { flex: 1; min-width: 0; }
   .vcap { display: flex; justify-content: space-between; align-items: baseline; height: 14px; }
-  .cap { font: 500 9px var(--font-text); letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
+  .cap { font: 500 9px var(--font-caps); letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
   .vword { font-style: italic; font-size: 14px; color: var(--ink); }
   .slider { display: block; width: 100%; height: 28px; touch-action: none; }
   .hit { fill: transparent; }
@@ -117,13 +117,13 @@
   .hair { flex: 1; height: 1px; background: var(--rule-2); }
   .head-row, .row { display: grid; grid-template-columns: 18px minmax(0, 1fr) 36px 44px 40px; align-items: baseline; column-gap: 4px; }
   .head-row { margin-top: 6px; }
-  .h { font: 400 9px var(--font-text); color: var(--ink-3); text-align: right; white-space: nowrap; }
+  .h { font: 400 11px var(--font-text); color: var(--ink-3); text-align: right; white-space: nowrap; }
   .row { height: 27px; }
   .star { width: 16px; height: 16px; align-self: center; }
   .star circle { fill: var(--ink); }
   .name { font-style: italic; font-size: 19px; line-height: 1; white-space: nowrap; overflow: hidden; }
   .num { font-size: 15px; color: var(--ink); white-space: nowrap; }
-  .val { font: 400 12px var(--font-text); color: var(--ink); text-align: right; white-space: nowrap; }
-  .foot, .empty { font: 400 9.5px var(--font-text); color: var(--ink-3); margin-top: 4px; white-space: nowrap; }
+  .val { font: 400 14px var(--font-text); font-variant-numeric: lining-nums tabular-nums; color: var(--ink); text-align: right; white-space: nowrap; }
+  .foot, .empty { font: 400 12px var(--font-text); color: var(--ink-3); margin-top: 4px; white-space: nowrap; }
   .empty { margin-top: 12px; font: italic 12.5px var(--font-serif); color: var(--ink-2); }
 </style>

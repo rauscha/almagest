@@ -20,19 +20,15 @@ export interface SoundPreset {
   level?: number;
 }
 
-const MULTI_CODES = ["VAF", "VA", "WT", "FORM", "6OPA", "6OPC"];
+const MULTI_CODES = ["VAF", "WT", "FORM", "6OPC"];
 /**
- * Passed the survey, then dropped by ear. The last two sounded too like Wavetable to earn their room, and
- * were the two least clear on chords of the multi-model sounds (0.75 and 0.68 of a chord's energy on its notes).
+ * Passed the survey, then dropped by ear. Wave Terrain and Waveshaper sounded too like Wavetable and were the
+ * two least clear on chords. Virtual Analog overlapped Classic + Filter, and Bank A was the FM left over
+ * once Bank C was the one kept. Five sounds fit three rows of the Menu.
  */
-export const DROPPED_BY_EAR = ["Reed Piano", "Thumb Bass", "Growl Bass", "Wave Terrain", "Waveshaper"];
+export const DROPPED_BY_EAR = ["Reed Piano", "Thumb Bass", "Growl Bass", "Wave Terrain", "Waveshaper", "Virtual Analog", "6-Op FM · Bank A"];
 
 const MULTI_DEFAULTS: Knobs = { harmonics: 0.5, timbre: 0.5, morph: 0.5 };
-/**
- * Bank A peaked at 0.89 to 1.06 of full scale in tools/verify/drive_app.cjs, the only sound that close,
- * with the most energy of any (rms 0.41 against 0.2 to 0.36). Trimmed 2.5 dB.
- */
-const MULTI_LEVEL: Record<string, number> = { "6OPA": 0.75 };
 const plaits = (code: string) => {
   const m = PLAITS_MODELS.find((x) => x.code === code);
   if (!m) throw new Error(`No sound with code ${code}`);
@@ -40,7 +36,7 @@ const plaits = (code: string) => {
 };
 
 export const MULTI: SoundPreset[] = [
-  ...MULTI_CODES.map((code) => ({ name: plaits(code).name, index: plaits(code).index, knobs: MULTI_DEFAULTS, level: MULTI_LEVEL[code] })),
+  ...MULTI_CODES.map((code) => ({ name: plaits(code).name, index: plaits(code).index, knobs: MULTI_DEFAULTS })),
   // Two oscillators pulled apart until they beat: the stacked-saw sound of the M8's HyperSynth, more or less.
   { name: "Wide Saw", index: plaits("VA").index, knobs: { harmonics: 0.52, timbre: 0, morph: 0.75 } },
 ];
@@ -81,10 +77,20 @@ export const CATALOG: EngineEntry[] = [
   { id: "recorded", label: "Recorded", models: RECORDED.map((m) => m.name) },
 ];
 
-/** A multi-model choice saved under the earlier, longer list, as a place in today's. Its two dropped sounds go to Wavetable. */
-export function currentMultiPosition(saved: number): number {
-  const wavetable = MULTI_CODES.indexOf("WT");
-  return saved === 6 || saved === 7 ? wavetable : saved === 8 ? MULTI.length - 1 : saved;
+const V5_MULTI = ["Classic Waveshapes + Filter", "Virtual Analog", "Wavetable", "Granular Formant", "6-Op FM · Bank A", "6-Op FM · Bank C", "Wide Saw"];
+const V4_MULTI = [...V5_MULTI.slice(0, 6), "Wave Terrain", "Waveshaper", "Wide Saw"];
+/** Where a dropped sound's saved choice goes. */
+const NEAREST: Record<string, string> = {
+  "Virtual Analog": "Classic Waveshapes + Filter",
+  "6-Op FM · Bank A": "6-Op FM · Bank C",
+  "Wave Terrain": "Wavetable",
+  Waveshaper: "Wavetable",
+};
+/** A multi-model choice saved under an earlier settings version, as a place in today's list. */
+export function currentMultiPosition(saved: number, version: 4 | 5): number {
+  const name = (version === 4 ? V4_MULTI : V5_MULTI)[saved];
+  const at = MULTI.findIndex((m) => m.name === (NEAREST[name] ?? name));
+  return Math.max(at, 0);
 }
 
 /** The bus level for a sound: its engine's level, times its own trim if it has one. */

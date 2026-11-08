@@ -1740,7 +1740,7 @@ describe("a progression loaded from the library", () => {
 
   it("is offered in the Menu, and drawn where it falls in the key", () => {
     const r = rig();
-    expect(r.core.views.menu.get().shapes.map((s) => s.label)).toEqual(["ii–V–I", "Circle", "Axis", "Andalusian"]);
+    expect(r.core.views.menu.get().shapes.map((s) => s.label)).toEqual(["ii–V–I", "Circle", "Axis", "Andalusian", "Doo-wop", "Canon", "Blues", "Ragtime", "Rock"]);
     expect(r.core.views.circle.get().loaded).toBeNull();
     r.core.send({ type: "shapeChosen", shape: "circle" });
     expect(r.core.views.menu.get().shape).toBe("circle");
@@ -1845,6 +1845,17 @@ describe("a progression loaded from the library", () => {
     r.core.send({ type: "shapeChosen", shape: null });
     r.core.send({ type: "shapeChosen", shape: "axis" });
     expect(r.core.views.circle.get().loaded?.steps[0]).toMatchObject({ top: "add9" });
+  });
+
+  it("tapping a shape's pad off a chord it comes back to takes it off every time that chord comes up", () => {
+    const r = rig();
+    r.core.send({ type: "shapeChosen", shape: "blues" });
+    r.press(C);
+    r.core.send({ type: "padDown", pad: "7", pointer: 20 });
+    r.core.send({ type: "padUp", pointer: 20 });
+    r.lift();
+    expect(r.core.views.circle.get().loaded?.numerals).toBe("I–IV7–I–V7–IV7");
+    expect(r.core.state.get().latched.top).toBeNull();
   });
 
   it("a latched 7th or 9th pad wins over the shape's, and the next chord is named for it", () => {

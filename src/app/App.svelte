@@ -75,7 +75,7 @@
 {/if}
 
 <style>
-  .stage { position: absolute; left: 50%; top: 50%; width: 998px; height: 448px; transform-origin: center; }
+  .stage { position: absolute; left: 50%; top: 50%; width: 998px; height: 448px; transform-origin: center; font-variant-numeric: lining-nums; }
   .slot { position: absolute; }
   .slot.overlay { z-index: 5; pointer-events: none; }
   .start {

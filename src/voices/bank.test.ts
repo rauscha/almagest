@@ -167,10 +167,9 @@ describe("catalog", () => {
   it("the pads are there, and Wide Saw is the multi-model's detuned pair", () => {
     expect(CATALOG.find((e) => e.id === "pad")!.models).toEqual(["Soft Saw", "Dark Saw", "Warm Sine", "Slow Sweep", "Long Sweep"]);
     expect(MULTI_ENTRY.models).toContain("Wide Saw");
-    const va = MULTI.find((m) => m.name === "Virtual Analog")!;
     const wide = MULTI.find((m) => m.name === "Wide Saw")!;
-    expect(wide.index).toBe(va.index);
-    expect(wide.knobs.harmonics).toBeGreaterThan(va.knobs.harmonics); // the detune
+    expect(wide.index).toBe(8); // the engine's virtual-analog model
+    expect(wide.knobs.harmonics).toBeGreaterThan(0.5); // the detune, past the default
   });
   it("every sound on an engine sets the same knobs, so none inherits another's", () => {
     for (const list of [MULTI, PAD]) {
@@ -191,7 +190,7 @@ describe("catalog", () => {
     expect(PAD.filter((p) => p.knobs.sweepDepth > 0).map((p) => p.name)).toEqual(["Slow Sweep", "Long Sweep"]);
   });
   it("maps its list to the engine's real indices", () => {
-    expect(engineModelIndex("multi", MULTI_ENTRY.models.indexOf("Virtual Analog"))).toBe(8);
+    expect(engineModelIndex("multi", MULTI_ENTRY.models.indexOf("Wide Saw"))).toBe(8);
     expect(engineModelIndex("pad", PAD.findIndex((p) => p.name === "Long Sweep"))).toBe(PAD_SHAPE.saw);
   });
   it("offers exactly what the spectral survey passed, less what listening dropped", () => {
@@ -212,10 +211,15 @@ describe("catalog", () => {
     expect(MULTI_ENTRY.models).toContain("Wavetable");
   });
   it("moves a saved multi-model choice from the old list to the shorter one", () => {
-    expect(currentMultiPosition(0)).toBe(0); // Classic stays first
-    expect(MULTI[currentMultiPosition(6)].name).toBe("Wavetable"); // Wave Terrain's old place
-    expect(MULTI[currentMultiPosition(7)].name).toBe("Wavetable"); // Waveshaper's
-    expect(MULTI[currentMultiPosition(8)].name).toBe("Wide Saw");
+    const under = (saved: number, version: 4 | 5) => MULTI[currentMultiPosition(saved, version)].name;
+    expect(under(0, 4)).toBe("Classic Waveshapes + Filter");
+    expect(under(6, 4)).toBe("Wavetable"); // Wave Terrain's old place
+    expect(under(7, 4)).toBe("Wavetable"); // Waveshaper's
+    expect(under(8, 4)).toBe("Wide Saw");
+    expect(under(1, 5)).toBe("Classic Waveshapes + Filter"); // Virtual Analog's
+    expect(under(4, 5)).toBe("6-Op FM · Bank C"); // Bank A's
+    expect(under(6, 5)).toBe("Wide Saw");
+    expect(MULTI).toHaveLength(5);
   });
   it("gives every recorded note a file, and keeps the piano from sliding", () => {
     expect(RECORDED.map((s) => INSTRUMENTS[s.index].dir)).toEqual(["piano", "strings"]);
@@ -241,9 +245,9 @@ describe("catalog", () => {
 });
 
 describe("a sound's own trim", () => {
-  it("Bank A sits 2.5 dB under the rest of the multi-model sounds, and nothing else moves", () => {
-    const at = (name: string) => MULTI_ENTRY.models.indexOf(name);
-    expect(engineLevel("multi", at("6-Op FM · Bank A"))).toBeCloseTo(0.75);
-    for (const name of MULTI_ENTRY.models.filter((n) => n !== "6-Op FM · Bank A")) expect(engineLevel("multi", at(name)), name).toBe(1);
+  it("lifts the recordings to sit with the other sounds, and leaves the multi-model list alone", () => {
+    expect(engineLevel("recorded", 0)).toBeCloseTo(1.7);
+    expect(engineLevel("recorded", 1)).toBeCloseTo(1.6);
+    for (const position of MULTI.keys()) expect(engineLevel("multi", position)).toBe(1);
   });
 });

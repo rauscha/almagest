@@ -27,3 +27,11 @@ What was decided, why, and how it was checked. Newest at the bottom.
 - **Sources:** Salamander Grand Piano V3 (CC BY 3.0) and the VSCO 2 Community Edition violin and cello sections (CC0). The string sources are about 2 s long, so their loops are short.
 - **Checked:** unit tests (a file for every note, the nearest recording at the right pitch, a saved sound moved to the shorter list), `tools/verify/layout.cjs`, `tools/verify/drive_app.cjs` across every sound, and a browser run counting strikes on a chord change. Their sound still needs a listen on the phone.
 - **Settings:** the key is now v5, carrying v4's settings over.
+
+## D5: Serif numbers, a cleaner shape corner, more progressions
+- **Date:** 2026-11-08.
+- **Numbers:** chosen from mockups. Figures, chord names on the pads and small captions are set in the serif, with lining numerals. The mono is kept for the small spaced capitals.
+- **Shape corner:** chosen from mockups. The SHAPE and NEXT lines are gone: the numerals title themselves, and the lit arrow and chord name on the circle say what's next. "Put away" no longer runs into the rim.
+- **Sounds:** Virtual Analog and 6-Op FM Bank A dropped, leaving five multi-model sounds in three rows. The settings key is v6, moving a saved choice from either earlier list to the nearest sound that remains.
+- **Progressions:** a second Menu row adds Doo-wop, Canon, Blues, Ragtime and Rock. A chord a progression comes back to gets one ring carrying each step's number, and tapping off its 7th applies wherever it comes up. The Blues stops at IV7, so it loops into the next chorus's I7 instead of waiting on the chord already sounding.
+- **Checked:** unit tests (each progression's numerals, placement in other keys and step-following through repeated chords), the type check, `tools/verify/layout.cjs`, `tools/verify/drive_app.cjs`, and screenshots of the Canon, Blues and Ragtime with the Menu open and closed.

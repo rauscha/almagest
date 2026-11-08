@@ -35,6 +35,16 @@ const withPad = (step: Step, color: Top): Step => ({ ...step, color });
 
 /** The library: longest first, so a longer shape wins over one inside it. */
 export const SHAPES: ShapeDef[] = [
+  { id: "canon", label: "Canon", name: "Pachelbel's canon", short: "CANON", tonic: 0,
+    steps: [st(0, "maj"), st(7, "maj"), st(9, "min"), st(4, "min"), st(5, "maj"), st(0, "maj"), st(5, "maj"), st(7, "maj")] },
+  // Twelve bars as their chord changes. It stops short of the last bar's I7, which is where the next chorus starts.
+  { id: "blues", label: "Blues", name: "twelve-bar blues", short: "BLUES", tonic: 0,
+    steps: [withPad(st(0, "maj"), "7"), withPad(st(5, "maj"), "7"), withPad(st(0, "maj"), "7"), withPad(st(7, "maj"), "7"), withPad(st(5, "maj"), "7")] },
+  // Each chord the dominant of the next, walking the circle home.
+  { id: "ragtime", label: "Ragtime", name: "ragtime progression", short: "RAGTIME", tonic: 4,
+    steps: [withPad(st(4, "maj"), "7"), withPad(st(9, "maj"), "7"), withPad(st(2, "maj"), "7"), withPad(st(7, "maj"), "7"), st(0, "maj")] },
+  { id: "doo-wop", label: "Doo-wop", name: "doo-wop changes", short: "DOO-WOP", tonic: 0,
+    steps: [st(0, "maj"), st(9, "min"), st(5, "maj"), withPad(st(7, "maj"), "7")] },
   { id: "circle", label: "Circle", name: "circle progression", short: "CIRCLE", tonic: 3,
     steps: [withPad(st(9, "min"), "7"), withPad(st(2, "min"), "7"), withPad(st(7, "maj"), "7"), withPad(st(0, "maj"), "maj7")] },
   { id: "axis", label: "Axis", name: "axis progression", short: "AXIS", tonic: 0,
@@ -43,6 +53,7 @@ export const SHAPES: ShapeDef[] = [
     steps: [st(0, "min"), st(10, "maj"), st(8, "maj"), withPad(st(7, "maj"), "7")] },
   { id: "two-five-one", label: "ii–V–I", name: "two-five-one", short: "TWO-FIVE-ONE", tonic: 2,
     steps: [withPad(st(2, "min", "dim"), "7"), withPad(st(7, "maj"), "7"), withPad(st(0, "maj", "min"), "maj7")] },
+  { id: "rock", label: "Rock", name: "rock vamp", short: "ROCK", tonic: 0, steps: [st(0, "maj"), st(10, "maj"), st(5, "maj")] },
 ];
 
 /** A chord as a shape sees it: its root's pitch class and its quality. */
