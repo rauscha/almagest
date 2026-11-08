@@ -38,9 +38,9 @@
         <span class="chord" class:long={o.chord.length + (o.inKey === false ? 4 : 0) > 11}>{o.available ? o.chord : "—"}{#if o.inKey === false}<span class="out">out</span>{/if}</span>
       </button>
     {/each}
-    <button class="pad shaded sustain" class:engaged={$view.sustain} aria-pressed={$view.sustain} onclick={() => send({ type: "sustainToggled" })}>
-      <span class="label word"><span class="ring">Sustain</span></span>
-      <span class="chord">{$view.sustain ? "on" : "off"}</span>
+    <button class="pad shaded seven" class:engaged={$view.sevenInKey} aria-pressed={$view.sevenInKey} onclick={() => send({ type: "sevenInKeyToggled" })}>
+      <span class="label word"><span class="ring">7 in key</span></span>
+      <span class="chord">{$view.sevenChord}</span>
     </button>
   </div>
 </div>
@@ -65,6 +65,7 @@
   .label { position: absolute; left: 0; right: 0; top: 42%; transform: translateY(-50%); text-align: center; white-space: nowrap; }
   .ring { display: inline-block; font-size: 25px; line-height: 1; padding: 4px 5px 6px; border: 1.6px solid transparent; border-radius: 999px; }
   .word .ring { font-size: 17px; padding: 3px 7px 4px; }
+  .seven .ring { font-size: 15px; padding: 3px 6px 4px; }
   .chord {
     position: absolute; left: 0; right: 0; top: calc(42% + 19px); text-align: center; white-space: nowrap;
     font: italic 400 12px var(--font-text); color: var(--ink-2);

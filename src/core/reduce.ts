@@ -3,7 +3,7 @@
  * the sound to make, and the caller plays that before anything is drawn.
  */
 import { type Key } from "../theory/spell";
-import { canAlter, cellOf, chordOf, DOMINANT_7, hasAlteration, PLAIN, sameChord, secondaryDominant, toggleAlteration, type Alteration, type Alts, type ChordRef, type Top } from "../theory/keyLens";
+import { canAlter, cellOf, chordOf, DOMINANT_7, hasAlteration, PLAIN, sameChord, secondaryDominant, toggleAlteration, ownSeventh, type Alteration, type Alts, type ChordRef, type Top } from "../theory/keyLens";
 import { placeShape, stepsPlayed } from "../theory/shapes";
 import { nextChords } from "../theory/transitions";
 import { voice, voicesOf, type Spread, type Voiced } from "../theory/voicing";
@@ -89,6 +89,8 @@ export interface State {
   loaded: string | null;
   /** Whether a loaded progression is drawn with its usual 7ths and add9s (ii7–V7–Imaj7) or plain. */
   colored: boolean;
+  /** Every chord takes its own 7th (Cmaj7, Dm7, G7) unless a 7th or 9th pad says otherwise. */
+  sevenInKey: boolean;
   /** Steps of the loaded progression whose 7th or add9 has been tapped off, by index. */
   declined: number[];
   /** Whether the sound is running while the app's in view. The app reports it. */
@@ -127,6 +129,7 @@ export function initialState(over: Partial<State> = {}): State {
     menuOpen: false,
     loaded: null,
     colored: true, // shapes carry their 7ths unless turned off
+    sevenInKey: false,
     declined: [],
     audioOk: true,
     about: "",
@@ -233,6 +236,7 @@ export function altsFor(state: State, ref: ChordRef): Alts {
 export function altsWith(state: State, ref: ChordRef, color: Top | null): Alts {
   const wanted: Alteration[] = [];
   if (state.latched.top) wanted.push(state.latched.top);
+  else if (state.sevenInKey) wanted.push(ownSeventh(ref, state.key, state.latched.quality));
   else if (color) wanted.push(color);
   if (state.latched.sus) wanted.push(state.latched.sus);
   if (state.latched.quality) wanted.push(state.latched.quality);
@@ -387,11 +391,19 @@ function swipe(state: State, r: number, theta: number): Step {
  * A pad acts the moment it's touched, on a chord that's sounding. Held down, it also applies to each
  * chord pressed meanwhile, unless this touch is what took it off.
  */
+export const isTop = (a: Alteration): a is Top => a === "7" || a === "maj7" || a === "9" || a === "add9";
+
 function padDown(state: State, pad: Alteration, pointer: number): Step {
   const before = state.latched;
   // On a chord whose pad came from the loaded shape, the pad turns that step's color off or back on.
   // Going through the latch would take it off this chord and put it on every chord after.
   const sounding = state.sounding ? state.current : null;
+  // With every chord taking its own 7th, a 7th or 9th pad replaces that 7th, and lifts back off to it.
+  if (state.sevenInKey && sounding && isTop(pad) && canAlter(sounding.ref.ring, pad)) {
+    const latched = toggleAlteration(before, pad);
+    const top = latched.top ?? ownSeventh(sounding.ref, state.key, sounding.alts.quality);
+    return alter({ ...state, latched, pads: [...state.pads, { pad, pointer, used: false, before }] }, { ...sounding.alts, top });
+  }
   if (sounding && canAlter(sounding.ref.ring, pad) && !hasAlteration(before, pad)) {
     const steps = stepsWriting(state, sounding.ref, pad);
     const wasDeclined = steps.some((i) => state.declined.includes(i));
@@ -500,6 +512,13 @@ export function reduce(state: State, intent: Internal): Step {
       return state.loaded === intent.shape ? none : { state: { ...state, loaded: intent.shape, declined: [] }, commands: [], effects: [] };
     case "shapeColored":
       return state.colored === intent.colored ? none : { state: { ...state, colored: intent.colored, declined: [] }, commands: [], effects: [] };
+    case "sevenInKeyToggled": {
+      const next = { ...state, sevenInKey: !state.sevenInKey };
+      const now = state.sounding ? state.current : null;
+      if (!now) return { state: next, commands: [], effects: [] };
+      const own = next.sevenInKey ? ownSeventh(now.ref, state.key, now.alts.quality) : shapeColor(next, now.ref);
+      return alter(next, { ...now.alts, top: state.latched.top ?? own });
+    }
     case "menuToggled":
       return { state: { ...state, menuOpen: !state.menuOpen }, commands: [], effects: [] };
     case "ringEnded":

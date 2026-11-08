@@ -146,7 +146,7 @@ describe("lifting a finger", () => {
     r.lift();
     r.fireTimers();
     expect(r.sent).toHaveLength(1);
-    expect(r.core.views.alterations.get().sustain).toBe(true);
+    expect(r.core.views.circle.get().sustain).toBe(true);
   });
   it("switching Sustain off with no finger down stops the chord", () => {
     const r = rig();
@@ -1730,6 +1730,89 @@ describe("named shapes in the views", () => {
     r.fireTimers();
     r.core.send({ type: "trailCleared" });
     expect(r.core.views.ribbon.get().shapes).toEqual([]);
+  });
+});
+
+describe("7 in key", () => {
+  const Dm: ChordRef = { ring: "min", col: 11 };
+  const seven = (r: ReturnType<typeof rig>) => r.core.send({ type: "sevenInKeyToggled" });
+  const tap = (r: ReturnType<typeof rig>, pad: Alteration) => {
+    r.core.send({ type: "padDown", pad, pointer: 20 });
+    r.core.send({ type: "padUp", pointer: 20 });
+  };
+  const top = (r: ReturnType<typeof rig>) => r.core.state.get().current?.alts.top;
+
+  it("gives each chord its own 7th, and names the circle to match", () => {
+    const r = rig();
+    seven(r);
+    r.press(C);
+    expect(top(r)).toBe("maj7");
+    r.lift();
+    r.press(G);
+    expect(top(r)).toBe("7");
+    r.lift();
+    r.press(Dm);
+    expect(r.core.views.readout.get().name).toBe("Dm7");
+    const cells = r.core.views.circle.get().chords;
+    expect(cells.find((c) => c.plain === "C")).toMatchObject({ name: "Cmaj7", numeral: "I" });
+    expect(cells.find((c) => c.plain === "E")?.name).toBe("E7");
+    expect(r.core.views.circle.get().relabeled).toBe(true);
+  });
+
+  it("applies at once to a chord that's sounding, and comes off it", () => {
+    const r = rig();
+    r.press(Dm);
+    expect(top(r)).toBeNull();
+    seven(r);
+    expect(top(r)).toBe("7");
+    expect(r.core.views.alterations.get().sevenChord).toBe("Dm7");
+    seven(r);
+    expect(top(r)).toBeNull();
+  });
+
+  it("leaves the 7 pad unringed, since the mode put the 7th there", () => {
+    const r = rig();
+    seven(r);
+    r.press(Dm);
+    const seven7 = r.core.views.alterations.get().options.find((o) => o.id === "7")!;
+    expect(seven7).toMatchObject({ on: false, chord: "Dm7" });
+    expect(r.core.views.alterations.get().options.find((o) => o.id === "maj7")?.on).toBe(false);
+  });
+
+  it("lets a tapped 7th or 9th pad replace it, and lifts back to it", () => {
+    const r = rig();
+    seven(r);
+    r.press(C);
+    tap(r, "9");
+    expect(top(r)).toBe("9");
+    expect(r.core.state.get().latched.top).toBe("9");
+    tap(r, "9");
+    expect(top(r)).toBe("maj7");
+    expect(r.core.state.get().latched.top).toBeNull();
+  });
+
+  it("wins over a loaded shape's color", () => {
+    const r = rig();
+    r.core.send({ type: "shapeChosen", shape: "axis" });
+    seven(r);
+    r.press(C);
+    expect(top(r)).toBe("maj7");
+  });
+
+  it("combines with a sus pad", () => {
+    const r = rig();
+    seven(r);
+    tap(r, "sus4");
+    r.press(G);
+    expect(r.core.views.readout.get().name).toBe("G7sus4");
+  });
+
+  it("is saved with the other settings", () => {
+    const saved: boolean[] = [];
+    const sound: Sound = { apply: () => {}, useEngine: () => {}, useModel: () => {} };
+    const core = createCore({ catalog: [], sound, onSettings: (s) => saved.push(s.sevenInKey) });
+    core.send({ type: "sevenInKeyToggled" });
+    expect(saved).toEqual([true]);
   });
 });
 

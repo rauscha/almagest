@@ -35,3 +35,9 @@ What was decided, why, and how it was checked. Newest at the bottom.
 - **Sounds:** Virtual Analog and 6-Op FM Bank A dropped, leaving five multi-model sounds in three rows. The settings key is v6, moving a saved choice from either earlier list to the nearest sound that remains.
 - **Progressions:** a second Menu row adds Doo-wop, Canon, Blues, Ragtime and Rock. A chord a progression comes back to gets one ring carrying each step's number, and tapping off its 7th applies wherever it comes up. The Blues stops at IV7, so it loops into the next chorus's I7 instead of waiting on the chord already sounding.
 - **Checked:** unit tests (each progression's numerals, placement in other keys and step-following through repeated chords), the type check, `tools/verify/layout.cjs`, `tools/verify/drive_app.cjs`, and screenshots of the Canon, Blues and Ragtime with the Menu open and closed.
+
+## D6: 7 in key, and Sustain under the right thumb
+- **Date:** 2026-11-08.
+- **What:** a pad, 7 in key, gives every chord its own 7th while playing freely, and the circle names each chord as it would play. Chords outside the key take a 7th too: dominant on major chords, m7 on minor ones. It takes Sustain's cell, so the pads stay three by three. Sustain becomes a round button in the circle's lower right corner, and the function legend moves to the lower left. Both were chosen from mockups.
+- **Order:** a tapped 7th or 9th pad replaces the mode's 7th and lifts back to it. The mode wins over a loaded shape's color. The pads stay unringed for a 7th the mode added, since a ring says that pad is doing it.
+- **Checked:** unit tests (the seven chords in major and relative minor, outside the key, other keys, the pad order, a shape loaded, a sus pad, the saved setting), the type check, `tools/verify/layout.cjs`, `tools/verify/drive_app.cjs`, and screenshots with the mode on and off.

@@ -70,6 +70,7 @@ export interface TendView {
     leads: { ref: ChordRef; name: string } | null;
     /** A pad is held, so every chord is named as a press would give it (G7, C7…). */
     relabeled: boolean;
+    sustain: boolean;
     /** The chords played, oldest first, ending with the latest: the trail a look can draw as a constellation. */
     trail: ChordRef[];
     /** What's sounding as columns on the circle, and the chord before, for looks that draw chords as shapes. */
@@ -166,7 +167,10 @@ export interface TendView {
       available: boolean;
     }[];
     /** Sustain sits among the pads, under the same thumb. */
-    sustain: boolean;
+    /** Every chord takes its own 7th. */
+    sevenInKey: boolean;
+    /** The 7th the sounding chord takes in that mode, whether or not it's on. Empty when nothing's sounding. */
+    sevenChord: string;
     /** The chord the pads act on, named for the key. Empty in silence. */
     chordName: string;
   };
@@ -231,6 +235,7 @@ export type Intent =
   | { type: "shapeColored"; colored: boolean }
   | { type: "presetChanged"; preset: string | null }
   | { type: "sustainToggled" }
+  | { type: "sevenInKeyToggled" }
   | { type: "spreadChanged"; spread: Spread }
   | { type: "slideToggled" }
   | { type: "slideTimeChanged"; ms: number }

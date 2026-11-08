@@ -3,10 +3,11 @@ import { atom, computed, type ReadableAtom } from "nanostores";
 import { ALTERATIONS, canAlter, cellOf, chordOf, DOMINANT_7, circleChords, fitsKey, FUNCTION_WORD, hasAlteration, PLAIN, toggleAlteration } from "../theory/keyLens";
 import { majorName, minorName, withOctave } from "../theory/spell";
 import { findShapes, placeShape, SHAPES, stepsPlayed } from "../theory/shapes";
+import { ownSeventh } from "../theory/keyLens";
 import { nextChords, PRESETS } from "../theory/transitions";
 import { BASS_RANGE, movement, REGISTER, SPREADS, voice, voicesOf, type Voiced } from "../theory/voicing";
 import type { Send, Slot, TendView } from "./contract";
-import { altsFor, altsWith, initialState, shapeChords, leadsOf, reduce, slideFrom, RING_CHOICES, SLIDE_CHOICES, type Effect, type Internal, type State, type VoiceCommand } from "./reduce";
+import { altsFor, altsWith, initialState, isTop, shapeChords, leadsOf, reduce, slideFrom, RING_CHOICES, SLIDE_CHOICES, type Effect, type Internal, type State, type VoiceCommand } from "./reduce";
 
 /** The only thing core knows about sound. `voices/bank.ts` is the real one. */
 export interface Sound {
@@ -162,13 +163,15 @@ function views(state: ReadableAtom<State>, catalog: EngineEntry[]) {
         mode: k.mode,
         col: k.col,
       },
-      // While a pad is held, each chord is named as a press would give it, so the hold's target is literal.
+      // While a pad is held, or every chord takes its 7th, each chord is named as a press would give it.
+      // The mode leaves the numerals alone: it's always on, and Imaj7 at numeral size would crowd the cell.
       chords: circleChords(k).map(({ ref, name, numeral, inKey, fn }) => {
-        if (!s.pads.length) return { ref, name, numeral, inKey, fn, plain: name };
+        if (!s.pads.length && !s.sevenInKey) return { ref, name, numeral, inKey, fn, plain: name };
         const as = chordOf(ref, k, altsFor(s, ref));
-        return { ref, name: as.name, numeral: as.numeral, inKey, fn, plain: name };
+        return { ref, name: as.name, numeral: s.pads.length ? as.numeral : numeral, inKey, fn, plain: name };
       }),
-      relabeled: s.pads.length > 0,
+      relabeled: s.pads.length > 0 || s.sevenInKey,
+      sustain: s.sustain,
       current: s.current?.ref ?? null,
       sounding: !!(s.current && s.sounding),
       held: s.fingers.length > 0,
@@ -224,13 +227,16 @@ function views(state: ReadableAtom<State>, catalog: EngineEntry[]) {
         const held = s.pads.some((p) => p.pad === id);
         const latched = hasAlteration(s.latched, id);
         if (!now) return { id, chord: "", on: held || latched, latched, held, inKey: null, available: true, columns: [] };
-        const on = hasAlteration(now.alts, id);
+        const has = hasAlteration(now.alts, id);
+        // A 7th the mode put there isn't this pad's doing, so the pad stays unringed.
+        const on = has && !(s.sevenInKey && isTop(id) && !latched && !held);
         const available = canAlter(now.ref.ring, id);
-        // What this pad would give: the chord as it is if it's on, or with it added if it's not.
-        const c = chordOf(now.ref, s.key, on || !available ? now.alts : toggleAlteration(now.alts, id));
+        // What this pad would give: the chord as it is if it has it, or with it added if it hasn't.
+        const c = chordOf(now.ref, s.key, has || !available ? now.alts : toggleAlteration(now.alts, id));
         return { id, chord: available ? c.name : "", on, latched, held, inKey: available ? fitsKey(c, s.key) : null, available, columns: c.pcs.map(columnOf) };
       }),
-      sustain: s.sustain,
+      sevenInKey: s.sevenInKey,
+      sevenChord: now ? chordOf(now.ref, s.key, { ...now.alts, top: ownSeventh(now.ref, s.key, now.alts.quality) }).name : "",
       chordName: now ? chordOf(now.ref, s.key, now.alts).name : "",
     };
   });
@@ -298,6 +304,7 @@ export function createCore(opts: {
         before.slide !== step.state.slide ||
         before.slideMs !== step.state.slideMs ||
         before.colored !== step.state.colored ||
+        before.sevenInKey !== step.state.sevenInKey ||
         before.engine !== step.state.engine ||
         before.models !== step.state.models)
     ) {

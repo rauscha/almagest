@@ -179,6 +179,17 @@ function numeralSpelled(position: number, root: number, key: Key, quality: Ring,
   return quality === "maj" ? roman : roman.toLowerCase();
 }
 
+/**
+ * The 7th a chord takes when every chord gets its own. In the key that's the scale's: maj7 on I and IV, a
+ * plain 7 on the rest (m7 on a minor chord, ø7 on the diminished). Outside the key, major chords take a
+ * dominant 7th, which makes E7, A7 and D7 the secondary dominants they usually are. `quality` is a Major or
+ * Minor pad, which makes the chord something other than its cell.
+ */
+export function ownSeventh(ref: ChordRef, key: Key, quality: Quality | null = null): Top {
+  const aboveHome = mod(chordOf(ref, key).root - key.col * 7, 12);
+  return ref.ring === "maj" && !quality && (aboveHome === 0 || aboveHome === 5) ? "maj7" : "7";
+}
+
 export function chordOf(ref: ChordRef, key: Key, alts: Alts = PLAIN): Chord {
   const root = rootOf(ref);
   const quality: Ring = alts.quality === "major" ? "maj" : alts.quality === "minor" ? "min" : ref.ring;

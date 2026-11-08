@@ -66,13 +66,13 @@ const check = (name, ok, extra = "") => { if (!ok) failed++; console.log(`${ok ?
   check("the ring ends", silent);
 
   // Sustain
-  await page.click(".pad.sustain");
+  await page.click(".sustain-disc");
   const [cx, cy] = await center(cell("C"));
   await page.mouse.move(cx, cy); await page.mouse.down(); await page.mouse.up();
   await page.waitForTimeout(2500);
   const sustained = await level(300);
   check("Sustain keeps sounding well past the ring time", sustained.rms > 0.002 && await page.evaluate(() => window.__almagest.core.state.get().sounding !== null), JSON.stringify(sustained));
-  await page.click(".pad.sustain");
+  await page.click(".sustain-disc");
   check("switching Sustain off ends it", await page.evaluate(() => window.__almagest.core.state.get().sounding === null));
   await page.waitForTimeout(400);
 

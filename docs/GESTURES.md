@@ -17,6 +17,8 @@ The timings live in `src/core/gestures.ts`, a pure state machine in the core. A 
 | **Drag from the hub** | The center of the circle | The key dial. Drag onto any chord and it becomes the key: onto Em for E minor, onto G for G major. Nothing changes while the finger stays in the middle. |
 | **Tap a pad** | The pads | Turns it on for this chord and every chord after, until it's tapped off. |
 | **Tap the pad a shape added** | The pads, on a chord of a loaded shape | Takes that 7th or add9 off this step of the shape, and every other chord stays as it was. A second tap puts it back. Choosing the shape again starts it over. |
+| **Tap 7 in key** | The pads | Every chord takes its own 7th until it's tapped off: Cmaj7, Dm7, G7 in C. Chords outside the key take one too (E7, Fm7). A 7th or 9th pad you tap replaces it. |
+| **Tap Sustain** | The round button under the right thumb | The chord keeps sounding after you lift, until it's tapped off. |
 | **Hold a pad, press chords** | The pads | Each chord pressed while it's held takes that pad. Letting go puts the pads back as they were. |
 
 It's one chord at a time: if a second finger presses another chord, the newest wins. The readout and voices panel don't take touches. Pinch, text selection and the long-press menu are turned off.

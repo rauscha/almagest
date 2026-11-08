@@ -170,7 +170,7 @@ A vertical keyboard, one row per semitone, accidental rows shaded across the rol
 A small framed Menu control; the voicing slider (three dots packed at Close, spread at Wide, the chosen stop ringed); the next-chord table, each row led by the same star as on the circle, name, numeral, odds (with `~` for estimates) and the semitones the voices would move.
 
 ### Pads
-Three by three in one frame: 7, maj7, 9 / add9, sus2, sus4 / Major, Minor, Sustain. Shaded ground means the chord would stay in the key; unshaded ground and the word "out" mean it leaves. A ring means latched or applied; a pad under the finger fills chalk. Labels never move; the chord each would give sits beneath.
+Three by three in one frame: 7, maj7, 9 / add9, sus2, sus4 / Major, Minor, 7 in key. Sustain is a round button in the circle's lower right corner, under the right thumb. Shaded ground means the chord would stay in the key; unshaded ground and the word "out" mean it leaves. A ring means latched or applied; a pad under the finger fills chalk. Labels never move; the chord each would give sits beneath.
 
 ### Menu
 Engines and sounds in ruled frames, then Next chords, Shape (Off, ii–V–I, Circle, Axis, Andalusian, each button as wide as its name), Shape chords (Plain, or With 7ths and add9s), moving voices with slide times in one row, then space and ring sharing one line and the actions Clear trail and Done. A status line at the foot.

@@ -322,12 +322,22 @@
     </g>
   {/if}
   <g class="legend">
-    <line class="slit" x1="134" y1="168" x2="152" y2="168" />
-    <text class="small left" x="158" y="171">home</text>
-    <line class="slit" x1="134" y1="183" x2="152" y2="183" stroke-dasharray={DASH.subdominant} />
-    <text class="small left" x="158" y="186">away</text>
-    <line class="slit" x1="134" y1="198" x2="152" y2="198" stroke-dasharray={DASH.dominant} />
-    <text class="small left" x="158" y="201">tension</text>
+    <line class="slit" x1="-216" y1="168" x2="-198" y2="168" />
+    <text class="small left" x="-192" y="171">home</text>
+    <line class="slit" x1="-216" y1="183" x2="-198" y2="183" stroke-dasharray={DASH.subdominant} />
+    <text class="small left" x="-192" y="186">away</text>
+    <line class="slit" x1="-216" y1="198" x2="-198" y2="198" stroke-dasharray={DASH.dominant} />
+    <text class="small left" x="-192" y="201">tension</text>
+  </g>
+
+  <!-- Sustain, in the corner under the right thumb. It acts on touch, like the pads. -->
+  <g class="sustain" role="button" tabindex="0" aria-label="Sustain" aria-pressed={$view.sustain}
+    onpointerdown={() => send({ type: "sustainToggled" })}
+    onkeydown={(e) => (e.key === "Enter" || e.key === " ") && send({ type: "sustainToggled" })}>
+    <circle class="sustain-disc" class:on={$view.sustain} cx="201" cy="188" r="30" />
+    {#if $view.sustain}<circle class="sustain-ring" cx="201" cy="188" r="25.5" />{/if}
+    <text class="sustain-word" x="201" y="189">Sustain</text>
+    <text class="sustain-state" x="201" y="203">{$view.sustain ? "on" : "off"}</text>
   </g>
 </svg>
 
@@ -379,6 +389,12 @@
   .step-n.lit { fill: var(--ink); }
   .loaded-numerals { font: 400 19px var(--font-serif); fill: var(--ink); text-anchor: start; }
   .loaded-name { font: italic 400 10.5px var(--font-serif); fill: var(--ink-2); text-anchor: start; }
+  .sustain { cursor: pointer; }
+  .sustain-disc { fill: var(--chart-lo); stroke: var(--rule-2); stroke-width: 1; pointer-events: all; }
+  .sustain-disc.on { stroke: var(--faint); }
+  .sustain-ring { fill: none; stroke: var(--ink); stroke-width: 2; pointer-events: none; }
+  .sustain-word { font: 400 14px var(--font-serif); fill: var(--ink); stroke: none; }
+  .sustain-state { font: italic 400 12px var(--font-serif); fill: var(--ink-2); stroke: none; }
   .put-away { cursor: pointer; }
   .put-away rect { fill: transparent; pointer-events: all; }
 </style>

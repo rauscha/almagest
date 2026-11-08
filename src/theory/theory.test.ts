@@ -3,11 +3,39 @@ import { Chord as TonalChord, Note } from "@tonaljs/tonal";
 import { nextChords, PRESETS } from "./transitions";
 import corpus from "./corpus.json";
 import { mod, noteAt, majorName, minorName, diminishedName, withOctave, type Key } from "./spell";
-import { ALTERATIONS, canAlter, canRaise, chordOf, circleChords, DOMINANT_7, fitsKey, PLAIN, secondaryDominant, tonicPc, toggleAlteration, type Alteration, type Alts, type ChordRef } from "./keyLens";
+import { ownSeventh, ALTERATIONS, canAlter, canRaise, chordOf, circleChords, DOMINANT_7, fitsKey, PLAIN, secondaryDominant, tonicPc, toggleAlteration, type Alteration, type Alts, type ChordRef } from "./keyLens";
 
 const C: Key = { col: 0, mode: "major" };
 const Am: Key = { col: 0, mode: "minor" };
 const inKey = (key: Key) => circleChords(key).filter((c) => c.inKey);
+
+describe("every chord its own 7th", () => {
+  const named = (key: Key) => circleChords(key).filter((c) => c.inKey).map((c) => chordOf(c.ref, key, { ...PLAIN, top: ownSeventh(c.ref, key) }).name);
+  it("gives the key's seven chords the scale's 7ths, in major and in its relative minor", () => {
+    const seven = ["Cmaj7", "Fmaj7", "G7", "Dm7", "Am7", "Em7", "Bø7"];
+    expect([...named(C)].sort()).toEqual([...seven].sort());
+    expect([...named(Am)].sort()).toEqual([...seven].sort());
+  });
+  it("makes major chords outside the key dominant, and minor ones m7", () => {
+    const E = circleChords(C).find((c) => c.name === "E")!;
+    const Fm = circleChords(C).find((c) => c.name === "Fm")!;
+    expect(ownSeventh(E.ref, C)).toBe("7");
+    expect(chordOf(E.ref, C, { ...PLAIN, top: ownSeventh(E.ref, C) }).name).toBe("E7");
+    expect(chordOf(Fm.ref, C, { ...PLAIN, top: ownSeventh(Fm.ref, C) }).name).toBe("Fm7");
+  });
+  it("moves with the key", () => {
+    const G: Key = { col: 1, mode: "major" };
+    const chord = (name: string) => circleChords(G).find((c) => c.name === name)!.ref;
+    expect(ownSeventh(chord("G"), G)).toBe("maj7");
+    expect(ownSeventh(chord("C"), G)).toBe("maj7");
+    expect(ownSeventh(chord("D"), G)).toBe("7");
+    expect(ownSeventh(chord("F"), G)).toBe("7"); // outside G major
+  });
+  it("gives a chord a Major or Minor pad has changed a plain 7th", () => {
+    const Cmaj = circleChords(C).find((c) => c.name === "C")!.ref;
+    expect(ownSeventh(Cmaj, C, "minor")).toBe("7");
+  });
+});
 
 describe("line of fifths", () => {
   it("names notes along the line", () => {

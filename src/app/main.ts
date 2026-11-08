@@ -30,7 +30,7 @@ function wear(skin: Skin) {
   return { modules: skin.modules, slots: skin.slots };
 }
 
-type Saved = Pick<State, "key" | "preset" | "space" | "engine" | "models" | "ringMs" | "spread" | "slide" | "slideMs" | "colored">;
+type Saved = Pick<State, "key" | "preset" | "space" | "engine" | "models" | "ringMs" | "spread" | "slide" | "slideMs" | "colored" | "sevenInKey">;
 // Bump this when a default or the sound list changes. Every change saves all settings, so an old
 // default would otherwise stay stored and the new one would never reach a phone that's been used.
 // The key keeps the app's old name, so installs from before the rename keep their settings.
@@ -70,9 +70,9 @@ const core = createCore({
   catalog: CATALOG,
   sound,
   initial: saved,
-  // A saved setup from before `colored` existed takes its default.
-  onSettings: ({ key, preset, space, engine, models, ringMs, spread, slide, slideMs, colored }) =>
-    void set(SETTINGS, { key, preset, space, engine, models, ringMs, spread, slide, slideMs, colored }).catch(() => {}),
+  // A saved setup from before `colored` or `sevenInKey` existed takes the default.
+  onSettings: ({ key, preset, space, engine, models, ringMs, spread, slide, slideMs, colored, sevenInKey }) =>
+    void set(SETTINGS, { key, preset, space, engine, models, ringMs, spread, slide, slideMs, colored, sevenInKey }).catch(() => {}),
 });
 
 // The star atlas is the look.

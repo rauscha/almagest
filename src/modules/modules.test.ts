@@ -177,7 +177,7 @@ describe("the star atlas", () => {
 });
 
 describe("contract.test: every real module behaves", () => {
-  const KNOWN = new Set(["touch", "padDown", "padUp", "menuToggled", "trailCleared", "presetChanged", "spaceChanged", "sustainToggled", "spreadChanged", "slideToggled", "slideTimeChanged", "ringChanged", "engineChanged", "modelChanged"]);
+  const KNOWN = new Set(["touch", "padDown", "padUp", "menuToggled", "trailCleared", "presetChanged", "spaceChanged", "sustainToggled", "sevenInKeyToggled", "spreadChanged", "slideToggled", "slideTimeChanged", "ringChanged", "engineChanged", "modelChanged"]);
 
   for (const [slot, Module] of realModules) {
     it(`${slot} mounts, updates, and leaves nothing behind`, () => {
@@ -424,13 +424,25 @@ describe("contract.test: every real module behaves", () => {
     done();
   });
 
-  it("Sustain is with the pads, under the same thumb, and wears a ring when on", () => {
-    const { core, target, done } = mounted("alterations", atlas.modules.alterations);
-    const sustain = target.querySelector<HTMLButtonElement>(".pad.sustain")!;
-    sustain.click();
+  it("Sustain is on the circle, acts on touch, and wears a ring when on", () => {
+    const { core, target, done } = mounted("circle", atlas.modules.circle);
+    expect(target.querySelector(".sustain-ring")).toBeNull();
+    target.querySelector(".sustain-disc")!.dispatchEvent(new PointerEvent("pointerdown", { pointerId: 6, bubbles: true }));
     flushSync();
     expect(core.state.get().sustain).toBe(true);
-    expect(sustain.classList.contains("engaged")).toBe(true);
+    expect(target.querySelector(".sustain-ring")).not.toBeNull();
+    expect(core.state.get().current).toBeNull(); // the corner plays no chord
+    done();
+  });
+
+  it("7 in key keeps the pads three by three, and wears a ring when on", () => {
+    const { core, target, done } = mounted("alterations", atlas.modules.alterations);
+    expect(target.querySelectorAll(".pads > .pad")).toHaveLength(9);
+    const seven = target.querySelector<HTMLButtonElement>(".pad.seven")!;
+    seven.click();
+    flushSync();
+    expect(core.state.get().sevenInKey).toBe(true);
+    expect(seven.classList.contains("engaged")).toBe(true);
     done();
   });
 
