@@ -13,7 +13,7 @@ import { mount } from "svelte";
 import { get, set } from "idb-keyval";
 import App from "./App.svelte";
 import { createCore, type Sound } from "../core/core";
-import { CATALOG, engineKnobs, engineLevel, engineModelIndex } from "../voices/catalog";
+import { CATALOG, currentMultiPosition, engineKnobs, engineLevel, engineModelIndex } from "../voices/catalog";
 import { Space } from "../voices/space";
 import { makeEngine } from "../voices/engines";
 import { VoiceBank } from "../voices/bank";
@@ -34,13 +34,18 @@ type Saved = Pick<State, "key" | "preset" | "space" | "engine" | "models" | "rin
 // Bump this when a default or the sound list changes. Every change saves all settings, so an old
 // default would otherwise stay stored and the new one would never reach a phone that's been used.
 // The key keeps the app's old name, so installs from before the rename keep their settings.
-const SETTINGS = "tend-settings-v4";
+const SETTINGS = "tend-settings-v5";
+const PREVIOUS_SETTINGS = "tend-settings-v4";
 async function load(): Promise<Partial<Saved>> {
   try {
-    const saved = await get<Saved & { revive?: unknown }>(SETTINGS);
-    if (!saved) return {};
-    const { revive: _gone, ...kept } = saved; // a setting that went with Six-op FM
-    return kept;
+    const saved = await get<Saved>(SETTINGS);
+    if (saved) return saved;
+    const previous = await get<Saved & { revive?: unknown }>(PREVIOUS_SETTINGS);
+    if (!previous) return {};
+    const { revive: _gone, ...kept } = previous; // a setting that went with Six-op FM
+    // v5 shortened the multi-model list, so a place in the old one has to be moved.
+    const multi = kept.models?.multi;
+    return multi === undefined ? kept : { ...kept, models: { ...kept.models, multi: currentMultiPosition(multi) } };
   } catch {
     return {}; // private windows can refuse storage, and the defaults are fine
   }
@@ -63,7 +68,7 @@ const core = createCore({
   catalog: CATALOG,
   sound,
   initial: saved,
-  // `colored` came later; a v4 save without it takes the default, so the key needn't change.
+  // A saved setup from before `colored` existed takes its default.
   onSettings: ({ key, preset, space, engine, models, ringMs, spread, slide, slideMs, colored }) =>
     void set(SETTINGS, { key, preset, space, engine, models, ringMs, spread, slide, slideMs, colored }).catch(() => {}),
 });

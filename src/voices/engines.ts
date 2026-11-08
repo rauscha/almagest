@@ -6,19 +6,11 @@
 import { PlaitsEngine } from "../../vendor/parallax/src/audio/engines/PlaitsEngine";
 import { LaxsynthEngine } from "../../vendor/parallax/src/audio/engines/LaxsynthEngine";
 import type { ISynthEngine, MidiNote, NoteOnOpts } from "../../vendor/parallax/src/audio/types";
-import type { Glides } from "./glide";
+import { rampTo, type Glides } from "./glide";
+import { RecordedVoice } from "./recorded";
 
 /** Parallax keeps these private, and they're only read here. */
 const insides = (engine: object) => engine as unknown as { node: AudioWorkletNode | null; ctx: AudioContext | null };
-
-function rampTo(param: AudioParam | undefined, ctx: AudioContext | null, target: number, seconds: number) {
-  if (!param || !ctx) return;
-  const now = ctx.currentTime;
-  const from = param.value; // read before canceling, so a slide interrupted midway carries on from there
-  param.cancelScheduledValues(now);
-  param.setValueAtTime(from, now);
-  param.linearRampToValueAtTime(target, now + seconds);
-}
 
 /** Multi-model: pitch is the `note` parameter, in absolute semitones, with no limit that matters here. */
 class MultiVoice extends PlaitsEngine implements Glides {
@@ -94,4 +86,4 @@ class PadVoice extends LaxsynthEngine implements Glides {
 }
 
 export const makeEngine = (id: string): ISynthEngine =>
-  id === "pad" ? new PadVoice() : new MultiVoice();
+  id === "pad" ? new PadVoice() : id === "recorded" ? new RecordedVoice() : new MultiVoice();

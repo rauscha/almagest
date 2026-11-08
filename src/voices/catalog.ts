@@ -3,8 +3,8 @@
  *
  * The list comes from a spectral survey of every sound (tools/survey): does it play the notes
  * it claims? The survey judged most sounds at their default knobs. Sounds it called close went to
- * a listening test, which kept Waveshaper and dropped the rest. The pads are knob settings of
- * their own, and the survey judged them at exactly those settings.
+ * a listening test. The pads are knob settings of their own, and the survey judged them at exactly
+ * those settings. The recorded instruments are real recordings, so they're judged by ear alone.
  */
 import { PLAITS_MODELS } from "../../vendor/parallax/src/data/plaits-models";
 import type { EngineEntry } from "../core/core";
@@ -20,9 +20,12 @@ export interface SoundPreset {
   level?: number;
 }
 
-const MULTI_CODES = ["VAF", "VA", "WT", "FORM", "6OPA", "6OPC", "TERR", "WSH"];
-/** Passed the survey as close calls, then dropped by ear. */
-export const DROPPED_BY_EAR = ["Reed Piano", "Thumb Bass", "Growl Bass"];
+const MULTI_CODES = ["VAF", "VA", "WT", "FORM", "6OPA", "6OPC"];
+/**
+ * Passed the survey, then dropped by ear. The last two sounded too like Wavetable to earn their room, and
+ * were the two least clear on chords of the multi-model sounds (0.75 and 0.68 of a chord's energy on its notes).
+ */
+export const DROPPED_BY_EAR = ["Reed Piano", "Thumb Bass", "Growl Bass", "Wave Terrain", "Waveshaper"];
 
 const MULTI_DEFAULTS: Knobs = { harmonics: 0.5, timbre: 0.5, morph: 0.5 };
 /**
@@ -64,12 +67,25 @@ export const PAD: SoundPreset[] = [
   { name: "Long Sweep", index: PAD_SHAPE.saw, knobs: { ...PAD_BASE, cutoff: 0.54, resonance: 0.15, attack: 0.5, sustain: 0.9, release: 1.8, sweepRate: 0.05, sweepDepth: 0.17, gain: 0.4 } },
 ];
 
-const BY_ENGINE: Record<string, SoundPreset[]> = { multi: MULTI, pad: PAD };
+/** `index` is the place in INSTRUMENTS (src/voices/recorded.ts). */
+export const RECORDED: SoundPreset[] = [
+  { name: "Grand Piano", index: 0, knobs: {}, level: 1.7 }, // set from tools/verify/drive_app.cjs, like the other trims
+  { name: "Orchestral Strings", index: 1, knobs: {}, level: 1.6 }, // sat well under the other sounds in tools/verify/drive_app.cjs
+];
+
+const BY_ENGINE: Record<string, SoundPreset[]> = { multi: MULTI, pad: PAD, recorded: RECORDED };
 
 export const CATALOG: EngineEntry[] = [
   { id: "pad", label: "Pad synth", models: PAD.map((m) => m.name) },
   { id: "multi", label: "Multi-model", models: MULTI.map((m) => m.name) },
+  { id: "recorded", label: "Recorded", models: RECORDED.map((m) => m.name) },
 ];
+
+/** A multi-model choice saved under the earlier, longer list, as a place in today's. Its two dropped sounds go to Wavetable. */
+export function currentMultiPosition(saved: number): number {
+  const wavetable = MULTI_CODES.indexOf("WT");
+  return saved === 6 || saved === 7 ? wavetable : saved === 8 ? MULTI.length - 1 : saved;
+}
 
 /** The bus level for a sound: its engine's level, times its own trim if it has one. */
 export const engineLevel = (engine: string, position = 0) =>

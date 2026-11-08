@@ -8,3 +8,13 @@ export interface Glides {
   glide(struck: number, midi: number, seconds: number): void;
 }
 export const canGlide = (v: ISynthEngine): v is ISynthEngine & Glides => "glide" in v;
+
+/** A straight ramp on the audio clock, carrying on from wherever an interrupted one had reached. */
+export function rampTo(param: AudioParam | undefined, ctx: AudioContext | null, target: number, seconds: number) {
+  if (!param || !ctx) return;
+  const now = ctx.currentTime;
+  const from = param.value; // read before canceling, so a slide interrupted midway carries on from there
+  param.cancelScheduledValues(now);
+  param.setValueAtTime(from, now);
+  param.linearRampToValueAtTime(target, now + seconds);
+}

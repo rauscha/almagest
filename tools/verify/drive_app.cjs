@@ -102,6 +102,10 @@ const check = (name, ok, extra = "") => { if (!ok) failed++; console.log(`${ok ?
   await page.waitForFunction(() => window.__almagest.core.state.get().engine === "pad");
   await page.waitForTimeout(800);
   await walk("pad", 700); // a pad's attack is slow, so let it arrive before measuring
+  await page.click("button:text-is('Recorded')");
+  await page.waitForFunction(() => window.__almagest.core.state.get().engine === "recorded");
+  await page.waitForTimeout(2500); // the recordings have to decode
+  await walk("recorded", 700);
   const dead = stats.filter((s) => s.rms < 0.002);
   const hot = stats.filter((s) => s.peak >= 0.99);
   const rmss = stats.map((s) => s.rms).sort((a, b) => a - b);
@@ -118,7 +122,7 @@ const check = (name, ok, extra = "") => { if (!ok) failed++; console.log(`${ok ?
   await page.waitForSelector("button.start", { state: "detached", timeout: 20000 });
   await page.click("button:text-is('Menu')");
   const s = await page.evaluate(() => { const c = window.__almagest.core.state.get(); return { engine: c.engine, ringMs: c.ringMs }; });
-  check("settings survive a reload", s.engine === "pad" && s.ringMs === 3000, JSON.stringify(s));
+  check("settings survive a reload", s.engine === "recorded" && s.ringMs === 3000, JSON.stringify(s));
   await page.click("button:text-is('Multi-model')");
   await page.click("button:text-is('1.5')");
 

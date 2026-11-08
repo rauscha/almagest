@@ -60,8 +60,9 @@ DEV_PORT=443
   - The McGill Billboard Project (Burgoyne, Wild and Fujinaga, 2011): chart songs from 1958 to 1991, 739 songs.
   - The iRb jazz corpus (Broze and Shanahan, 2013): 1,185 standards.
 - **Chord spelling** is checked against [Tonal](https://github.com/tonaljs/tonal) (MIT).
+- **Recorded sounds:** the Grand Piano is the Salamander Grand Piano V3 by Alexander Holm (CC BY 3.0), and the Orchestral Strings are the violin and cello sections of VS Chamber Orchestra: Community Edition by Versilian Studios (CC0). Both were trimmed and re-encoded by `tools/samples/build.py`; see `public/samples/LICENSE.txt`.
 - **Fonts:** Newsreader, IBM Plex Mono and Noto Music, all under the SIL Open Font License, served through Fontsource.
 
 ## License
 
-MIT. See [LICENSE](LICENSE). The submodule and the fonts carry their own licenses.
+MIT. See [LICENSE](LICENSE). The submodule, the fonts and the recordings in `public/samples` carry their own licenses.

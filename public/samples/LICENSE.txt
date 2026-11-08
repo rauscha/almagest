@@ -1,0 +1,19 @@
+Recordings used by Almagest's Recorded sounds
+
+Grand Piano (piano/)
+  Salamander Grand Piano V3, by Alexander Holm.
+  https://archive.org/details/SalamanderGrandPianoV3
+  Licensed under Creative Commons Attribution 3.0 Unported.
+  https://creativecommons.org/licenses/by/3.0/
+  Changes: one velocity layer taken, trimmed, faded out, level set, re-encoded as Opus.
+
+Orchestral Strings (strings/)
+  Violin and cello sections from VS Chamber Orchestra: Community Edition, by Versilian Studios
+  (recorded by Sam Gossner and Simon Dalzell; sample cutting by Elan Hickler/Soundemote),
+  by way of midi.community's prepared files.
+  https://versilian-studios.com/vsco-community/
+  Dedicated to the public domain under CC0 1.0. Credit is given as a courtesy.
+  https://creativecommons.org/publicdomain/zero/1.0/
+  Changes: looped with a crossfade, level set, re-encoded as Opus.
+
+Almagest's MIT license does not cover these recordings.

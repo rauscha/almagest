@@ -129,7 +129,7 @@ export default defineConfig({
       },
       workbox: {
         // The worklets and WASM are what make it work offline, and the fonts what keep its look.
-        globPatterns: ["**/*.{js,css,html,wasm,woff2,png,svg,webmanifest}"],
+        globPatterns: ["**/*.{js,css,html,wasm,woff2,png,svg,webmanifest,ogg}"],
         skipWaiting: false,
         clientsClaim: false,
       },

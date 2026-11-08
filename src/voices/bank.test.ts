@@ -2,7 +2,9 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it } from "vitest";
 import { VoiceBank } from "./bank";
-import { CATALOG, DROPPED_BY_EAR, engineKnobs, engineLevel, engineModelIndex, MULTI, PAD, PAD_SHAPE } from "./catalog";
+import { CATALOG, currentMultiPosition, DROPPED_BY_EAR, engineKnobs, engineLevel, engineModelIndex, MULTI, PAD, PAD_SHAPE, RECORDED } from "./catalog";
+import { existsSync } from "node:fs";
+import { INSTRUMENTS, nearestRoot, PIANO_ROOTS, rateFor } from "./recorded";
 import type { ISynthEngine } from "../../vendor/parallax/src/audio/types";
 
 function fakeEngine(id: string, log: string[], slideRange: number | null = 36) {
@@ -160,7 +162,7 @@ const MULTI_ENTRY = CATALOG.find((e) => e.id === "multi")!;
 
 describe("catalog", () => {
   it("offers the chord engines under the app's own labels", () => {
-    expect(CATALOG.map((e) => e.label)).toEqual(["Pad synth", "Multi-model"]); // Six-op FM went
+    expect(CATALOG.map((e) => e.label)).toEqual(["Pad synth", "Multi-model", "Recorded"]); // Six-op FM went
   });
   it("the pads are there, and Wide Saw is the multi-model's detuned pair", () => {
     expect(CATALOG.find((e) => e.id === "pad")!.models).toEqual(["Soft Saw", "Dark Saw", "Warm Sine", "Slow Sweep", "Long Sweep"]);
@@ -196,17 +198,39 @@ describe("catalog", () => {
     const rows: { engine: string; name: string; tier: string }[] = JSON.parse(
       readFileSync(resolve(__dirname, "../../tools/survey/results.json"), "utf8"),
     );
-    for (const entry of CATALOG) {
+    // The recorded instruments aren't synthesis to survey: they're judged by ear.
+    for (const entry of CATALOG.filter((e) => e.id !== "recorded")) {
       const passed = rows
         .filter((r) => r.engine === entry.id && r.tier !== "drop" && !DROPPED_BY_EAR.includes(r.name))
         .map((r) => r.name);
       expect([...entry.models].sort()).toEqual([...passed].sort());
     }
   });
-  it("kept Waveshaper and dropped the other close calls, by ear", () => {
+  it("leaves out the sounds dropped by ear", () => {
     const all = CATALOG.flatMap((e) => e.models);
     for (const gone of DROPPED_BY_EAR) expect(all).not.toContain(gone);
-    expect(MULTI_ENTRY.models).toContain("Waveshaper");
+    expect(MULTI_ENTRY.models).toContain("Wavetable");
+  });
+  it("moves a saved multi-model choice from the old list to the shorter one", () => {
+    expect(currentMultiPosition(0)).toBe(0); // Classic stays first
+    expect(MULTI[currentMultiPosition(6)].name).toBe("Wavetable"); // Wave Terrain's old place
+    expect(MULTI[currentMultiPosition(7)].name).toBe("Wavetable"); // Waveshaper's
+    expect(MULTI[currentMultiPosition(8)].name).toBe("Wide Saw");
+  });
+  it("gives every recorded note a file, and keeps the piano from sliding", () => {
+    expect(RECORDED.map((s) => INSTRUMENTS[s.index].dir)).toEqual(["piano", "strings"]);
+    for (const { dir, roots } of INSTRUMENTS) {
+      for (const root of roots) expect(existsSync(resolve(__dirname, `../../public/samples/${dir}/${root}.ogg`)), `${dir} ${root}`).toBe(true);
+    }
+    expect(INSTRUMENTS[0].slideRange).toBe(0);
+    expect(INSTRUMENTS[1].slideRange).toBeGreaterThan(24);
+  });
+  it("plays each key from the nearest recording, at the right pitch", () => {
+    expect(nearestRoot(PIANO_ROOTS, 60)).toBe(60);
+    expect(nearestRoot(PIANO_ROOTS, 61)).toBe(60);
+    expect(nearestRoot(PIANO_ROOTS, 62)).toBe(63);
+    expect(rateFor(60, 72)).toBeCloseTo(2);
+    expect(rateFor(60, 60)).toBe(1);
   });
   it("leaves out what you named: chiptune and the atonal sounds", () => {
     const all = CATALOG.flatMap((e) => e.models);
