@@ -25,7 +25,7 @@ What was decided, why, and how it was checked. Newest at the bottom.
 - **What:** a third group, Recorded, holds Grand Piano and Orchestral Strings. Wave Terrain and Waveshaper are gone from Multi-model.
 - **Why:** the oscillator engines can't make an acoustic piano, so these are real recordings played by Almagest's own small engine. The piano never slides: a voice that moves strikes its new note, a shared note keeps ringing, and a released note keeps ringing and fading for many seconds, as with a held pedal. Close-miked notes die quickly, so `tools/samples/build.py` keeps each strike and raises what follows. The strings can slide, as a player shifts along the string. Wave Terrain and Waveshaper sounded too much like Wavetable and were the two least clear on chords in the survey.
 - **Sources:** Salamander Grand Piano V3 (CC BY 3.0) and the VSCO 2 Community Edition violin and cello sections (CC0). The string sources are about 2 s long, so their loops are short.
-- **Checked:** unit tests (a file for every note, the nearest recording at the right pitch, a saved sound moved to the shorter list), `tools/verify/layout.cjs`, `tools/verify/drive_app.cjs` across every sound, and a browser run counting strikes on a chord change. Their sound still needs a listen on the phone.
+- **Checked:** unit tests (a file for every note, the nearest recording at the right pitch, a saved sound moved to the shorter list), `tools/verify/layout.cjs`, `tools/verify/drive_app.cjs` across every sound, a browser run counting strikes on a chord change, and a listen on the phone: the piano is a keeper, and the strings are good enough to stay.
 - **Settings:** the key is now v5, carrying v4's settings over.
 
 ## D5: Serif numbers, a cleaner shape corner, more progressions

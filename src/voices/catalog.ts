@@ -4,7 +4,7 @@
  * The list comes from a spectral survey of every sound (tools/survey): does it play the notes
  * it claims? The survey judged most sounds at their default knobs. Sounds it called close went to
  * a listening test. The pads are knob settings of their own, and the survey judged them at exactly
- * those settings. The recorded instruments are real recordings, so they're judged by ear alone.
+ * those settings. The recorded instruments are real recordings, so they're judged by ear alone: both kept after listening on the phone.
  */
 import { PLAITS_MODELS } from "../../vendor/parallax/src/data/plaits-models";
 import type { EngineEntry } from "../core/core";
