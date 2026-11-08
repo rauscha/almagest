@@ -6,3 +6,6 @@ dist/
 # per-machine settings, such as the dev proxy (vite.config.ts)
 .env.local
 CLAUDE.local.md
+
+# private session hand-offs and plans (personal context; see CLAUDE.local.md)
+.handoff/
