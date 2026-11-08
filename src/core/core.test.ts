@@ -1733,6 +1733,96 @@ describe("named shapes in the views", () => {
   });
 });
 
+describe("MIDI out", () => {
+  function midiRig() {
+    const asked: number[] = [];
+    const uses: [string | null, number][] = [];
+    const own: boolean[] = [];
+    const saved: [boolean, number][] = [];
+    const sound: Sound = {
+      apply: () => {}, useEngine: () => {}, useModel: () => {},
+      askMidi: () => asked.push(1),
+      useMidi: (o, c) => uses.push([o, c]),
+      useOwnSound: (on) => own.push(on),
+    };
+    const core = createCore({ catalog: [], sound, onSettings: (s) => saved.push([s.midiOn, s.midiChannel]) });
+    const menu = () => core.views.menu.get().midi;
+    return { core, menu, asked, uses, own, saved };
+  }
+  const SYNTH = { id: "a", name: "Synth" };
+  const OTHER = { id: "b", name: "Other" };
+
+  it("asks for devices from the button, and turns on when one answers", () => {
+    const r = midiRig();
+    expect(r.menu()).toMatchObject({ on: false, device: "Connect", channel: 1, ownSound: true });
+    r.core.send({ type: "midiOutputPressed" });
+    expect(r.asked).toHaveLength(1);
+    expect(r.menu().device).toBe("Asking…");
+    r.core.setMidi([SYNTH], "ready");
+    expect(r.menu()).toMatchObject({ on: true, device: "Synth" });
+    expect(r.uses).toEqual([["a", 1]]);
+  });
+
+  it("says what's in the way", () => {
+    const r = midiRig();
+    r.core.send({ type: "midiOutputPressed" });
+    r.core.setMidi([], "denied");
+    expect(r.menu()).toMatchObject({ on: false, device: "Not allowed" });
+    r.core.setMidi([], "unsupported");
+    expect(r.menu().device).toBe("No MIDI");
+    r.core.setMidi([], "ready");
+    expect(r.menu().device).toBe("No device");
+  });
+
+  it("steps through devices, and steps the channel round all sixteen", () => {
+    const r = midiRig();
+    r.core.send({ type: "midiOutputPressed" });
+    r.core.setMidi([SYNTH, OTHER], "ready");
+    r.core.send({ type: "midiOutputPressed" });
+    expect(r.menu().device).toBe("Other");
+    r.core.send({ type: "midiOutputPressed" });
+    expect(r.menu().device).toBe("Synth");
+    for (let i = 0; i < 16; i++) r.core.send({ type: "midiChannelStepped" });
+    expect(r.menu().channel).toBe(1);
+    expect(r.uses.at(-1)).toEqual(["a", 1]);
+  });
+
+  it("brings the app's sound back when MIDI goes off or the device goes away", () => {
+    const r = midiRig();
+    r.core.send({ type: "midiOutputPressed" });
+    r.core.setMidi([SYNTH], "ready");
+    r.core.send({ type: "ownSoundToggled" });
+    expect(r.own).toEqual([false]);
+    r.core.send({ type: "midiOffPressed" });
+    expect(r.menu()).toMatchObject({ on: false, ownSound: true });
+    expect(r.uses.at(-1)).toEqual([null, 1]);
+    r.core.send({ type: "midiOutputPressed" });
+    r.core.send({ type: "ownSoundToggled" });
+    r.core.setMidi([], "ready");
+    expect(r.menu()).toMatchObject({ on: false, device: "No device", ownSound: true });
+  });
+
+  it("saves being on and the channel, not the app's own sound", () => {
+    const r = midiRig();
+    r.core.send({ type: "midiOutputPressed" });
+    r.core.setMidi([SYNTH], "ready");
+    r.core.send({ type: "midiChannelStepped" });
+    expect(r.saved).toEqual([[true, 1], [true, 2]]);
+    r.core.send({ type: "ownSoundToggled" });
+    expect(r.saved).toHaveLength(2);
+  });
+
+  it("picks the device up on launch when it was left on", () => {
+    const uses: [string | null, number][] = [];
+    const sound: Sound = { apply: () => {}, useEngine: () => {}, useModel: () => {}, useMidi: (o, c) => uses.push([o, c]) };
+    const core = createCore({ catalog: [], sound, initial: { midiOn: true, midiChannel: 5 } });
+    expect(core.views.menu.get().midi.on).toBe(false);
+    core.setMidi([SYNTH], "ready");
+    expect(core.views.menu.get().midi).toMatchObject({ on: true, device: "Synth", channel: 5 });
+    expect(uses).toEqual([["a", 5]]);
+  });
+});
+
 describe("7 in key", () => {
   const Dm: ChordRef = { ring: "min", col: 11 };
   const seven = (r: ReturnType<typeof rig>) => r.core.send({ type: "sevenInKeyToggled" });

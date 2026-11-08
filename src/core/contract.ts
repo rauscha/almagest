@@ -145,6 +145,8 @@ export interface TendView {
     preset: string | null;
     presets: { id: string; name: string; short: string }[];
     /** The library of progressions to draw on the circle, and the one loaded. */
+    /** MIDI out: `device` is the word for its button, a device's name or what's in the way. */
+    midi: { on: boolean; device: string; channel: number; ownSound: boolean };
     shapes: { id: string; label: string }[];
     shape: string | null;
     /** Shapes drawn with their usual 7ths and add9s, or plain. */
@@ -223,6 +225,12 @@ export interface Touch {
   time: number;
 }
 
+export interface MidiDevice {
+  id: string;
+  name: string;
+}
+export type MidiStatus = "unasked" | "asking" | "ready" | "denied" | "unsupported";
+
 export type Intent =
   | Touch
   | { type: "padDown"; pad: Alteration; pointer: number }
@@ -236,6 +244,10 @@ export type Intent =
   | { type: "presetChanged"; preset: string | null }
   | { type: "sustainToggled" }
   | { type: "sevenInKeyToggled" }
+  | { type: "midiOutputPressed" }
+  | { type: "midiOffPressed" }
+  | { type: "midiChannelStepped" }
+  | { type: "ownSoundToggled" }
   | { type: "spreadChanged"; spread: Spread }
   | { type: "slideToggled" }
   | { type: "slideTimeChanged"; ms: number }

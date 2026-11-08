@@ -44,6 +44,7 @@ A skin is design tokens (CSS custom properties) plus which module fills each slo
 The engines come from [Parallax](https://github.com/rauscha/parallax), a separate repository included as a submodule in `vendor/parallax`. Nothing in it is changed.
 
 - **One engine per voice.** Parallax's engines are monophonic, and each one's WebAssembly keeps its state in globals. So five voices are five `AudioWorkletNode`s, each with its own instance. They're created once, when the first touch starts the audio, and reused from then on.
+- **MIDI out.** `src/voices/midi.ts` gets the same commands as the voices and sends them as notes on one channel, so a shared note sends nothing. The core only knows which device and channel are chosen.
 - **Recorded instruments.** `src/voices/recorded.ts` is Almagest's own engine: real recordings, repitched to the nearest key, from `public/samples`. The piano can't slide, so a moved voice always strikes. The strings can.
 - **Two engines from Parallax.** The pad synth is plain JavaScript. The multi-model oscillator is WebAssembly. `src/voices/catalog.ts` lists the sounds offered under the app's own names, and `src/voices/engines.ts` adds the one thing the engines lack: a glide on the audio clock.
 - **Shared notes hold.** When the next chord arrives, a voice already on the right pitch gets no command at all and keeps sounding. A voice that moves either strikes its new note or glides to it, as a ramp on its pitch parameter. Past a voice's reach, a glide falls back to a strike.

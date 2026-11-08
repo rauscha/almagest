@@ -94,6 +94,16 @@
         </div>
       </div>
 
+      <div class="group">
+        <div class="cap">MIDI OUT</div>
+        <div class="seg">
+          <button class="midi-off" class:on={!$view.midi.on} onclick={() => send({ type: "midiOffPressed" })}>Off</button>
+          <button class="midi-device" class:on={$view.midi.on} onclick={() => send({ type: "midiOutputPressed" })}>{$view.midi.device}</button>
+          <button class="midi-channel" onclick={() => send({ type: "midiChannelStepped" })}>Ch {$view.midi.channel}</button>
+          <button class="midi-sound" class:on={$view.midi.ownSound} disabled={!$view.midi.on} onclick={() => send({ type: "ownSoundToggled" })}>Sound</button>
+        </div>
+      </div>
+
       <div class="actions">
         <button class="act" onclick={() => send({ type: "trailCleared" })}>Clear trail</button>
         <button class="act done" onclick={() => send({ type: "menuToggled" })}>Done</button>
@@ -106,7 +116,7 @@
 <style>
   .host { width: 100%; height: 100%; }
   .menu {
-    pointer-events: auto; height: 100%; box-sizing: border-box; padding: 8px; display: flex; flex-direction: column; gap: 5px;
+    pointer-events: auto; height: 100%; box-sizing: border-box; padding: 8px; display: flex; flex-direction: column; gap: 4px;
     overflow: hidden; background: var(--ground); border: 1px solid var(--rule-2); font-family: var(--font-serif); color: var(--ink);
   }
   .group { display: flex; flex-direction: column; gap: 2px; }
@@ -115,10 +125,11 @@
   .space { flex: 1 1 0; }
   .ring { flex: 1.25 1 0; }
   button {
-    all: unset; flex: 1 1 0; min-width: 0; height: 24px; text-align: center; box-sizing: border-box;
-    font: 400 13px/24px var(--font-serif); color: var(--ink); white-space: nowrap; overflow: hidden;
+    all: unset; flex: 1 1 0; min-width: 0; height: 21px; text-align: center; box-sizing: border-box;
+    font: 400 13px/21px var(--font-serif); color: var(--ink); white-space: nowrap; overflow: hidden;
   }
-  button.fig { font: 400 14px/24px var(--font-text); }
+  button.fig { font: 400 14px/21px var(--font-text); }
+  .midi-device { flex-grow: 2; text-overflow: ellipsis; padding: 0 4px; }
   button:disabled { color: var(--ink-3); }
   button.on { background: var(--ink); color: var(--ground); }
   .seg, .sounds { border: 1px solid var(--rule-2); overflow: hidden; }
@@ -137,7 +148,7 @@
   .sound:last-child, .sound:nth-last-child(2):nth-child(odd) { border-bottom: none; }
   .cap { font: 500 9px/11px var(--font-caps); letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
   .actions { margin-top: auto; display: flex; gap: 6px; }
-  .act { height: 24px; border: 1px solid var(--rule-2); font-size: 12.5px; line-height: 22px; }
+  .act { height: 21px; border: 1px solid var(--rule-2); font-size: 12.5px; line-height: 19px; }
   .done { flex: 0 0 64px; }
   .about { font: 400 10.5px/1.2 var(--font-text); color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style>

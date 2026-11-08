@@ -13,6 +13,7 @@ import { mount } from "svelte";
 import { get, set } from "idb-keyval";
 import App from "./App.svelte";
 import { createCore, type Sound } from "../core/core";
+import { MidiLink } from "../voices/midi";
 import { CATALOG, currentMultiPosition, engineKnobs, engineLevel, engineModelIndex } from "../voices/catalog";
 import { Space } from "../voices/space";
 import { makeEngine } from "../voices/engines";
@@ -30,7 +31,7 @@ function wear(skin: Skin) {
   return { modules: skin.modules, slots: skin.slots };
 }
 
-type Saved = Pick<State, "key" | "preset" | "space" | "engine" | "models" | "ringMs" | "spread" | "slide" | "slideMs" | "colored" | "sevenInKey">;
+type Saved = Pick<State, "key" | "preset" | "space" | "engine" | "models" | "ringMs" | "spread" | "slide" | "slideMs" | "colored" | "sevenInKey" | "midiOn" | "midiChannel">;
 // Bump this when a default or the sound list changes. Every change saves all settings, so an old
 // default would otherwise stay stored and the new one would never reach a phone that's been used.
 // The key keeps the app's old name, so installs from before the rename keep their settings.
@@ -58,10 +59,14 @@ const sound: Sound = {
   apply: (commands) => {
     if (commands.some((c) => c.kind === "on" || c.kind === "slide")) keeper.pressed();
     bank?.apply(commands);
+    midi.apply(commands);
   },
   useEngine: (engine, model) => void bank?.useEngine(engine, model),
   useModel: (model) => bank?.useModel(model),
   useSpace: (level) => space?.set(level),
+  askMidi: () => void midi.ask(),
+  useMidi: (output, channel) => midi.use(output, channel),
+  useOwnSound: (on) => bank?.setOwnSound(on),
 };
 let space: Space | null = null;
 
@@ -71,9 +76,11 @@ const core = createCore({
   sound,
   initial: saved,
   // A saved setup from before `colored` or `sevenInKey` existed takes the default.
-  onSettings: ({ key, preset, space, engine, models, ringMs, spread, slide, slideMs, colored, sevenInKey }) =>
-    void set(SETTINGS, { key, preset, space, engine, models, ringMs, spread, slide, slideMs, colored, sevenInKey }).catch(() => {}),
+  // Whether the app's own sound is on isn't saved: a launch with the cable out shouldn't be a silent one.
+  onSettings: ({ key, preset, space, engine, models, ringMs, spread, slide, slideMs, colored, sevenInKey, midiOn, midiChannel }) =>
+    void set(SETTINGS, { key, preset, space, engine, models, ringMs, spread, slide, slideMs, colored, sevenInKey, midiOn, midiChannel }).catch(() => {}),
 });
+const midi = new MidiLink((outputs, status) => core.setMidi(outputs, status));
 
 // The star atlas is the look.
 const look = atom(wear(atlas));
@@ -100,6 +107,7 @@ async function build() {
   const s = core.state.get();
   room.set(s.space);
   const voices = new VoiceBank(ctx, makeEngine, engineModelIndex, room.input, engineLevel, engineKnobs);
+  voices.setOwnSound(s.ownSound);
   await voices.useEngine(s.engine, s.models[s.engine] ?? 0);
   return { ctx, meter, voices, room, headroom };
 }
@@ -157,6 +165,7 @@ async function start() {
   if (takeUpdate()) await new Promise((r) => setTimeout(r, 3000));
   started = true;
   await keeper.start();
+  if (core.state.get().midiOn) void midi.ask(); // permission once given stays given, so this doesn't prompt
   if (new URLSearchParams(location.search).has("debug")) {
     Object.assign(window, {
       __almagest: {

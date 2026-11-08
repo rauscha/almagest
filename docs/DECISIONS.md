@@ -47,3 +47,10 @@ What was decided, why, and how it was checked. Newest at the bottom.
 - **What:** `vendor/parallax` now points at the version that carries Parallax's own MIT license.
 - **Why the sounds weren't surveyed again:** the WebAssembly, its loader and both worklets Almagest uses are byte-for-byte the same, and the sound list didn't change. The other changes to the files Almagest reads are text and metadata for Parallax's own explainer.
 - **Checked:** unit tests, the type check, a production build, `tools/verify/layout.cjs`, and `tools/verify/drive_app.cjs` playing every sound.
+
+## D8: MIDI out
+- **Date:** 2026-11-08.
+- **What:** a Menu row sends what the voices do to a synth over USB MIDI on one channel, to drive a groovebox or synth from the app. A shared note sends nothing, so it holds on the far synth. A note that moves is released and struck again, slides included, because a pitch bend on one channel would bend the whole chord. Velocity is fixed. The row has Off, the device, the channel, and Sound, which silences the app's own voices.
+- **Safety:** every note ends when the app is hidden, MIDI is turned off, or the channel or port changes. Unplugging brings the app's own sound back. Whether the app's sound is silenced isn't saved, so a launch with the cable out can't be silent.
+- **Left out:** clock, CCs, MPE, Bluetooth, and sending to more than one device.
+- **Checked:** unit tests of the notes sent and the Menu's states, the type check, `tools/verify/layout.cjs`, `tools/verify/drive_app.cjs`, and `tools/verify/midi.cjs` in a browser against a stand-in for Web MIDI.

@@ -19,6 +19,9 @@ export class VoiceBank implements Sound {
   private struck: (number | null)[] = [];
   private bus: GainNode;
   private busy: Promise<void> = Promise.resolve();
+  /** Whether this sound is heard at all. The voices keep running either way, so it comes back at once. */
+  private own = true;
+  private position = 0;
 
   constructor(
     private ctx: AudioContext,
@@ -41,7 +44,8 @@ export class VoiceBank implements Sound {
       this.voices = [];
       this.struck = [];
       this.engine = engine;
-      this.bus.gain.value = BUS_LEVEL * this.levelFor(engine, position);
+      this.position = position;
+      this.bus.gain.value = this.level();
       const next: ISynthEngine[] = [];
       for (let i = 0; i < VOICE_COUNT; i++) {
         const v = this.make(engine);
@@ -58,8 +62,18 @@ export class VoiceBank implements Sound {
 
   useModel(position: number): void {
     // A sound can carry its own trim, so the bus follows it, smoothly enough not to click.
-    this.bus.gain.setTargetAtTime(BUS_LEVEL * this.levelFor(this.engine, position), this.ctx.currentTime, 0.01);
+    this.position = position;
+    this.bus.gain.setTargetAtTime(this.level(), this.ctx.currentTime, 0.01);
     for (const v of this.voices) this.setSound(v, this.engine, position);
+  }
+
+  setOwnSound(on: boolean): void {
+    this.own = on;
+    this.bus.gain.setTargetAtTime(this.level(), this.ctx.currentTime, 0.01);
+  }
+
+  private level(): number {
+    return this.own ? BUS_LEVEL * this.levelFor(this.engine, this.position) : 0;
   }
 
   private setSound(v: ISynthEngine, engine: string, position: number): void {

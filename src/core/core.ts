@@ -6,6 +6,7 @@ import { findShapes, placeShape, SHAPES, stepsPlayed } from "../theory/shapes";
 import { ownSeventh } from "../theory/keyLens";
 import { nextChords, PRESETS } from "../theory/transitions";
 import { BASS_RANGE, movement, REGISTER, SPREADS, voice, voicesOf, type Voiced } from "../theory/voicing";
+import type { MidiDevice, MidiStatus } from "./contract";
 import type { Send, Slot, TendView } from "./contract";
 import { altsFor, altsWith, initialState, isTop, shapeChords, leadsOf, reduce, slideFrom, RING_CHOICES, SLIDE_CHOICES, type Effect, type Internal, type State, type VoiceCommand } from "./reduce";
 
@@ -15,6 +16,11 @@ export interface Sound {
   useEngine(engine: string, model: number): void;
   useModel(model: number): void;
   useSpace?(space: State["space"]): void;
+  /** Ask for MIDI devices, once and again whenever the button asks. */
+  askMidi?(): void;
+  /** Where notes go. Null sends nothing. */
+  useMidi?(output: string | null, channel: number): void;
+  useOwnSound?(on: boolean): void;
 }
 
 export interface EngineEntry {
@@ -151,6 +157,14 @@ function keyAndHealth(s: State) {
   };
 }
 
+function midiDeviceLabel(s: State): string {
+  if (s.midiStatus === "asking") return "Asking…";
+  if (s.midiStatus === "denied") return "Not allowed";
+  if (s.midiStatus === "unsupported") return "No MIDI";
+  if (s.midiStatus === "unasked") return "Connect";
+  return s.midiOutputs.find((o) => o.id === s.midiOutput)?.name ?? "No device";
+}
+
 const PRESET_LIST = PRESETS.map(({ id, name, short }) => ({ id, name, short }));
 const SPACE_LIST: State["space"][] = ["off", "room", "hall"];
 
@@ -218,6 +232,7 @@ function views(state: ReadableAtom<State>, catalog: EngineEntry[]) {
       shapes: SHAPE_LIST,
       shape: s.loaded,
       colored: s.colored,
+      midi: { on: s.midiOn && !!s.midiOutput, device: midiDeviceLabel(s), channel: s.midiChannel, ownSound: s.ownSound },
     };
   });
   const alterations = computed(state, (s): TendView["alterations"] => {
@@ -294,6 +309,10 @@ export function createCore(opts: {
     opts.sound.apply(step.commands);
     for (const effect of step.effects) perform(effect);
     state.set(step.state);
+    const target = (s: State) => (s.midiOn ? s.midiOutput : null);
+    if (target(before) !== target(step.state) || before.midiChannel !== step.state.midiChannel)
+      opts.sound.useMidi?.(target(step.state), step.state.midiChannel);
+    if (before.ownSound !== step.state.ownSound) opts.sound.useOwnSound?.(step.state.ownSound);
     if (
       opts.onSettings &&
       (before.key !== step.state.key ||
@@ -305,6 +324,8 @@ export function createCore(opts: {
         before.slideMs !== step.state.slideMs ||
         before.colored !== step.state.colored ||
         before.sevenInKey !== step.state.sevenInKey ||
+        before.midiOn !== step.state.midiOn ||
+        before.midiChannel !== step.state.midiChannel ||
         before.engine !== step.state.engine ||
         before.models !== step.state.models)
     ) {
@@ -317,6 +338,7 @@ export function createCore(opts: {
     else if (effect.kind === "long") setTimer(() => run({ type: "longElapsed", token: effect.token }), effect.ms);
     else if (effect.kind === "engine") opts.sound.useEngine(effect.engine, effect.model);
     else if (effect.kind === "space") opts.sound.useSpace?.(effect.space);
+    else if (effect.kind === "midiAsk") opts.sound.askMidi?.();
     else opts.sound.useModel(effect.model);
   };
   const send: Send = (intent) => run(intent);
@@ -325,6 +347,8 @@ export function createCore(opts: {
   /** How the app is running, for the menu to show. Not for modules. */
   const setAbout = (about: string) => run({ type: "aboutChanged", about });
   const setAudio = (ok: boolean) => run({ type: "audioChanged", ok });
-  return { send, silence: silenceAll, setAbout, setAudio, views: views(state, opts.catalog), state: state as ReadableAtom<State> };
+  /** What MIDI devices there are. Not for modules. */
+  const setMidi = (outputs: MidiDevice[], status: MidiStatus) => run({ type: "midiDevices", outputs, status });
+  return { send, silence: silenceAll, setAbout, setAudio, setMidi, views: views(state, opts.catalog), state: state as ReadableAtom<State> };
 }
 export type Core = ReturnType<typeof createCore>;

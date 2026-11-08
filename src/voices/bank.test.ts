@@ -244,6 +244,18 @@ describe("catalog", () => {
   });
 });
 
+describe("the app's own sound", () => {
+  it("goes quiet and comes back to its own level", () => {
+    const ramps: number[] = [];
+    const bus = { gain: { value: 0, setTargetAtTime: (v: number) => ramps.push(v) }, connect: () => {} };
+    const ctx = { createGain: () => bus, currentTime: 0 } as unknown as AudioContext;
+    const bank = new VoiceBank(ctx, () => { throw new Error("no voices here"); }, () => 0, {} as AudioNode, () => 0.5);
+    bank.setOwnSound(false);
+    bank.setOwnSound(true);
+    expect(ramps).toEqual([0, 0.275]);
+  });
+});
+
 describe("a sound's own trim", () => {
   it("lifts the recordings to sit with the other sounds, and leaves the multi-model list alone", () => {
     expect(engineLevel("recorded", 0)).toBeCloseTo(1.7);

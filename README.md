@@ -13,6 +13,7 @@ The name comes from Ptolemy's star catalog. The same Ptolemy also wrote the *Har
 - **You can see the voice leading.** A note shared by two chords keeps sounding instead of being played again. The other notes slide or strike, whichever you choose, and the voices panel draws every line as it moves.
 - **Pads color the chord.** 7, maj7, 9, add9, sus2, sus4, and Major or Minor to switch the quality. A tapped pad stays on until you tap it off, and each pad shows what it would turn the current chord into, and whether that chord leaves the key.
 - **Progressions to follow.** Load one of nine classic progressions, from ii–V–I to Pachelbel's Canon, and it's drawn as a constellation to trace, with the next move lit. Each step plays with its usual color, so ii–V–I comes out as Dm7, G7, Cmaj7.
+- **MIDI out.** Plug a synth into the phone's USB-C port and play it from the circle. A shared note holds on the synth too, and the app can go silent while it plays.
 - **Gestures.** Slide from a held chord onto one of its stars to play it. Swipe in or out for the relative minor or major. Long-press to reveal the secondary dominant that leads to the chord. Drag from the hub onto any chord to make it the key.
 - **Readable without color.** Every state reads in grayscale: size and brightness, rings, line styles and shading carry the meaning. Color is only flavor.
 - **Works offline.** It's a progressive web app made for a phone held sideways. Once installed, it opens and plays with no connection.

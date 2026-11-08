@@ -177,7 +177,7 @@ describe("the star atlas", () => {
 });
 
 describe("contract.test: every real module behaves", () => {
-  const KNOWN = new Set(["touch", "padDown", "padUp", "menuToggled", "trailCleared", "presetChanged", "spaceChanged", "sustainToggled", "sevenInKeyToggled", "spreadChanged", "slideToggled", "slideTimeChanged", "ringChanged", "engineChanged", "modelChanged"]);
+  const KNOWN = new Set(["touch", "padDown", "padUp", "menuToggled", "trailCleared", "presetChanged", "spaceChanged", "sustainToggled", "sevenInKeyToggled", "midiOutputPressed", "midiOffPressed", "midiChannelStepped", "ownSoundToggled", "spreadChanged", "slideToggled", "slideTimeChanged", "ringChanged", "engineChanged", "modelChanged"]);
 
   for (const [slot, Module] of realModules) {
     it(`${slot} mounts, updates, and leaves nothing behind`, () => {
@@ -370,7 +370,7 @@ describe("contract.test: every real module behaves", () => {
     click("Classic");
     expect(core.state.get().preset).toBe("classic");
     const offs = [...target.querySelectorAll("button")].filter((b) => b.textContent === "Off");
-    expect(offs).toHaveLength(4); // next chords', the shape's, space's, then ring's
+    expect(offs).toHaveLength(5); // next chords', the shape's, space's, ring's, then MIDI's
     offs[0].click();
     flushSync();
     expect(core.state.get().preset).toBeNull();

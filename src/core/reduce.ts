@@ -7,7 +7,7 @@ import { canAlter, cellOf, chordOf, DOMINANT_7, hasAlteration, PLAIN, sameChord,
 import { placeShape, stepsPlayed } from "../theory/shapes";
 import { nextChords } from "../theory/transitions";
 import { voice, voicesOf, type Spread, type Voiced } from "../theory/voicing";
-import type { Intent, Ring, SpaceLevel } from "./contract";
+import type { Intent, MidiDevice, MidiStatus, Ring, SpaceLevel } from "./contract";
 import { columnAt, DRAG_START, HOLD_MS, LONG_MS, modeAt, moved, radialHeading, readTouch, SWIPE_COMMIT, swipeTarget } from "./gestures";
 
 export type VoiceCommand =
@@ -17,6 +17,7 @@ export type VoiceCommand =
   | { kind: "allOff" };
 
 export type Effect =
+  | { kind: "midiAsk" }
   | { kind: "ring"; ms: number; token: number }
   | { kind: "hold"; ms: number; token: number }
   | { kind: "long"; ms: number; token: number }
@@ -89,6 +90,14 @@ export interface State {
   loaded: string | null;
   /** Whether a loaded progression is drawn with its usual 7ths and add9s (ii7–V7–Imaj7) or plain. */
   colored: boolean;
+  /** MIDI out is wanted. It sends only once `midiOutput` has a device to send to. */
+  midiOn: boolean;
+  midiOutput: string | null;
+  midiOutputs: MidiDevice[];
+  midiStatus: MidiStatus;
+  midiChannel: number;
+  /** The app's own sound, which can go quiet while it plays something else over MIDI. */
+  ownSound: boolean;
   /** Every chord takes its own 7th (Cmaj7, Dm7, G7) unless a 7th or 9th pad says otherwise. */
   sevenInKey: boolean;
   /** Steps of the loaded progression whose 7th or add9 has been tapped off, by index. */
@@ -129,6 +138,12 @@ export function initialState(over: Partial<State> = {}): State {
     menuOpen: false,
     loaded: null,
     colored: true, // shapes carry their 7ths unless turned off
+    midiOn: false,
+    midiOutput: null,
+    midiOutputs: [],
+    midiStatus: "unasked",
+    midiChannel: 1,
+    ownSound: true,
     sevenInKey: false,
     declined: [],
     audioOk: true,
@@ -144,6 +159,7 @@ export type Internal =
   | { type: "ringEnded"; token: number }
   | { type: "appHidden" }
   | { type: "aboutChanged"; about: string }
+  | { type: "midiDevices"; outputs: MidiDevice[]; status: MidiStatus }
   | { type: "audioChanged"; ok: boolean }
   | { type: "holdElapsed"; token: number }
   | { type: "longElapsed"; token: number };
@@ -488,6 +504,36 @@ export function reduce(state: State, intent: Internal): Step {
       const lifted = state.pads.reduce((st, p) => padUp(st, p.pointer).state, state);
       return silence({ ...lifted, fingers: [], pads: [], headDrag: null, reach: null });
     }
+    case "midiDevices": {
+      const output = intent.outputs.find((o) => o.id === state.midiOutput) ?? intent.outputs[0] ?? null;
+      return {
+        state: {
+          ...state,
+          midiOutputs: intent.outputs,
+          midiStatus: intent.status,
+          midiOutput: output?.id ?? null,
+          // Asking from the button means turning it on. With nothing to play through, the app's own sound comes back.
+          midiOn: state.midiOn || (state.midiStatus === "asking" && !!output),
+          ownSound: output ? state.ownSound : true,
+        },
+        commands: [],
+        effects: [],
+      };
+    }
+    case "midiOutputPressed": {
+      const { midiOutputs: outputs, midiOutput: current } = state;
+      if (state.midiStatus !== "ready" || !outputs.length)
+        return { state: { ...state, midiStatus: "asking" }, commands: [], effects: [{ kind: "midiAsk" }] };
+      if (!state.midiOn) return { state: { ...state, midiOn: true, midiOutput: current ?? outputs[0].id }, commands: [], effects: [] };
+      const next = outputs[(outputs.findIndex((o) => o.id === current) + 1) % outputs.length];
+      return { state: { ...state, midiOutput: next.id }, commands: [], effects: [] };
+    }
+    case "midiOffPressed":
+      return { state: { ...state, midiOn: false, ownSound: true }, commands: [], effects: [] };
+    case "midiChannelStepped":
+      return { state: { ...state, midiChannel: (state.midiChannel % 16) + 1 }, commands: [], effects: [] };
+    case "ownSoundToggled":
+      return { state: { ...state, ownSound: !state.ownSound }, commands: [], effects: [] };
     case "aboutChanged":
       return state.about === intent.about ? none : { state: { ...state, about: intent.about }, commands: [], effects: [] };
     case "padDown":
