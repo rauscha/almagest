@@ -41,3 +41,9 @@ What was decided, why, and how it was checked. Newest at the bottom.
 - **What:** a pad, 7 in key, gives every chord its own 7th while playing freely, and the circle names each chord as it would play. Chords outside the key take a 7th too: dominant on major chords, m7 on minor ones. It takes Sustain's cell, so the pads stay three by three. Sustain becomes a round button in the circle's lower right corner, and the function legend moves to the lower left. Both were chosen from mockups.
 - **Order:** a tapped 7th or 9th pad replaces the mode's 7th and lifts back to it. The mode wins over a loaded shape's color. The pads stay unringed for a 7th the mode added, since a ring says that pad is doing it.
 - **Checked:** unit tests (the seven chords in major and relative minor, outside the key, other keys, the pad order, a shape loaded, a sus pad, the saved setting), the type check, `tools/verify/layout.cjs`, `tools/verify/drive_app.cjs`, and screenshots with the mode on and off.
+
+## D7: Parallax moved to its latest version
+- **Date:** 2026-11-08.
+- **What:** `vendor/parallax` now points at the version that carries Parallax's own MIT license.
+- **Why the sounds weren't surveyed again:** the WebAssembly, its loader and both worklets Almagest uses are byte-for-byte the same, and the sound list didn't change. The other changes to the files Almagest reads are text and metadata for Parallax's own explainer.
+- **Checked:** unit tests, the type check, a production build, `tools/verify/layout.cjs`, and `tools/verify/drive_app.cjs` playing every sound.

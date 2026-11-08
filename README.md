@@ -54,7 +54,7 @@ DEV_PORT=443
 
 ## Credits
 
-- **Sound engines** come from [Parallax](https://github.com/rauscha/parallax), included as a git submodule in `vendor/parallax`. Almagest uses two of them: a wavetable pad synth, and a multi-model macro oscillator whose DSP derives from open-source eurorack firmware by Émilie Gillet (MIT). See the license files and `NOTICE` in that folder.
+- **Sound engines** come from [Parallax](https://github.com/rauscha/parallax), included as a git submodule in `vendor/parallax`. Almagest uses two of them: a wavetable pad synth, and a multi-model macro oscillator whose DSP derives from open-source eurorack firmware by Émilie Gillet (MIT). See `LICENSE` and the other license files in that folder.
 - **Next-chord odds** are counted by `tools/corpus/transitions.py` from three published corpora. Only the resulting percentages are in this repository, not the songs or the counts behind them.
   - Hooktheory TheoryTab annotations, via the dataset of Donahue, Thickstun and Liang (2022): modern pop, 15,213 songs.
   - The McGill Billboard Project (Burgoyne, Wild and Fujinaga, 2011): chart songs from 1958 to 1991, 739 songs.
