@@ -1,0 +1,278 @@
+{
+ "checks": [
+  {
+   "engine": "multi",
+   "name": "a slide reaches 55",
+   "pass": true,
+   "detail": "55.05"
+  },
+  {
+   "engine": "multi",
+   "name": "a slide reaches 60",
+   "pass": true,
+   "detail": "60.05"
+  },
+  {
+   "engine": "multi",
+   "name": "a slide reaches 72",
+   "pass": true,
+   "detail": "72.05"
+  },
+  {
+   "engine": "multi",
+   "name": "a slide reaches 84",
+   "pass": true,
+   "detail": "84.04"
+  },
+  {
+   "engine": "multi",
+   "name": "a slide reaches 60",
+   "pass": true,
+   "detail": "60.05"
+  },
+  {
+   "engine": "multi",
+   "name": "a slide reaches 48",
+   "pass": true,
+   "detail": "48.05"
+  },
+  {
+   "engine": "multi",
+   "name": "a 300 ms slide passes through the notes between",
+   "pass": true,
+   "detail": "24 frames between"
+  },
+  {
+   "engine": "multi",
+   "name": "a slide interrupted midway doesn't jump",
+   "pass": true,
+   "detail": "largest step 0.33 semitones per 10 ms"
+  },
+  {
+   "engine": "multi",
+   "name": "noteOff after a slide stops the voice",
+   "pass": true,
+   "detail": "0.0043 of its level"
+  },
+  {
+   "engine": "multi",
+   "name": "a strike after a slide has no bend left on it",
+   "pass": true,
+   "detail": "72.05"
+  },
+  {
+   "engine": "multi",
+   "name": "a strike during a slide stops the slide",
+   "pass": true,
+   "detail": "55.05"
+  },
+  {
+   "engine": "pad",
+   "name": "a slide reaches 55",
+   "pass": true,
+   "detail": "55.00"
+  },
+  {
+   "engine": "pad",
+   "name": "a slide reaches 60",
+   "pass": true,
+   "detail": "60.00"
+  },
+  {
+   "engine": "pad",
+   "name": "a slide reaches 72",
+   "pass": true,
+   "detail": "72.00"
+  },
+  {
+   "engine": "pad",
+   "name": "a slide reaches 84",
+   "pass": true,
+   "detail": "84.00"
+  },
+  {
+   "engine": "pad",
+   "name": "a slide reaches 60",
+   "pass": true,
+   "detail": "60.00"
+  },
+  {
+   "engine": "pad",
+   "name": "a slide reaches 48",
+   "pass": true,
+   "detail": "48.00"
+  },
+  {
+   "engine": "pad",
+   "name": "a 300 ms slide passes through the notes between",
+   "pass": true,
+   "detail": "24 frames between"
+  },
+  {
+   "engine": "pad",
+   "name": "a slide interrupted midway doesn't jump",
+   "pass": true,
+   "detail": "largest step 0.33 semitones per 10 ms"
+  },
+  {
+   "engine": "pad",
+   "name": "noteOff after a slide stops the voice",
+   "pass": true,
+   "detail": "0.0284 of its level"
+  },
+  {
+   "engine": "pad",
+   "name": "a strike after a slide has no bend left on it",
+   "pass": true,
+   "detail": "72.00"
+  },
+  {
+   "engine": "pad",
+   "name": "a strike during a slide stops the slide",
+   "pass": true,
+   "detail": "55.00"
+  }
+ ],
+ "sounds": [
+  {
+   "engine": "pad",
+   "name": "Soft Saw",
+   "slideJump": 1.0558269203867885,
+   "slideDip": 0.96583358680491,
+   "strikeJump": 1.1596520352651902,
+   "strikeDip": 1.0756036183007023,
+   "landedCents": 0.1292465056891956,
+   "level1s": 2.36114576726335
+  },
+  {
+   "engine": "pad",
+   "name": "Dark Saw",
+   "slideJump": 1.2730059262882871,
+   "slideDip": 0.8105609872527804,
+   "strikeJump": 0.9475373609436314,
+   "strikeDip": 0.870125412015954,
+   "landedCents": 0.23861181251305652,
+   "level1s": 1.8655206652553213
+  },
+  {
+   "engine": "pad",
+   "name": "Warm Sine",
+   "slideJump": 0.9978264322111263,
+   "slideDip": 0.9747868232462142,
+   "strikeJump": 1.1113728792205557,
+   "strikeDip": 1.0443158312640124,
+   "landedCents": 0.002103318604440574,
+   "level1s": 1.0182440646779727
+  },
+  {
+   "engine": "pad",
+   "name": "Slow Sweep",
+   "slideJump": 1.3032374739711265,
+   "slideDip": 0.5811471428553302,
+   "strikeJump": 1.121777351422705,
+   "strikeDip": 1.0454301008823437,
+   "landedCents": 0.9504147973103727,
+   "level1s": 1.897682092387298
+  },
+  {
+   "engine": "pad",
+   "name": "Long Sweep",
+   "slideJump": 2.2866546716766627,
+   "slideDip": 1.0099089854478178,
+   "strikeJump": 0.4486953766765147,
+   "strikeDip": 0.18477816040269224,
+   "landedCents": -0.6231604571283356,
+   "level1s": 1.0524714934685606
+  },
+  {
+   "engine": "multi",
+   "name": "Classic Waveshapes + Filter",
+   "slideJump": 1.0064981493594471,
+   "slideDip": 0.9981658267276248,
+   "strikeJump": 1.0058058365454956,
+   "strikeDip": 0.9984944407074863,
+   "landedCents": 4.618261309244076,
+   "level1s": 0.9994685882680778
+  },
+  {
+   "engine": "multi",
+   "name": "Virtual Analog",
+   "slideJump": 1.0109827458199618,
+   "slideDip": 0.978085786893381,
+   "strikeJump": 1.00206309718797,
+   "strikeDip": 0.988007971093399,
+   "landedCents": 4.694956193976907,
+   "level1s": 0.9970568007309193
+  },
+  {
+   "engine": "multi",
+   "name": "Wavetable",
+   "slideJump": 1.0040649500697434,
+   "slideDip": 0.9717029685542018,
+   "strikeJump": 0.9917301698500154,
+   "strikeDip": 0.9697618062558409,
+   "landedCents": 4.671009987774255,
+   "level1s": 0.9808889258958752
+  },
+  {
+   "engine": "multi",
+   "name": "Granular Formant",
+   "slideJump": 1.0003790564508794,
+   "slideDip": 0.8907505920376141,
+   "strikeJump": 0.8975861838356902,
+   "strikeDip": 0.875330237220656,
+   "landedCents": 4.614753249983039,
+   "level1s": 0.8953050326893475
+  },
+  {
+   "engine": "multi",
+   "name": "6-Op FM · Bank A",
+   "slideJump": 1.3231933044985453,
+   "slideDip": 1.0623854660934329,
+   "strikeJump": 1.4805149251509446,
+   "strikeDip": 1.3400886248257713,
+   "landedCents": 9.271855100247706,
+   "level1s": 0.6811703937367076
+  },
+  {
+   "engine": "multi",
+   "name": "6-Op FM · Bank C",
+   "slideJump": 0.9804287490685606,
+   "slideDip": 0.7251622711439907,
+   "strikeJump": 0.956154053952791,
+   "strikeDip": 0.5627614082977089,
+   "landedCents": 4.700888832763894,
+   "level1s": 0.7169912352227411
+  },
+  {
+   "engine": "multi",
+   "name": "Wave Terrain",
+   "slideJump": 1.0011249045637691,
+   "slideDip": 0.9764008040091288,
+   "strikeJump": 0.9880028362474691,
+   "strikeDip": 0.9743166359980282,
+   "landedCents": 4.671552954087588,
+   "level1s": 0.9807197371575643
+  },
+  {
+   "engine": "multi",
+   "name": "Waveshaper",
+   "slideJump": 0.9944854423782845,
+   "slideDip": 0.9702871400489725,
+   "strikeJump": 0.9839967339479935,
+   "strikeDip": 0.972265819956652,
+   "landedCents": 4.65204129492065,
+   "level1s": 0.9746460831747343
+  },
+  {
+   "engine": "multi",
+   "name": "Wide Saw",
+   "slideJump": 1.027016180759006,
+   "slideDip": 0.9720319419442188,
+   "strikeJump": 0.9926823159273653,
+   "strikeDip": 0.9840905512781417,
+   "landedCents": 14.849438240386803,
+   "level1s": 0.9941193102575298
+  }
+ ]
+}

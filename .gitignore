@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.log
+.DS_Store
+
+# per-machine settings, such as the dev proxy (vite.config.ts)
+.env.local
+CLAUDE.local.md

@@ -1,0 +1,2086 @@
+[
+ {
+  "engine": "multi",
+  "name": "Classic Waveshapes + Filter",
+  "code": "VAF",
+  "summary": {
+   "harmonicity": 0.9913615343094409,
+   "rootShare": 0.9133571299974464,
+   "worstRootShare": 0.830970441588989,
+   "fundamental": 0.9212972271582506,
+   "tuningCents": 3.843418947407955,
+   "holds": 0.9999979820819663,
+   "chord": 0.952384200129559
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.830970441588989,
+    "harmonicity": 0.9090361906072486,
+    "strongest": 1,
+    "holds": 1.0017094184592532
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.8840428477580264,
+    "harmonicity": 0.9622588936215757,
+    "strongest": 1,
+    "holds": 1.0000055192351283
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.9120071624714813,
+    "harmonicity": 0.9901210250945627,
+    "strongest": 1,
+    "holds": 1.0001679108792272
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.9133571299974464,
+    "harmonicity": 0.9913615343094409,
+    "strongest": 1,
+    "holds": 0.9999979820819663
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.9159348283710526,
+    "harmonicity": 0.9934839111310123,
+    "strongest": 1,
+    "holds": 0.9996643457435592
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.9188045656360021,
+    "harmonicity": 0.9954277608117754,
+    "strongest": 1,
+    "holds": 0.9999287536257526
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.9226423902024738,
+    "harmonicity": 0.9969879633860996,
+    "strongest": 1,
+    "holds": 0.9996883977124129
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Phase Distortion",
+  "code": "PD",
+  "summary": {
+   "harmonicity": 0.9978501697128631,
+   "rootShare": 0.24712003819225245,
+   "worstRootShare": 0.23204121959477356,
+   "fundamental": 0.07735063198455891,
+   "tuningCents": 4.412395244017845,
+   "holds": 1.0001678996419157,
+   "chord": 0.40288031934463203
+  },
+  "tier": "drop",
+  "why": [
+   "overtones take over: only 25% of its energy is on the claimed note",
+   "a chord loses its notes: only 40% of its energy is on the chord's notes"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.23204121959477356,
+    "harmonicity": 0.9826548343616334,
+    "strongest": 5,
+    "holds": 0.9862744769926882
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.23857879123654563,
+    "harmonicity": 0.9923350007764566,
+    "strongest": 5,
+    "holds": 1.0003227158644719
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.2451840185055968,
+    "harmonicity": 0.9975115362494722,
+    "strongest": 5,
+    "holds": 1.0002923376172128
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.24712003819225245,
+    "harmonicity": 0.9978501697128631,
+    "strongest": 5,
+    "holds": 0.9999855096513982
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.25005320385758695,
+    "harmonicity": 0.9983355416109025,
+    "strongest": 5,
+    "holds": 1.0001678996419157
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.25435610665704905,
+    "harmonicity": 0.998733206871701,
+    "strongest": 5,
+    "holds": 1.0004754903599995
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.25919186345844175,
+    "harmonicity": 0.9990731671218251,
+    "strongest": 5,
+    "holds": 0.9999380112001165
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "6-Op FM \u00b7 Bank A",
+  "code": "6OPA",
+  "summary": {
+   "harmonicity": 0.9037515143829308,
+   "rootShare": 0.833542746918186,
+   "worstRootShare": 0.7131453248460531,
+   "fundamental": 0.7060876192229787,
+   "tuningCents": 2.1530851746425674,
+   "holds": 0.8873890710146803,
+   "chord": 0.9203522937541485
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.737771650814428,
+    "harmonicity": 0.8757583506585831,
+    "strongest": 1,
+    "holds": 0.9536299755473906
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.7131453248460531,
+    "harmonicity": 0.8710246499493073,
+    "strongest": 1,
+    "holds": 0.812887645698016
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.8750881786616076,
+    "harmonicity": 0.9523979591272211,
+    "strongest": 1,
+    "holds": 0.9485534431429203
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.822658664222989,
+    "harmonicity": 0.9006062576088679,
+    "strongest": 1,
+    "holds": 0.7051977983834755
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.833542746918186,
+    "harmonicity": 0.9037515143829308,
+    "strongest": 1,
+    "holds": 0.8155995322159076
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.8565149881594822,
+    "harmonicity": 0.9085147639979441,
+    "strongest": 1,
+    "holds": 0.8877652836047718
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.9238855154855913,
+    "harmonicity": 0.994717700317888,
+    "strongest": 1,
+    "holds": 0.8873890710146803
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "6-Op FM \u00b7 Bank B",
+  "code": "6OPB",
+  "summary": {
+   "harmonicity": 0.014803865912310574,
+   "rootShare": 0.5438063889155855,
+   "worstRootShare": 0.3096342118295289,
+   "fundamental": 0.15910221539394404,
+   "tuningCents": 4.923913654909195,
+   "holds": 0.0008900455457428672,
+   "chord": 0.5456507787922164
+  },
+  "tier": "drop",
+  "why": [
+   "atonal: only 1% of its energy is on the note's harmonics",
+   "a chord loses its notes: only 55% of its energy is on the chord's notes",
+   "dies away completely within a second"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.3351524315251303,
+    "harmonicity": 0.017174545801750547,
+    "strongest": 6,
+    "holds": 0.0007116402613515578
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.3096342118295289,
+    "harmonicity": 0.015827697964927775,
+    "strongest": 6,
+    "holds": 0.0007200839067711456
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.5438063889155855,
+    "harmonicity": 0.015052120086130823,
+    "strongest": 3,
+    "holds": 0.000848929996551538
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.522512860471348,
+    "harmonicity": 0.014662511810386029,
+    "strongest": 3,
+    "holds": 0.0008900455457428672
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.5602815340861901,
+    "harmonicity": 0.014396617502204147,
+    "strongest": 3,
+    "holds": 0.0009308864666495942
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.6283470366712096,
+    "harmonicity": 0.014803865912310574,
+    "strongest": 3,
+    "holds": 0.0010289025435429255
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.7756844720083917,
+    "harmonicity": 0.010983180506783269,
+    "strongest": 3,
+    "holds": 0.0011697022205956929
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "6-Op FM \u00b7 Bank C",
+  "code": "6OPC",
+  "summary": {
+   "harmonicity": 0.9982416848272373,
+   "rootShare": 0.7905919555653926,
+   "worstRootShare": 0.7034614314059671,
+   "fundamental": 0.5368042417578435,
+   "tuningCents": 3.6080983419429753,
+   "holds": 0.8934476835154498,
+   "chord": 0.85597322342181
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.7034614314059671,
+    "harmonicity": 0.9336489532193725,
+    "strongest": 1,
+    "holds": 0.8820003579741125
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.7179436089029303,
+    "harmonicity": 0.9699644738383614,
+    "strongest": 1,
+    "holds": 0.8865868066173909
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.7905919555653926,
+    "harmonicity": 0.997124486286047,
+    "strongest": 1,
+    "holds": 0.9066557581207746
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.7820717370700279,
+    "harmonicity": 0.9982416848272373,
+    "strongest": 1,
+    "holds": 0.8943964368421047
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.7934695740601309,
+    "harmonicity": 0.9992942385685794,
+    "strongest": 1,
+    "holds": 0.9055168509361798
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.7952983768995311,
+    "harmonicity": 0.9996407526320968,
+    "strongest": 1,
+    "holds": 0.8918272963829424
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.8108867578547536,
+    "harmonicity": 0.9998009338637909,
+    "strongest": 1,
+    "holds": 0.8934476835154498
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Wave Terrain",
+  "code": "TERR",
+  "summary": {
+   "harmonicity": 0.9954093225729086,
+   "rootShare": 0.6625604139146111,
+   "worstRootShare": 0.6138390186168353,
+   "fundamental": 0.17479220033214543,
+   "tuningCents": 3.6448341367575576,
+   "holds": 1.0001043377277357,
+   "chord": 0.7450149369412841
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.6138390186168353,
+    "harmonicity": 0.9747478650992406,
+    "strongest": 2,
+    "holds": 0.999028575785158
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.6296950104501416,
+    "harmonicity": 0.987415120578299,
+    "strongest": 2,
+    "holds": 0.9998640576371103
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.6529612433830646,
+    "harmonicity": 0.9947619585756773,
+    "strongest": 2,
+    "holds": 1.0005365148261605
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.6625604139146111,
+    "harmonicity": 0.9954093225729086,
+    "strongest": 2,
+    "holds": 1.0005712666551974
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.6806043531795339,
+    "harmonicity": 0.9962571102812205,
+    "strongest": 2,
+    "holds": 1.0001043377277357
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.7123420119474804,
+    "harmonicity": 0.9968325118034517,
+    "strongest": 2,
+    "holds": 1.0001819059174826
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.7832663938360882,
+    "harmonicity": 0.9973659064321719,
+    "strongest": 2,
+    "holds": 0.9998430508061624
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "String Machine",
+  "code": "STMC",
+  "summary": {
+   "harmonicity": 0.8224610620193952,
+   "rootShare": 0.3703962690612925,
+   "worstRootShare": 0.34424782858984887,
+   "fundamental": 0.010190800638673555,
+   "tuningCents": 0.999196934779882,
+   "holds": 0.9946819358376584,
+   "chord": 0.3381987929420422
+  },
+  "tier": "drop",
+  "why": [
+   "overtones take over: only 37% of its energy is on the claimed note",
+   "a chord loses its notes: only 34% of its energy is on the chord's notes"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.34424782858984887,
+    "harmonicity": 0.8215528283282659,
+    "strongest": 4,
+    "holds": 0.9839543912064578
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.3482926138965834,
+    "harmonicity": 0.8230421458112631,
+    "strongest": 4,
+    "holds": 0.9904126069590518
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.3640719420315286,
+    "harmonicity": 0.82522938327499,
+    "strongest": 4,
+    "holds": 1.0126537342372977
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.3703962690612925,
+    "harmonicity": 0.8258928795684518,
+    "strongest": 4,
+    "holds": 0.9911929658424544
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.38484795039725017,
+    "harmonicity": 0.8224610620193952,
+    "strongest": 4,
+    "holds": 1.0100598265396319
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.4073470107394716,
+    "harmonicity": 0.8170372733429095,
+    "strongest": 4,
+    "holds": 1.0035477250034956
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.44319213658133416,
+    "harmonicity": 0.8040604052496689,
+    "strongest": 4,
+    "holds": 0.9946819358376584
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Chiptune",
+  "code": "CHIP",
+  "summary": {
+   "harmonicity": 0.9942582099367512,
+   "rootShare": 0.00017491953728391137,
+   "worstRootShare": 0.00010633598675839676,
+   "fundamental": 3.0264895008107793e-06,
+   "tuningCents": 35.700609175889724,
+   "holds": 0.26480735232245967,
+   "chord": 0.22634637676045327
+  },
+  "tier": "drop",
+  "why": [
+   "overtones take over: only 0% of its energy is on the claimed note",
+   "one note goes badly wrong: only 0% on the claimed note",
+   "a chord loses its notes: only 23% of its energy is on the chord's notes",
+   "out of tune by about 36 cents"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.00016689410563179986,
+    "harmonicity": 0.9945279087157769,
+    "strongest": 14,
+    "holds": 0.26481671381390065
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.00018912698723375513,
+    "harmonicity": 0.006594446761916752,
+    "strongest": 10,
+    "holds": 0.2647877344210756
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.00017491953728391137,
+    "harmonicity": 0.9975183332379138,
+    "strongest": 9,
+    "holds": 0.26480735232245967
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.9057776642542111,
+    "harmonicity": 0.997357136854585,
+    "strongest": 8,
+    "holds": 0.2647861127897242
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.00024368088206264086,
+    "harmonicity": 0.9942582099367512,
+    "strongest": 7,
+    "holds": 0.2647958958375899
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.00010633598675839676,
+    "harmonicity": 0.09333676912198927,
+    "strongest": 14,
+    "holds": 0.2648148114370627
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.00011734086483705001,
+    "harmonicity": 0.0006426963013307783,
+    "strongest": 5,
+    "holds": 0.2648181899816012
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Virtual Analog",
+  "code": "VA",
+  "summary": {
+   "harmonicity": 0.9919040250424512,
+   "rootShare": 0.8804988646094034,
+   "worstRootShare": 0.7992269281798108,
+   "fundamental": 0.8455461904119902,
+   "tuningCents": 3.843418947407955,
+   "holds": 1.0004748657629188,
+   "chord": 0.9412403809168457
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.7992269281798108,
+    "harmonicity": 0.9154962190012439,
+    "strongest": 1,
+    "holds": 1.0004748657629188
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.8489841646274158,
+    "harmonicity": 0.9650333257004567,
+    "strongest": 1,
+    "holds": 1.0007363910131521
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.8777101057720552,
+    "harmonicity": 0.990618166705942,
+    "strongest": 1,
+    "holds": 1.0011584317621502
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.8804988646094034,
+    "harmonicity": 0.9919040250424512,
+    "strongest": 1,
+    "holds": 0.9993552194843938
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.8844335348504331,
+    "harmonicity": 0.9939017912660759,
+    "strongest": 1,
+    "holds": 1.0008473111001521
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.8899254949010912,
+    "harmonicity": 0.9945689880841004,
+    "strongest": 1,
+    "holds": 1.0000610419782212
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.8987443728507822,
+    "harmonicity": 0.9971747525521253,
+    "strongest": 1,
+    "holds": 0.9997374507838438
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Waveshaper",
+  "code": "WSH",
+  "summary": {
+   "harmonicity": 0.9957951169480169,
+   "rootShare": 0.5022258001344833,
+   "worstRootShare": 0.4692837179434812,
+   "fundamental": 0.3468580672891694,
+   "tuningCents": 5.045403571088931,
+   "holds": 1.0003729458576773,
+   "chord": 0.676791510847663
+  },
+  "tier": "listen",
+  "why": [
+   "a chord loses its notes: only 68% of its energy is on the chord's notes"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.4692837179434812,
+    "harmonicity": 0.9551050339155212,
+    "strongest": 1,
+    "holds": 0.9980589614881115
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.4956345138863466,
+    "harmonicity": 0.9826745201818515,
+    "strongest": 1,
+    "holds": 1.0006536970496172
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.5153954550695266,
+    "harmonicity": 0.9939989438875078,
+    "strongest": 1,
+    "holds": 1.0009932669976165
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.49290975518694274,
+    "harmonicity": 0.9957951169480169,
+    "strongest": 1,
+    "holds": 1.0003729458576773
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.5022258001344833,
+    "harmonicity": 0.99711404812634,
+    "strongest": 1,
+    "holds": 1.0004648767271338
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.6644442862848253,
+    "harmonicity": 0.9981095768863505,
+    "strongest": 4,
+    "holds": 1.000170520342713
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.5201458507181171,
+    "harmonicity": 0.9991613093620241,
+    "strongest": 4,
+    "holds": 0.9998896544258201
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "2-Op FM",
+  "code": "FM",
+  "summary": {
+   "harmonicity": 0.9866662857658761,
+   "rootShare": 0.18348688406608432,
+   "worstRootShare": 0.12417189540534596,
+   "fundamental": 0.1845532685039475,
+   "tuningCents": 18.00609590408662,
+   "holds": 0.979023321947273,
+   "chord": 0.4289012868234481
+  },
+  "tier": "drop",
+  "why": [
+   "overtones take over: only 18% of its energy is on the claimed note",
+   "one note goes badly wrong: only 12% on the claimed note",
+   "a chord loses its notes: only 43% of its energy is on the chord's notes"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.12417189540534596,
+    "harmonicity": 0.9549809536010249,
+    "strongest": 5,
+    "holds": 0.9508141503278086
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.1394425904307468,
+    "harmonicity": 0.9623492306912532,
+    "strongest": 5,
+    "holds": 0.962183106569435
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.16850357531807827,
+    "harmonicity": 0.9831619514920242,
+    "strongest": 5,
+    "holds": 1.0354607676882739
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.18489160010985473,
+    "harmonicity": 0.9866662857658761,
+    "strongest": 3,
+    "holds": 0.9978049553318346
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.18348688406608432,
+    "harmonicity": 0.9941446128307148,
+    "strongest": 3,
+    "holds": 0.9736929522538772
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.18720688899017673,
+    "harmonicity": 0.998258889473027,
+    "strongest": 5,
+    "holds": 0.979023321947273
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.20195944560977735,
+    "harmonicity": 0.9976365543283489,
+    "strongest": 3,
+    "holds": 0.9816967626830092
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Granular Formant",
+  "code": "FORM",
+  "summary": {
+   "harmonicity": 0.9928739245960029,
+   "rootShare": 0.9716949218271015,
+   "worstRootShare": 0.31617042804612583,
+   "fundamental": 0.6069490139207195,
+   "tuningCents": 3.6448341367575576,
+   "holds": 0.9998436280362202,
+   "chord": 0.9754022707551461
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.656213484540536,
+    "harmonicity": 0.9862488412477939,
+    "strongest": 4,
+    "holds": 0.9750990452267237
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.31617042804612583,
+    "harmonicity": 0.9918760560256527,
+    "strongest": 3,
+    "holds": 0.9999545786863209
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.9529961575353191,
+    "harmonicity": 0.9927955544275141,
+    "strongest": 2,
+    "holds": 1.00398205377491
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.9716949218271015,
+    "harmonicity": 0.9928739245960029,
+    "strongest": 1,
+    "holds": 0.9998436280362202
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.9787732160610303,
+    "harmonicity": 0.9939345947478878,
+    "strongest": 1,
+    "holds": 0.9989167389474324
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.9842425395928259,
+    "harmonicity": 0.9952134044807294,
+    "strongest": 1,
+    "holds": 0.9999732866264833
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.9896927346768302,
+    "harmonicity": 0.9968747621875429,
+    "strongest": 1,
+    "holds": 0.9996568395628216
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Harmonic Additive",
+  "code": "ADD",
+  "summary": {
+   "harmonicity": 0.9997187333689763,
+   "rootShare": 4.016072870694105e-05,
+   "worstRootShare": 8.78774793832209e-06,
+   "fundamental": 2.7981760820748163e-08,
+   "tuningCents": 4.604232359740491,
+   "holds": 0.9992944693834978,
+   "chord": 0.3055762055015281
+  },
+  "tier": "drop",
+  "why": [
+   "overtones take over: only 0% of its energy is on the claimed note",
+   "one note goes badly wrong: only 0% on the claimed note",
+   "a chord loses its notes: only 31% of its energy is on the chord's notes"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 6.888810590218732e-05,
+    "harmonicity": 0.999012745526406,
+    "strongest": 12,
+    "holds": 0.9930202982544097
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.00010546128313726725,
+    "harmonicity": 0.9993951191502596,
+    "strongest": 12,
+    "holds": 1.0001868932935736
+   },
+   {
+    "midi": 57,
+    "rootShare": 4.990715372248729e-05,
+    "harmonicity": 0.9996083279910538,
+    "strongest": 12,
+    "holds": 0.9996391044005836
+   },
+   {
+    "midi": 60,
+    "rootShare": 4.016072870694105e-05,
+    "harmonicity": 0.9997187333689763,
+    "strongest": 12,
+    "holds": 0.9983614590395188
+   },
+   {
+    "midi": 64,
+    "rootShare": 3.3347002214763066e-05,
+    "harmonicity": 0.999785372436328,
+    "strongest": 12,
+    "holds": 0.9992944693834978
+   },
+   {
+    "midi": 69,
+    "rootShare": 1.5092354978268402e-05,
+    "harmonicity": 0.9998324394626593,
+    "strongest": 12,
+    "holds": 0.999606637063573
+   },
+   {
+    "midi": 76,
+    "rootShare": 8.78774793832209e-06,
+    "harmonicity": 0.999885272026399,
+    "strongest": 12,
+    "holds": 0.9988759156413266
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Wavetable",
+  "code": "WT",
+  "summary": {
+   "harmonicity": 0.9945485859910547,
+   "rootShare": 0.8914786344422261,
+   "worstRootShare": 0.8052867242560163,
+   "fundamental": 0.5465787660437906,
+   "tuningCents": 3.843418947407955,
+   "holds": 0.9997730446353083,
+   "chord": 0.9257735568749282
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.8052867242560163,
+    "harmonicity": 0.9183643693310719,
+    "strongest": 1,
+    "holds": 0.9865772352207576
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.8708327312529061,
+    "harmonicity": 0.9769849806093452,
+    "strongest": 1,
+    "holds": 0.9997730446353083
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.8891197232716008,
+    "harmonicity": 0.9937094201756556,
+    "strongest": 1,
+    "holds": 1.0006190458288946
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.8914786344422261,
+    "harmonicity": 0.9945485859910547,
+    "strongest": 1,
+    "holds": 0.9994138289501064
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.8955971694362049,
+    "harmonicity": 0.9958354174428435,
+    "strongest": 1,
+    "holds": 1.0013685073522642
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.9097600417342488,
+    "harmonicity": 0.9970303764460592,
+    "strongest": 1,
+    "holds": 0.9996100642251843
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.9285104411653385,
+    "harmonicity": 0.9978356268643384,
+    "strongest": 1,
+    "holds": 1.0006197673175703
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Chords",
+  "code": "CHRD",
+  "summary": {
+   "harmonicity": 0.20425481150621028,
+   "rootShare": 0.1367572764248395,
+   "worstRootShare": 0.11956425437409493,
+   "fundamental": 1.948881820698383e-05,
+   "tuningCents": 3.6080983419429753,
+   "holds": 0.9847231063126062,
+   "chord": 0.26529551855424627
+  },
+  "tier": "drop",
+  "why": [
+   "atonal: only 20% of its energy is on the note's harmonics",
+   "overtones take over: only 14% of its energy is on the claimed note",
+   "one note goes badly wrong: only 12% on the claimed note",
+   "a chord loses its notes: only 27% of its energy is on the chord's notes"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.12510319687428237,
+    "harmonicity": 0.20425481150621028,
+    "strongest": 2,
+    "holds": 0.9847231063126062
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.1400446710743418,
+    "harmonicity": 0.21847175980833503,
+    "strongest": 2,
+    "holds": 1.0212954042263238
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.13817557569132052,
+    "harmonicity": 0.21236835170977483,
+    "strongest": 2,
+    "holds": 0.9385172643550336
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.11956425437409493,
+    "harmonicity": 0.1932475821793898,
+    "strongest": 2,
+    "holds": 1.0480677508295657
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.1367572764248395,
+    "harmonicity": 0.20520552827901314,
+    "strongest": 2,
+    "holds": 0.9527350904314984
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.13209091308494755,
+    "harmonicity": 0.19429961153769038,
+    "strongest": 2,
+    "holds": 0.9780434774742317
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.1410866100252737,
+    "harmonicity": 0.18996568744996586,
+    "strongest": 2,
+    "holds": 1.0008141210045336
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Speech / Vowels",
+  "code": "SPCH",
+  "summary": {
+   "harmonicity": 0.9655218017692414,
+   "rootShare": 0.6290859211413549,
+   "worstRootShare": 0.2522767542791106,
+   "fundamental": 0.1289303752408526,
+   "tuningCents": 0.999196934779882,
+   "holds": 0.0009022151551572282,
+   "chord": 0.7798256361720259
+  },
+  "tier": "drop",
+  "why": [
+   "dies away completely within a second"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.3185003058650003,
+    "harmonicity": 0.9614297533434477,
+    "strongest": 4,
+    "holds": 0.0013295399467827245
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.2522767542791106,
+    "harmonicity": 0.9609179901120906,
+    "strongest": 3,
+    "holds": 0.001144335845799994
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.6290859211413549,
+    "harmonicity": 0.9692681047048773,
+    "strongest": 2,
+    "holds": 0.0009022151551572282
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.6493415960995035,
+    "harmonicity": 0.9655218017692414,
+    "strongest": 2,
+    "holds": 0.0009495677136765497
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.7230161497782611,
+    "harmonicity": 0.9415370593610296,
+    "strongest": 1,
+    "holds": 0.0006634882981147529
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.8112848795169436,
+    "harmonicity": 0.9659727390554541,
+    "strongest": 1,
+    "holds": 0.0005630356051316203
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.545088806969701,
+    "harmonicity": 0.969008793856285,
+    "strongest": 1,
+    "holds": 0.0008487239920547397
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Swarm",
+  "code": "SWRM",
+  "summary": {
+   "harmonicity": 0.20142439286580466,
+   "rootShare": 0.14599594020521778,
+   "worstRootShare": 0.12273376271370229,
+   "fundamental": 0.467802722378826,
+   "tuningCents": 3.843418947407955,
+   "holds": 1.0144483749945328,
+   "chord": 0.26775816043737793
+  },
+  "tier": "drop",
+  "why": [
+   "atonal: only 20% of its energy is on the note's harmonics",
+   "overtones take over: only 15% of its energy is on the claimed note",
+   "one note goes badly wrong: only 12% on the claimed note",
+   "a chord loses its notes: only 27% of its energy is on the chord's notes"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.1364878191290801,
+    "harmonicity": 0.19381826315091605,
+    "strongest": 1,
+    "holds": 0.9595428599602084
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.1260140723956448,
+    "harmonicity": 0.19431574439527513,
+    "strongest": 1,
+    "holds": 1.0144483749945328
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.15065495726902342,
+    "harmonicity": 0.21403069869483793,
+    "strongest": 1,
+    "holds": 1.0376292750845895
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.12273376271370229,
+    "harmonicity": 0.17899059810391527,
+    "strongest": 1,
+    "holds": 1.1770144297001766
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.2375601251039311,
+    "harmonicity": 0.3079551530473181,
+    "strongest": 1,
+    "holds": 0.9306894286729678
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.14599594020521778,
+    "harmonicity": 0.20142439286580466,
+    "strongest": 1,
+    "holds": 1.0519046350682655
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.18650954087536795,
+    "harmonicity": 0.23727695720724287,
+    "strongest": 1,
+    "holds": 0.8764971611558353
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Filtered Noise",
+  "code": "NOIS",
+  "summary": {
+   "harmonicity": 0.44460265710776165,
+   "rootShare": 0.4477503250646012,
+   "worstRootShare": 0.0482550705332715,
+   "fundamental": 0.9986145253599953,
+   "tuningCents": 32.61805446873589,
+   "holds": 1.1364450612079173,
+   "chord": 0.418654898017901
+  },
+  "tier": "drop",
+  "why": [
+   "atonal: only 44% of its energy is on the note's harmonics",
+   "overtones take over: only 45% of its energy is on the claimed note",
+   "one note goes badly wrong: only 5% on the claimed note",
+   "a chord loses its notes: only 42% of its energy is on the chord's notes",
+   "out of tune by about 33 cents"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.4477503250646012,
+    "harmonicity": 0.44460265710776165,
+    "strongest": 1,
+    "holds": 0.9260787505641631
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.35627755883915185,
+    "harmonicity": 0.34718005231625587,
+    "strongest": 1,
+    "holds": 2.479745126809111
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.507180447392475,
+    "harmonicity": 0.5034663776638174,
+    "strongest": 1,
+    "holds": 1.3686373473775404
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.5471776755805546,
+    "harmonicity": 0.5451589580426305,
+    "strongest": 1,
+    "holds": 0.7750733848248911
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.0482550705332715,
+    "harmonicity": 0.04531592211340248,
+    "strongest": 1,
+    "holds": 1.5630948293236562
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.5263469262994627,
+    "harmonicity": 0.5232204006409268,
+    "strongest": 1,
+    "holds": 1.1364450612079173
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.059025171818160665,
+    "harmonicity": 0.06396151248735776,
+    "strongest": 1,
+    "holds": 0.9706102383616588
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Particle Noise",
+  "code": "DUST",
+  "summary": {
+   "harmonicity": 0.050320738010048036,
+   "rootShare": 0.08406933701846883,
+   "worstRootShare": 0.08143137251479003,
+   "fundamental": 0.7746699245419946,
+   "tuningCents": 28.219895730707673,
+   "holds": 0.7780741083861143,
+   "chord": 0.24504198913855452
+  },
+  "tier": "drop",
+  "why": [
+   "atonal: only 5% of its energy is on the note's harmonics",
+   "overtones take over: only 8% of its energy is on the claimed note",
+   "one note goes badly wrong: only 8% on the claimed note",
+   "a chord loses its notes: only 25% of its energy is on the chord's notes"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.08398764886964896,
+    "harmonicity": 0.06029995215771255,
+    "strongest": 1,
+    "holds": 0.8902417245949112
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.08444080206298864,
+    "harmonicity": 0.059926031531502,
+    "strongest": 1,
+    "holds": 6.921740113486342
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.08486315846205589,
+    "harmonicity": 0.04917425146093012,
+    "strongest": 1,
+    "holds": 130.44216579694452
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.08143137251479003,
+    "harmonicity": 0.020352476022667956,
+    "strongest": 1,
+    "holds": 0.7780741083861143
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.08406933701846883,
+    "harmonicity": 0.07431531272666325,
+    "strongest": 1,
+    "holds": 0.3508447916774765
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.08823634745805675,
+    "harmonicity": 0.04859450364481593,
+    "strongest": 1,
+    "holds": 0.016184722786395923
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.08160237373920681,
+    "harmonicity": 0.050320738010048036,
+    "strongest": 1,
+    "holds": 0.013612104455660494
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Inharmonic String",
+  "code": "STRG",
+  "summary": {
+   "harmonicity": 0.7365215915102912,
+   "rootShare": 0.6872717900444104,
+   "worstRootShare": 0.0717950813834768,
+   "fundamental": 0.6135006801911194,
+   "tuningCents": 13.488201825910195,
+   "holds": 0.2144391215836055,
+   "chord": 0.8041491662040382
+  },
+  "tier": "drop",
+  "why": [
+   "atonal: only 74% of its energy is on the note's harmonics",
+   "one note goes badly wrong: only 7% on the claimed note"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.5147168013773159,
+    "harmonicity": 0.6693276184218343,
+    "strongest": 2,
+    "holds": 0.25876902054754525
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.6872717900444104,
+    "harmonicity": 0.7302994234583849,
+    "strongest": 1,
+    "holds": 0.35323121666045937
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.0717950813834768,
+    "harmonicity": 0.7365215915102912,
+    "strongest": 3,
+    "holds": 0.05718800990331746
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.6891146867346318,
+    "harmonicity": 0.8180457457017424,
+    "strongest": 1,
+    "holds": 0.23626095418408852
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.9121953888998761,
+    "harmonicity": 0.9261242240012141,
+    "strongest": 1,
+    "holds": 0.2144391215836055
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.896919964508209,
+    "harmonicity": 0.8942018872532458,
+    "strongest": 1,
+    "holds": 0.10194723628580087
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.41941830344100456,
+    "harmonicity": 0.5538599020972779,
+    "strongest": 3,
+    "holds": 0.024858407218212187
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Modal Resonator",
+  "code": "MODL",
+  "summary": {
+   "harmonicity": 0.2949755451764372,
+   "rootShare": 0.14497983002722462,
+   "worstRootShare": 0.12670979766236973,
+   "fundamental": 0.000129887030049617,
+   "tuningCents": 19.54168274518741,
+   "holds": 0.09243565364950403,
+   "chord": 0.2965076657451968
+  },
+  "tier": "drop",
+  "why": [
+   "atonal: only 29% of its energy is on the note's harmonics",
+   "overtones take over: only 14% of its energy is on the claimed note",
+   "one note goes badly wrong: only 13% on the claimed note",
+   "a chord loses its notes: only 30% of its energy is on the chord's notes"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.14497983002722462,
+    "harmonicity": 0.4976086094967227,
+    "strongest": 3,
+    "holds": 0.14781698508310145
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.15709833076347077,
+    "harmonicity": 0.3115124875562725,
+    "strongest": 8,
+    "holds": 0.08773296924273094
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.15855131181706883,
+    "harmonicity": 0.29858281585083074,
+    "strongest": 8,
+    "holds": 0.088941528037146
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.14658850851046717,
+    "harmonicity": 0.2949755451764372,
+    "strongest": 8,
+    "holds": 0.09023786483328124
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.14365698631982848,
+    "harmonicity": 0.28947985534202897,
+    "strongest": 8,
+    "holds": 0.09261431662655516
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.13745145878418383,
+    "harmonicity": 0.2692919785237705,
+    "strongest": 8,
+    "holds": 0.09243565364950403
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.12670979766236973,
+    "harmonicity": 0.2579853608768026,
+    "strongest": 8,
+    "holds": 0.09776615419876505
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Analog Bass Drum",
+  "code": "BD",
+  "summary": {
+   "harmonicity": 0.10033174997896932,
+   "rootShare": 0.07334198930445868,
+   "worstRootShare": 0.02558389326049409,
+   "fundamental": 0.7196357328691849,
+   "tuningCents": 42.104292171151236,
+   "holds": 0.0018365212410151872,
+   "chord": 0.11949579509000266
+  },
+  "tier": "drop",
+  "why": [
+   "atonal: only 10% of its energy is on the note's harmonics",
+   "overtones take over: only 7% of its energy is on the claimed note",
+   "one note goes badly wrong: only 3% on the claimed note",
+   "a chord loses its notes: only 12% of its energy is on the chord's notes",
+   "out of tune by about 42 cents",
+   "dies away completely within a second"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.031189406673040324,
+    "harmonicity": 0.044067941815291715,
+    "strongest": 1,
+    "holds": 0.0009111287734985952
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.02558389326049409,
+    "harmonicity": 0.04307073167536032,
+    "strongest": 1,
+    "holds": 0.0010338383850748813
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.046996262920707396,
+    "harmonicity": 0.0682274592410598,
+    "strongest": 1,
+    "holds": 0.0014723751097075496
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.08610780220229375,
+    "harmonicity": 0.1111229707691341,
+    "strongest": 1,
+    "holds": 0.002474880409036019
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.15472006167996524,
+    "harmonicity": 0.1839593889299851,
+    "strongest": 1,
+    "holds": 0.0031788386352635035
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.07334198930445868,
+    "harmonicity": 0.10033174997896932,
+    "strongest": 1,
+    "holds": 0.0018365212410151872
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.12103762315683131,
+    "harmonicity": 0.12621444270442028,
+    "strongest": 1,
+    "holds": 0.0026086036026500012
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Analog Snare",
+  "code": "SD",
+  "summary": {
+   "harmonicity": 0.7445768982356942,
+   "rootShare": 0.299608139854745,
+   "worstRootShare": 0.20551174221485405,
+   "fundamental": 0.2558821160996273,
+   "tuningCents": 3.6448341367575576,
+   "holds": 0.0030324900979417204,
+   "chord": 0.4566151041174582
+  },
+  "tier": "drop",
+  "why": [
+   "atonal: only 74% of its energy is on the note's harmonics",
+   "overtones take over: only 30% of its energy is on the claimed note",
+   "a chord loses its notes: only 46% of its energy is on the chord's notes",
+   "dies away completely within a second"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.21232775543383922,
+    "harmonicity": 0.6040737983766294,
+    "strongest": 2,
+    "holds": 0.0051000397382233165
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.20551174221485405,
+    "harmonicity": 0.6200633773206319,
+    "strongest": 2,
+    "holds": 0.0046083907989650594
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.28670532700904566,
+    "harmonicity": 0.7297941731827828,
+    "strongest": 2,
+    "holds": 0.0034573920869033128
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.299608139854745,
+    "harmonicity": 0.7445768982356942,
+    "strongest": 2,
+    "holds": 0.0030324900979417204
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.35115101485056244,
+    "harmonicity": 0.8028681117945012,
+    "strongest": 1,
+    "holds": 0.002616615993344208
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.5129558778504604,
+    "harmonicity": 0.8296602814406261,
+    "strongest": 1,
+    "holds": 0.0021201566707077144
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.7281157759857316,
+    "harmonicity": 0.8541932019935273,
+    "strongest": 1,
+    "holds": 0.0018493260009373584
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Analog Hi-Hat",
+  "code": "HH",
+  "summary": {
+   "harmonicity": 0.70421638005679,
+   "rootShare": 0.05140104957870523,
+   "worstRootShare": 0.036809255455595234,
+   "fundamental": 9.773051489666437e-06,
+   "tuningCents": 29.916352553439765,
+   "holds": 0.0027098702457754053,
+   "chord": 0.259859367521726
+  },
+  "tier": "drop",
+  "why": [
+   "atonal: only 70% of its energy is on the note's harmonics",
+   "overtones take over: only 5% of its energy is on the claimed note",
+   "one note goes badly wrong: only 4% on the claimed note",
+   "a chord loses its notes: only 26% of its energy is on the chord's notes",
+   "dies away completely within a second"
+  ],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.036809255455595234,
+    "harmonicity": 0.6490176848286038,
+    "strongest": 15,
+    "holds": 0.0036987427548527203
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.08107235658880516,
+    "harmonicity": 0.8418752209887382,
+    "strongest": 9,
+    "holds": 0.003671595254908501
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.04774567777903385,
+    "harmonicity": 0.8483823288014594,
+    "strongest": 5,
+    "holds": 0.002871860488430846
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.04013409313867255,
+    "harmonicity": 0.70421638005679,
+    "strongest": 5,
+    "holds": 0.0027098702457754053
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.05140104957870523,
+    "harmonicity": 0.2707715826588173,
+    "strongest": 4,
+    "holds": 0.002390771348182903
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.058843133521446676,
+    "harmonicity": 0.4457315430082757,
+    "strongest": 3,
+    "holds": 0.002380088630806142
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.614468153668401,
+    "harmonicity": 0.7388276191844156,
+    "strongest": 2,
+    "holds": 0.00246793578302968
+   }
+  ]
+ },
+ {
+  "engine": "multi",
+  "name": "Wide Saw",
+  "code": "Wide Saw",
+  "summary": {
+   "harmonicity": 0.9902529428659729,
+   "rootShare": 0.859916364940071,
+   "worstRootShare": 0.7180998982791145,
+   "fundamental": 0.8115202443403379,
+   "tuningCents": 13.488201825910195,
+   "holds": 1.0019762047328917,
+   "chord": 0.9089807199612607
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.7180998982791145,
+    "harmonicity": 0.8554009187846547,
+    "strongest": 1,
+    "holds": 0.9999997743588249
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.7861287040621454,
+    "harmonicity": 0.9245536830209975,
+    "strongest": 1,
+    "holds": 1.0033948536628219
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.8559077282722185,
+    "harmonicity": 0.9888942066945982,
+    "strongest": 1,
+    "holds": 1.0047390436909056
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.859916364940071,
+    "harmonicity": 0.9902529428659729,
+    "strongest": 1,
+    "holds": 1.0004938707060893
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.8673017122418011,
+    "harmonicity": 0.9930556829874208,
+    "strongest": 1,
+    "holds": 1.0027980140182542
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.8766601143296785,
+    "harmonicity": 0.994847566191829,
+    "strongest": 1,
+    "holds": 1.0019762047328917
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.8907690220081299,
+    "harmonicity": 0.9963884616975095,
+    "strongest": 1,
+    "holds": 1.0000525004903407
+   }
+  ]
+ },
+ {
+  "engine": "pad",
+  "name": "Soft Saw",
+  "code": "Soft Saw",
+  "summary": {
+   "harmonicity": 0.997992348890296,
+   "rootShare": 0.7255595598274158,
+   "worstRootShare": 0.7148368970525111,
+   "fundamental": 0.4950202796709851,
+   "tuningCents": 2.1530851746425674,
+   "holds": 1.8525942926673349,
+   "chord": 0.8305111093996311
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.7179160910867051,
+    "harmonicity": 0.9658972135717404,
+    "strongest": 1,
+    "holds": 1.8338857035390859
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.7255595598274158,
+    "harmonicity": 0.9921548549967422,
+    "strongest": 1,
+    "holds": 1.8604298984796936
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.7207023040430848,
+    "harmonicity": 0.9980201593135131,
+    "strongest": 1,
+    "holds": 1.8585163581275603
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.7148368970525111,
+    "harmonicity": 0.9980190414587261,
+    "strongest": 1,
+    "holds": 1.8525942926673349
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.7711348954141685,
+    "harmonicity": 0.997992348890296,
+    "strongest": 1,
+    "holds": 1.8423374837794342
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.7545342487922477,
+    "harmonicity": 0.9984017433435035,
+    "strongest": 1,
+    "holds": 1.8537427646785314
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.9375142423080423,
+    "harmonicity": 0.9976827478921613,
+    "strongest": 1,
+    "holds": 1.8506085633748597
+   }
+  ]
+ },
+ {
+  "engine": "pad",
+  "name": "Dark Saw",
+  "code": "Dark Saw",
+  "summary": {
+   "harmonicity": 0.9982744100350688,
+   "rootShare": 0.95500556845643,
+   "worstRootShare": 0.5252340470381647,
+   "fundamental": 0.36603396481260736,
+   "tuningCents": 2.1530851746425674,
+   "holds": 3.1302505725304917,
+   "chord": 0.9494894982464187
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.5252340470381647,
+    "harmonicity": 0.9773735428200685,
+    "strongest": 1,
+    "holds": 3.1233429573126186
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.7127998425067553,
+    "harmonicity": 0.994025213101872,
+    "strongest": 1,
+    "holds": 3.121773290130147
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.6700149599155456,
+    "harmonicity": 0.9980154314384033,
+    "strongest": 1,
+    "holds": 3.1226757278520063
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.95500556845643,
+    "harmonicity": 0.9982744100350688,
+    "strongest": 2,
+    "holds": 3.145707197707039
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.9904865865622815,
+    "harmonicity": 0.9984257442629662,
+    "strongest": 2,
+    "holds": 3.1302505725304917
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.9965987496603431,
+    "harmonicity": 0.9983482036152543,
+    "strongest": 1,
+    "holds": 3.1378399996116095
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.9987017681975136,
+    "harmonicity": 0.9988397607244583,
+    "strongest": 1,
+    "holds": 3.13285177971835
+   }
+  ]
+ },
+ {
+  "engine": "pad",
+  "name": "Warm Sine",
+  "code": "Warm Sine",
+  "summary": {
+   "harmonicity": 0.9981819105339871,
+   "rootShare": 0.9579575326938601,
+   "worstRootShare": 0.9128725902241893,
+   "fundamental": 0.9640365309294858,
+   "tuningCents": 2.1530851746425674,
+   "holds": 1.3226902529797007,
+   "chord": 0.9816507495381831
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.9128725902241893,
+    "harmonicity": 0.940881257792114,
+    "strongest": 1,
+    "holds": 1.3253196739073623
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.9573060851074112,
+    "harmonicity": 0.985651887117219,
+    "strongest": 1,
+    "holds": 1.3183982031425858
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.9677234869209579,
+    "harmonicity": 0.9978385634906012,
+    "strongest": 1,
+    "holds": 1.3226902529797007
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.9667236347882561,
+    "harmonicity": 0.9981819105339871,
+    "strongest": 1,
+    "holds": 1.3219914654077143
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.9648849921855405,
+    "harmonicity": 0.9986186938832827,
+    "strongest": 1,
+    "holds": 1.3230037713485785
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.9579575326938601,
+    "harmonicity": 0.9990443504467482,
+    "strongest": 1,
+    "holds": 1.3230203519762056
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.9461114232303909,
+    "harmonicity": 0.9993751437962047,
+    "strongest": 1,
+    "holds": 1.3222500520843583
+   }
+  ]
+ },
+ {
+  "engine": "pad",
+  "name": "Slow Sweep",
+  "code": "Slow Sweep",
+  "summary": {
+   "harmonicity": 0.9977200288688975,
+   "rootShare": 0.5781081153192769,
+   "worstRootShare": 0.4478807797302511,
+   "fundamental": 0.30575905253359786,
+   "tuningCents": 0.6165139142399046,
+   "holds": 2.1183365993174705,
+   "chord": 0.8349220220381425
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.5183836288826145,
+    "harmonicity": 0.9786867821324952,
+    "strongest": 1,
+    "holds": 2.1014118443621332
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.4478807797302511,
+    "harmonicity": 0.9952277324415681,
+    "strongest": 7,
+    "holds": 2.1256019665758323
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.8812585887979383,
+    "harmonicity": 0.9985869973577585,
+    "strongest": 4,
+    "holds": 2.1279454162244895
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.5781081153192769,
+    "harmonicity": 0.9977200288688975,
+    "strongest": 3,
+    "holds": 2.116837458702683
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.5698290331530202,
+    "harmonicity": 0.997996155801622,
+    "strongest": 3,
+    "holds": 2.1208763489984044
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.993522669176978,
+    "harmonicity": 0.998891496858661,
+    "strongest": 2,
+    "holds": 2.1169186303230867
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.9956394861131538,
+    "harmonicity": 0.9973600493891324,
+    "strongest": 1,
+    "holds": 2.1183365993174705
+   }
+  ]
+ },
+ {
+  "engine": "pad",
+  "name": "Long Sweep",
+  "code": "Long Sweep",
+  "summary": {
+   "harmonicity": 0.9982399693033392,
+   "rootShare": 0.7006785653576771,
+   "worstRootShare": 0.5135087709156395,
+   "fundamental": 0.3958364895008022,
+   "tuningCents": 2.1530851746425674,
+   "holds": 2.834285603719565,
+   "chord": 0.8318706572360965
+  },
+  "tier": "keep",
+  "why": [],
+  "notes": [
+   {
+    "midi": 43,
+    "rootShare": 0.6803071863005812,
+    "harmonicity": 0.9735406190512278,
+    "strongest": 1,
+    "holds": 2.8386526159056316
+   },
+   {
+    "midi": 48,
+    "rootShare": 0.585805423942603,
+    "harmonicity": 0.9938503799022322,
+    "strongest": 1,
+    "holds": 2.8448808527946277
+   },
+   {
+    "midi": 57,
+    "rootShare": 0.7006785653576771,
+    "harmonicity": 0.9981836820493133,
+    "strongest": 1,
+    "holds": 2.840283639030335
+   },
+   {
+    "midi": 60,
+    "rootShare": 0.5135087709156395,
+    "harmonicity": 0.9984965299355253,
+    "strongest": 3,
+    "holds": 2.825287508638091
+   },
+   {
+    "midi": 64,
+    "rootShare": 0.9253639003148706,
+    "harmonicity": 0.9982399693033392,
+    "strongest": 2,
+    "holds": 2.834285603719565
+   },
+   {
+    "midi": 69,
+    "rootShare": 0.9898984889793196,
+    "harmonicity": 0.9983354490945835,
+    "strongest": 1,
+    "holds": 2.830087705258716
+   },
+   {
+    "midi": 76,
+    "rootShare": 0.9979836557551329,
+    "harmonicity": 0.9985343806687782,
+    "strongest": 1,
+    "holds": 2.831985875713343
+   }
+  ]
+ }
+]

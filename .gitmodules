@@ -1,0 +1,3 @@
+[submodule "vendor/parallax"]
+	path = vendor/parallax
+	url = https://github.com/rauscha/parallax.git
