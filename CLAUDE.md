@@ -12,7 +12,8 @@ Guidance for Claude Code and other coding agents working in this repository. Peo
 - `npm test`: Vitest over `src/` and `tools/`. One file or test: `npx vitest run src/theory/theory.test.ts -t "spells"`.
 - `npm run check`: svelte-check. It prints a harmless line about failing to load Parallax's Vite config.
 - `npm run build`, then `npm run preview` to serve the build on `127.0.0.1:4173`.
-- `tools/verify/*.cjs`: browser checks against `ALMAGEST_URL` (default: the dev server). `layout.cjs` and `drive_app.cjs` are the two to run after any UI change. They need Playwright's Chromium.
+- A push to `main` deploys the public app through `.github/workflows/deploy.yml`. Check the live build afterward.
+- `tools/verify/*.cjs`: browser checks against `ALMAGEST_URL` (default: the dev server). `layout.cjs` and `drive_app.cjs` are the two to run after any UI change, and `midi.cjs` after any change to MIDI. They need Playwright's Chromium.
 - Clone with `--recurse-submodules`, since the sound engines are a submodule.
 
 ## Rules
@@ -25,6 +26,8 @@ Guidance for Claude Code and other coding agents working in this repository. Peo
 - **Log decisions** in `docs/DECISIONS.md`: what was decided, why, and how it was checked.
 
 ## Traps that have already bitten
+
+- An SVG button with `tabindex` keeps the browser's focus box after a tap, on phones too. `preventDefault` its `mousedown`, as Sustain does.
 
 - Don't set `resolve.conditions` outside tests in `vite.config.ts`. It hands the live app Svelte's server build, and every unit test still passes.
 - `noteOff` is ignored unless it names the note that voice struck, so a slide must not update `struck`.
