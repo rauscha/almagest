@@ -8,6 +8,12 @@ import { ownSeventh, ALTERATIONS, canAlter, canRaise, chordOf, circleChords, DOM
 const C: Key = { col: 0, mode: "major" };
 const Am: Key = { col: 0, mode: "minor" };
 const inKey = (key: Key) => circleChords(key).filter((c) => c.inKey);
+/** Tonal spells every tone strictly; the app shows double accidentals, C♭, F♭, E♯ and B♯ by their plain names. */
+const PLAIN_SHOWN: Record<string, string> = { Cb: "B", Fb: "E", "E#": "F", "B#": "C" };
+const asShown = (n: string) => {
+  const simple = /##|bb/.test(n) ? Note.simplify(n) : n;
+  return PLAIN_SHOWN[simple] ?? simple;
+};
 
 describe("every chord its own 7th", () => {
   const named = (key: Key) => circleChords(key).filter((c) => c.inKey).map((c) => chordOf(c.ref, key, { ...PLAIN, top: ownSeventh(c.ref, key) }).name);
@@ -137,8 +143,8 @@ describe("chord tones agree with an independent source", () => {
   });
 });
 
-describe("C♭, F♭, E♯ and B♯ are never shown", () => {
-  const AWKWARD = /^(C♭|F♭|E♯|B♯)/;
+describe("double accidentals, C♭, F♭, E♯ and B♯ are never shown", () => {
+  const AWKWARD = /^(C♭|F♭|E♯|B♯)$|♭♭|𝄫|𝄪|♯♯/;
   const alts: Alts[] = [PLAIN, ...ALTERATIONS.map((a) => toggleAlteration(PLAIN, a))];
   it("in any chord's name or notes, in any key, plain or altered", () => {
     for (let col = 0; col < 12; col++) {
@@ -148,7 +154,7 @@ describe("C♭, F♭, E♯ and B♯ are never shown", () => {
             for (const a of alts) {
               if (a.quality && !canAlter(ring, a.quality)) continue;
               const chord = chordOf({ ring, col: c }, { col, mode }, a);
-              expect(chord.name, `${chord.name} in ${col} ${mode}`).not.toMatch(AWKWARD);
+              expect(chord.name.replace(/(m|°|ø|sus|add|\d|\().*$/, ""), `${chord.name} in ${col} ${mode}`).not.toMatch(AWKWARD);
               for (const n of chord.notes) expect(n, `${chord.name} in ${col} ${mode}`).not.toMatch(AWKWARD);
             }
           }
@@ -169,6 +175,10 @@ describe("C♭, F♭, E♯ and B♯ are never shown", () => {
   it("a tone that would still be one of them takes its plain name: D♭m in F minor is D♭ E A♭", () => {
     expect(chordOf({ ring: "min", col: 4 }, { col: 8, mode: "minor" }).notes).toEqual(["D♭", "E", "A♭"]);
   });
+  it("so does a double flat or double sharp: G♭m in F minor is G♭ A D♭, and the raised V in G♯ minor is D♯ G A♯", () => {
+    expect(chordOf({ ring: "min", col: 3 }, { col: 8, mode: "minor" }).notes).toEqual(["G♭", "A", "D♭"]);
+    expect(chordOf({ ring: "min", col: 6 }, { col: 5, mode: "minor" }, { ...PLAIN, quality: "major" }).notes).toEqual(["D♯", "G", "A♯"]);
+  });
 });
 
 describe("chord notes are spelled for the key", () => {
@@ -182,9 +192,8 @@ describe("chord notes are spelled for the key", () => {
         for (const c of circleChords({ col, mode })) {
           expect(c.notes.map((n) => Note.chroma(ascii(n))), c.name).toEqual(c.pcs);
           const symbol = ascii(c.name).replace("°", "dim");
-          // Tonal spells every tone strictly; the app shows C♭, F♭, E♯ and B♯ by their plain names.
-          const plain: Record<string, string> = { Cb: "B", Fb: "E", "E#": "F", "B#": "C" };
-          expect(c.notes.map(ascii), c.name).toEqual(TonalChord.get(symbol).notes.map((n) => plain[n] ?? n));
+          // Tonal spells strictly; asShown maps that to the plain names the app shows.
+          expect(c.notes.map(ascii), c.name).toEqual(TonalChord.get(symbol).notes.map(asShown));
         }
       }
     }
@@ -324,9 +333,8 @@ describe("alterations", () => {
             if (t.empty) continue; // Tonal doesn't know every name, and names tested below stand on their own
             checked++;
             const ours = [...c.notes].map(plainNote).sort().join();
-            // Tonal spells strictly; the app shows C♭, F♭, E♯ and B♯ by their plain names.
-            const shown: Record<string, string> = { Cb: "B", Fb: "E", "E#": "F", "B#": "C" };
-            const theirs = [...t.notes].map((n) => shown[n] ?? n).sort().join();
+            // Tonal spells strictly; asShown maps that to the plain names the app shows.
+            const theirs = [...t.notes].map(asShown).sort().join();
             if (ours !== theirs) mismatches.push(`${c.name}: ${ours} vs ${theirs}`);
           }
         }

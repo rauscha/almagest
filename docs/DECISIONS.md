@@ -60,8 +60,9 @@ What was decided, why, and how it was checked. Newest at the bottom.
 - **What:** Almagest moves to `almagest.andrewrausch.com`, on GitHub Pages, built by a workflow on every push to `main`. It's a new origin, so it installs as a new app with settings starting fresh, under a new key with no migration from the earlier ones.
 - **Checked:** a fresh public clone with its submodule builds and passes its tests.
 
-## D10: No C♭, F♭, E♯ or B♯ on screen
+## D10: No C♭, F♭, E♯, B♯ or double accidentals on screen
 - **Date:** 2026-11-09.
 - **What:** those four spellings are never shown. A chord whose root would be one takes the plain name and is spelled up from it, so in F minor the chord a tritone from F is B (♯IV) and Bm (♯iv), not C♭ and C♭m, and IV in G♭ major is B. An outside chord's numeral follows the new letter; a chord in the key keeps its numeral. A tone that would still be one of them takes its plain name too, so D♭m in F minor is D♭ E A♭.
 - **Why:** strict spelling is correct but hard to read, and C♭m taught nothing a reader of Bm wouldn't already know.
 - **Checked:** a test runs every chord in every key, plain and with each pad, and finds none of the four; the Tonal comparisons map Tonal's strict spellings to the plain names. Before the change 1,018 of those chords had one.
+- **Extended the same day:** no double flat or double sharp is shown either, on the circle or in the voices. G♭m in F minor is G♭ A D♭, and the raised V in G♯ minor is D♯ G A♯. Strict spelling suits a melodic line in a key; around the circle it's only harder to read.
