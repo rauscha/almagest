@@ -164,6 +164,11 @@ function numeralFor(base: string, quality: Ring, { top, sus }: Alts): string {
 }
 
 const accidentals = (name: string) => [...name.slice(1)].reduce((n, ch) => n + (ch === "𝄪" ? 2 : ch === "♯" || ch === "♭" ? 1 : 0), 0);
+/** Spellings the app never shows, each with the plain name of the same pitch. */
+const PLAIN_NAME: Record<string, string> = { "C♭": "B", "F♭": "E", "E♯": "F", "B♯": "C" };
+const AWKWARD = new Set(Object.keys(PLAIN_NAME));
+/** A chord tone that would still be one of those (F♭ in D♭m) is shown by its plain name. */
+const plainName = (note: string) => PLAIN_NAME[note] ?? note;
 const ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII"];
 /** The scale each mode's numerals are measured from: major for major keys, natural minor for minor keys. */
 const SCALE: Record<Key["mode"], number[]> = { major: [0, 2, 4, 5, 7, 9, 11], minor: [0, 2, 3, 5, 7, 8, 10] };
@@ -215,6 +220,16 @@ export function chordOf(ref: ChordRef, key: Key, alts: Alts = PLAIN): Chord {
     rootAt = [rootAt - 12, rootAt + 12].find((p) => accidentals(noteAt(p)) <= 1) ?? rootAt;
     base = numeralSpelled(rootAt, root, key, quality, ref.ring === "dim" && !changed);
   }
+  // C♭, F♭, E♯ and B♯ are never shown: a root like that takes its plain name (B in F minor, not C♭),
+  // and the chord is spelled up from it. An outside chord's numeral follows the new letter (♯IV),
+  // unless that would need a double accidental; a chord in the key keeps its numeral.
+  if (AWKWARD.has(noteAt(rootAt))) {
+    rootAt = [rootAt - 12, rootAt + 12].find((p) => !AWKWARD.has(noteAt(p)) && accidentals(noteAt(p)) <= 1) ?? rootAt;
+    if (byNumeral) {
+      const respelled = numeralSpelled(rootAt, root, key, quality, ref.ring === "dim" && !changed);
+      if (accidentals("x" + respelled) <= 1) base = respelled;
+    }
+  }
 
   const third = alts.sus ? SUS_STEP[alts.sus] : THIRD[quality];
   const seventh = alts.top ? SEVENTH[alts.top] : undefined;
@@ -228,7 +243,7 @@ export function chordOf(ref: ChordRef, key: Key, alts: Alts = PLAIN): Chord {
     name: noteAt(rootAt) + suffix(quality, alts),
     numeral: numeralFor(base, quality, alts),
     pcs: steps.map(pcAt),
-    notes: steps.map((step) => noteAt(rootAt + step)),
+    notes: steps.map((step) => plainName(noteAt(rootAt + step))),
     keep: keepOrder({
       root,
       third: pcAt(third),

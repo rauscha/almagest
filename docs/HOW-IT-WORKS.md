@@ -12,7 +12,7 @@ In a minor key, the wedge shows the natural v. The Major pad turns it into the r
 
 ## Spelling
 
-`spell.ts` names notes by their place on the line of fifths, where C is 0, G is 1 and F is −1. Each key takes a run of positions, so a note is spelled the way the key needs it: F♯ as V of B, never G♭. A leading tone is never spelled flat. The tests check the spellings against [Tonal](https://github.com/tonaljs/tonal).
+`spell.ts` names notes by their place on the line of fifths, where C is 0, G is 1 and F is −1. Each key takes a run of positions, so a note is spelled the way the key needs it: F♯ as V of B, never G♭. A leading tone is never spelled flat. C♭, F♭, E♯ and B♯ are never shown: a chord there takes the plain name (B, not C♭, in F minor) and its numeral follows (♯IV). The tests check the spellings against [Tonal](https://github.com/tonaljs/tonal).
 
 ## Next chords
 

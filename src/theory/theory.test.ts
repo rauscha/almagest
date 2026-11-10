@@ -78,8 +78,9 @@ describe("spelling follows the key", () => {
     expect(majorName(6, C)).toBe("G♭");
     expect(majorName(5, { col: 6, mode: "major" })).toBe("C♭");
   });
-  it("every key's seven chords use each letter once", () => {
+  it("every key's seven chords use each letter once, except where a plain name replaces C♭", () => {
     for (let col = 0; col < 12; col++) {
+      if (col === 6) continue; // G♭ major: IV is shown as B, not C♭
       const key: Key = { col, mode: "major" };
       const roots = inKey(key).map((c) => c.name[0]).sort().join("");
       expect(roots, `key column ${col}`).toBe("ABCDEFG");
@@ -136,10 +137,43 @@ describe("chord tones agree with an independent source", () => {
   });
 });
 
+describe("C♭, F♭, E♯ and B♯ are never shown", () => {
+  const AWKWARD = /^(C♭|F♭|E♯|B♯)/;
+  const alts: Alts[] = [PLAIN, ...ALTERATIONS.map((a) => toggleAlteration(PLAIN, a))];
+  it("in any chord's name or notes, in any key, plain or altered", () => {
+    for (let col = 0; col < 12; col++) {
+      for (const mode of ["major", "minor"] as const) {
+        for (const ring of ["maj", "min", "dim"] as const) {
+          for (let c = 0; c < 12; c++) {
+            for (const a of alts) {
+              if (a.quality && !canAlter(ring, a.quality)) continue;
+              const chord = chordOf({ ring, col: c }, { col, mode }, a);
+              expect(chord.name, `${chord.name} in ${col} ${mode}`).not.toMatch(AWKWARD);
+              for (const n of chord.notes) expect(n, `${chord.name} in ${col} ${mode}`).not.toMatch(AWKWARD);
+            }
+          }
+        }
+      }
+    }
+  });
+  it("in F minor the chords a tritone from F are B (♯IV) and Bm (♯iv), not C♭ and C♭m", () => {
+    const Fm: Key = { col: 8, mode: "minor" };
+    const b = chordOf({ ring: "maj", col: 5 }, Fm), bm = chordOf({ ring: "min", col: 2 }, Fm);
+    expect([b.name, b.numeral, b.notes]).toEqual(["B", "♯IV", ["B", "D♯", "F♯"]]);
+    expect([bm.name, bm.numeral, bm.notes]).toEqual(["Bm", "♯iv", ["B", "D", "F♯"]]);
+  });
+  it("a chord in the key keeps its numeral: IV in G♭ major is B", () => {
+    const iv = chordOf({ ring: "maj", col: 5 }, { col: 6, mode: "major" });
+    expect([iv.name, iv.numeral, iv.notes]).toEqual(["B", "IV", ["B", "D♯", "F♯"]]);
+  });
+  it("a tone that would still be one of them takes its plain name: D♭m in F minor is D♭ E A♭", () => {
+    expect(chordOf({ ring: "min", col: 4 }, { col: 8, mode: "minor" }).notes).toEqual(["D♭", "E", "A♭"]);
+  });
+});
+
 describe("chord notes are spelled for the key", () => {
-  it("V in B major is F♯ A♯ C♯, and IV in G♭ major is C♭ E♭ G♭", () => {
+  it("V in B major is F♯ A♯ C♯", () => {
     expect(chordOf({ ring: "maj", col: 6 }, { col: 5, mode: "major" }).notes).toEqual(["F♯", "A♯", "C♯"]);
-    expect(chordOf({ ring: "maj", col: 5 }, { col: 6, mode: "major" }).notes).toEqual(["C♭", "E♭", "G♭"]);
   });
   it("match the chord's pitch classes and an independent speller, in every key", () => {
     const ascii = (s: string) => s.replaceAll("♯", "#").replaceAll("♭", "b").replaceAll("𝄪", "##");
@@ -148,7 +182,9 @@ describe("chord notes are spelled for the key", () => {
         for (const c of circleChords({ col, mode })) {
           expect(c.notes.map((n) => Note.chroma(ascii(n))), c.name).toEqual(c.pcs);
           const symbol = ascii(c.name).replace("°", "dim");
-          expect(c.notes.map(ascii), c.name).toEqual(TonalChord.get(symbol).notes);
+          // Tonal spells every tone strictly; the app shows C♭, F♭, E♯ and B♯ by their plain names.
+          const plain: Record<string, string> = { Cb: "B", Fb: "E", "E#": "F", "B#": "C" };
+          expect(c.notes.map(ascii), c.name).toEqual(TonalChord.get(symbol).notes.map((n) => plain[n] ?? n));
         }
       }
     }
@@ -288,7 +324,9 @@ describe("alterations", () => {
             if (t.empty) continue; // Tonal doesn't know every name, and names tested below stand on their own
             checked++;
             const ours = [...c.notes].map(plainNote).sort().join();
-            const theirs = [...t.notes].sort().join();
+            // Tonal spells strictly; the app shows C♭, F♭, E♯ and B♯ by their plain names.
+            const shown: Record<string, string> = { Cb: "B", Fb: "E", "E#": "F", "B#": "C" };
+            const theirs = [...t.notes].map((n) => shown[n] ?? n).sort().join();
             if (ours !== theirs) mismatches.push(`${c.name}: ${ours} vs ${theirs}`);
           }
         }
@@ -434,7 +472,11 @@ describe("an outside chord's name follows its numeral", () => {
     for (let col = 0; col < 12; col++) {
       for (const mode of ["major", "minor"] as const) {
         const key: Key = { col, mode };
-        for (const c of circleChords(key)) expect(agrees(c.name, c.numeral, key), `${c.name} ${c.numeral} in ${col} ${mode}`).toBe(true);
+        for (const c of circleChords(key)) {
+          // A chord in the key whose root would be C♭ is shown as B and keeps its numeral (IV in G♭ major).
+          if (c.inKey && c.ref.ring === "maj" && majorName(c.ref.col, key) === "C♭") continue;
+          expect(agrees(c.name, c.numeral, key), `${c.name} ${c.numeral} in ${col} ${mode}`).toBe(true);
+        }
         for (let cell = 0; cell < 12; cell++) {
           for (const quality of ["major", "minor"] as const) {
             const c = chordOf({ ring: quality === "major" ? "min" : "maj", col: cell }, key, { top: null, sus: null, quality });
