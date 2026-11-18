@@ -23,6 +23,7 @@ Guidance for Claude Code and other coding agents working in this repository. Peo
 - **Readable without color.** Every distinction must survive desaturation: size, brightness, rings, line style, shading or a label carries the meaning, and hue is only flavor. Check a grayscale screenshot.
 - **No upstream product names in the UI.** The engines derive from other projects. Credit them factually in the README and licenses, but on screen use the app's own labels ("Multi-model", "Pad synth").
 - **Modules import only `core/contract`.** `src/modules/modules.test.ts` enforces the structure, so a failure there means the structure broke.
+- **Spelling is plain, not strict (D10).** Never show C♭, F♭, E♯, B♯ or double accidentals; `src/theory/keyLens.ts` takes the plain name, and a test checks every chord in every key.
 - **Log decisions** in `docs/DECISIONS.md`: what was decided, why, and how it was checked.
 
 ## Traps that have already bitten
