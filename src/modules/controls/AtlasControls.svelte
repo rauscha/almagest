@@ -128,15 +128,16 @@
   .thumb-dot { fill: var(--ink); }
   .section { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
   select, .info, [popover] button { font: 13px var(--font-text); background: var(--ground); color: var(--ink); border: 1px solid var(--rule-2); }
-  .info { border-radius: 50%; width: 21px; height: 21px; padding: 0; }
-  .section { gap: 4px; margin-top: 8px; }
+  .info { border-radius: 50%; width: 32px; height: 32px; padding: 0; }
+  .section { gap: 4px; margin-top: 3px; }
+  select { height: 30px; }
   [popover] { max-width: min(360px, 80vw); padding: 16px; background: var(--ground); color: var(--ink); border: 1px solid var(--ink-3); font: 16px var(--font-text); }
   [popover]::backdrop { background: #080d18aa; }
   .num.altered { font-size: 12px; }
   .head-row, .row { display: grid; grid-template-columns: 16px minmax(30px, 1fr) auto 38px 36px; align-items: baseline; column-gap: 4px; }
   .head-row { margin-top: 6px; }
   .h { font: 400 11px var(--font-text); color: var(--ink-3); text-align: right; white-space: nowrap; }
-  .row { height: 27px; }
+  .row { height: 23px; }
   .star { width: 16px; height: 16px; align-self: center; }
   .star circle { fill: var(--ink); }
   .name { font-style: italic; font-size: 19px; line-height: 1; white-space: nowrap; overflow: hidden; }

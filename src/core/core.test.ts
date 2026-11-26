@@ -1902,6 +1902,36 @@ describe("7 in key", () => {
     expect(r.core.views.readout.get().name).toBe("G7sus4");
   });
 
+  it("updates the seventh in the preview, on the sounding chord, and on restrike when changing quality", () => {
+    const r = rig();
+    seven(r);
+    r.press(C);
+    const name = () => r.core.views.readout.get().name;
+    expect(r.core.views.alterations.get().options.find((p) => p.id === "minor")?.chord).toBe("Cm7");
+    tap(r, "minor");
+    expect(name()).toBe("Cm7");
+    r.lift();
+    r.press(C);
+    expect(name()).toBe("Cm7");
+    tap(r, "minor");
+    expect(name()).toBe("Cmaj7");
+    tap(r, "9");
+    tap(r, "minor");
+    expect(name()).toBe("Cm9");
+  });
+
+  it("keeps the diatonic seventh when a carried quality latch already matches the cell", () => {
+    const r = rig();
+    seven(r);
+    r.press({ ring: "min", col: 0 });
+    tap(r, "major");
+    r.lift();
+    r.press(C);
+    expect(r.core.views.readout.get().name).toBe("Cmaj7");
+    tap(r, "major");
+    expect(r.core.views.readout.get().name).toBe("Cmaj7");
+  });
+
   it("is saved with the other settings", () => {
     const saved: boolean[] = [];
     const sound: Sound = { apply: () => {}, useEngine: () => {}, useModel: () => {} };

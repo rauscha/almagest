@@ -409,6 +409,15 @@ function swipe(state: State, r: number, theta: number): Step {
  */
 export const isTop = (a: Alteration): a is Top => a === "7" || a === "maj7" || a === "9" || a === "add9";
 
+/** Recompute the key’s seventh when changing quality on a sounding chord, just as a new press would. */
+export function toggleSoundingPad(state: State, ref: ChordRef, alts: Alts, pad: Alteration): Alts {
+  const changed = toggleAlteration(alts, pad);
+  if (state.sevenInKey && (pad === "major" || pad === "minor") && !state.latched.top) {
+    return { ...changed, top: ownSeventh(ref, state.key, changed.quality) };
+  }
+  return changed;
+}
+
 function padDown(state: State, pad: Alteration, pointer: number): Step {
   const before = state.latched;
   // On a chord whose pad came from the loaded shape, the pad turns that step's color off or back on.
@@ -433,7 +442,7 @@ function padDown(state: State, pad: Alteration, pointer: number): Step {
   const current = state.current;
   if (!current || !state.sounding) return { state: held, commands: [], effects: [] };
   if (!canAlter(current.ref.ring, pad)) return { state: held, commands: [], effects: [] };
-  return alter(held, toggleAlteration(current.alts, pad));
+  return alter(held, toggleSoundingPad(state, current.ref, current.alts, pad));
 }
 
 /** A pad held for chords goes back to how the latch was when it went down; a tap stays as it is. */

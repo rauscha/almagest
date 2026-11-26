@@ -420,7 +420,7 @@ describe("contract.test: every real module behaves", () => {
     expect(pad("maj7").classList.contains("shaded")).toBe(false);
     expect(pad("Major").disabled).toBe(true); // G is already major
     expect(pad("Minor").querySelector(".out")).toBeTruthy();
-    expect(target.textContent).toContain("ON G");
+    expect(target.textContent).toContain("Alter G");
     done();
   });
 
@@ -438,14 +438,14 @@ describe("contract.test: every real module behaves", () => {
     done();
   });
 
-  it("7 in key keeps the pads three by three, and wears a ring when on", () => {
+  it("Auto 7ths sits outside the eight paired modifiers and reports its state", () => {
     const { core, target, done } = mounted("alterations", atlas.modules.alterations);
-    expect(target.querySelectorAll(".pads > .pad")).toHaveLength(9);
-    const seven = target.querySelector<HTMLButtonElement>(".pad.seven")!;
+    expect(target.querySelectorAll(".pads > .pad")).toHaveLength(8);
+    const seven = target.querySelector<HTMLButtonElement>(".section .auto")!;
     seven.click();
     flushSync();
     expect(core.state.get().sevenInKey).toBe(true);
-    expect(seven.classList.contains("engaged")).toBe(true);
+    expect(seven.getAttribute("aria-pressed")).toBe("true");
     done();
   });
 

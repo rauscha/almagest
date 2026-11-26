@@ -74,3 +74,9 @@ A returning pianist enjoyed free play and a second player recognized a cadence, 
 The table keeps each frequency on its counted triad. An arrow shows the result of playing that cell with alterations, and movement refers to the four upper voices. Keyboard presses share the touch press/release path.
 
 The C-to-Am regression is covered with Major latched. The browser smoke test traces the Andalusian cadence, then compares collections while a chord sustains.
+
+## D12: Pair the left-hand modifiers and separate Auto 7ths
+
+Four fixed rows place comparable alterations beside each other. Auto 7ths has its own switch and chord preview. A ring identifies a latch the player can release on any cell. A step-specific alteration carries a “this chord” label. Pointer-down still acts immediately; keyboard and assistive clicks can toggle the same pads.
+
+The browser smoke test clears a Major latch on sustained C, compares 9 and add9, distinguishes a guided seventh from a latch, and checks the automatic seventh on different degrees.

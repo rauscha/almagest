@@ -174,7 +174,7 @@
 
 {#if !loaded}
   <select class="guide" aria-label="Trace a progression" value="" onchange={(e) => send({ type: "shapeChosen", shape: e.currentTarget.value })}>
-    <option value="" disabled>Trace a progression…</option>
+    <option value="" disabled>Trace a progression</option>
     {#each $view.shapes as shape (shape.id)}<option value={shape.id}>{shape.label}</option>{/each}
   </select>
 {/if}
@@ -371,8 +371,8 @@
 <style>
   svg { display: block; width: 100%; height: 100%; overflow: visible; touch-action: none; }
   .cell { fill: transparent; stroke: none; pointer-events: all; }
-  .guide { position: absolute; z-index: 1; top: 0; left: 0; width: 130px; height: 26px; font: 13px var(--font-serif); color: var(--ink); background: var(--ground); border: 1px solid var(--rule-2); }
-  .cell.first { stroke: var(--ink-2); stroke-width: 1.5; }
+  .guide { position: absolute; z-index: 1; top: 0; left: 0; width: 147px; height: 42px; padding-left: 4px; font: 14px var(--font-serif); color: var(--ink); background: var(--ground); border: 1px solid var(--rule-2); }
+  .cell.first { stroke: var(--ink-2); stroke-width: 2.5; }
   .cell:focus-visible { outline: none; stroke: var(--ink); stroke-width: 3; }
   .cell.lit { fill: url(#atlas-mist); }
   .rules { fill: none; stroke: var(--rule); stroke-width: 1; pointer-events: none; }

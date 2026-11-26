@@ -31,6 +31,37 @@ async function run() {
     await page.getByLabel("About next-chord odds").tap();
     await page.getByText("Where the stars come from").waitFor();
     await page.getByRole("button", { name: "Back to playing" }).tap();
+    const pad = (name) => page.locator(".pads").getByRole("button", { name, exact: true });
+    const chord = (name) => page.locator(`[data-chord="${name}"]`);
+    await chord("Am").tap();
+    await pad("Major").tap();
+    await chord("C").tap();
+    assert.equal(await pad("Major").getAttribute("aria-pressed"), "true");
+    await pad("Major").press("Enter");
+    assert.equal(await pad("Major").getAttribute("aria-pressed"), "false");
+    await chord("Am").tap();
+    await page.locator(".readout .chord").filter({ hasText: /^Am$/ }).waitFor();
+    await pad("9").press("Space");
+    await pad("add9").tap();
+    assert.equal(await pad("9").getAttribute("aria-pressed"), "false");
+    assert.equal(await pad("add9").getAttribute("aria-pressed"), "true");
+    await pad("add9").tap();
+
+    await guide.selectOption("two-five-one");
+    await chord("Dm").tap();
+    await pad("7").getByText("this chord").waitFor();
+    assert.equal(await pad("7").getAttribute("aria-pressed"), "false");
+    const auto = page.getByRole("button", { name: "Auto 7ths" });
+    await page.getByRole("button", { name: "Put the shape away" }).press("Enter");
+    await auto.press("Enter");
+    await chord("C").tap();
+    await auto.getByText("Cmaj7", { exact: true }).waitFor();
+    await chord("Dm").tap();
+    await auto.getByText("Dm7", { exact: true }).waitFor();
+    await chord("G").tap();
+    await page.locator(".readout .chord").filter({ hasText: /^G7$/ }).waitFor();
+    assert.equal(await auto.getAttribute("aria-pressed"), "true");
+    await auto.tap();
     assert.deepEqual(errors, []);
     console.log("Passed guided cadence, keyboard playing, touch, corpus switching and odds help.");
   } finally {

@@ -202,7 +202,7 @@ function numeralSpelled(position: number, root: number, key: Key, quality: Ring,
  */
 export function ownSeventh(ref: ChordRef, key: Key, quality: Quality | null = null): Top {
   const aboveHome = mod(chordOf(ref, key).root - key.col * 7, 12);
-  return ref.ring === "maj" && !quality && (aboveHome === 0 || aboveHome === 5) ? "maj7" : "7";
+  return ref.ring === "maj" && quality !== "minor" && (aboveHome === 0 || aboveHome === 5) ? "maj7" : "7";
 }
 
 export function chordOf(ref: ChordRef, key: Key, alts: Alts = PLAIN): Chord {

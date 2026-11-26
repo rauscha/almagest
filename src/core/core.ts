@@ -1,6 +1,6 @@
 /** Holds the state, runs intents, plays the sound first, then lets modules redraw. */
 import { atom, computed, type ReadableAtom } from "nanostores";
-import { ALTERATIONS, canAlter, cellOf, chordOf, DOMINANT_7, circleChords, fitsKey, FUNCTION_WORD, hasAlteration, PLAIN, toggleAlteration } from "../theory/keyLens";
+import { ALTERATIONS, canAlter, cellOf, chordOf, DOMINANT_7, circleChords, fitsKey, FUNCTION_WORD, hasAlteration, PLAIN } from "../theory/keyLens";
 import { majorName, minorName, withOctave } from "../theory/spell";
 import { findShapes, placeShape, SHAPES, stepsPlayed } from "../theory/shapes";
 import { ownSeventh } from "../theory/keyLens";
@@ -8,7 +8,7 @@ import { nextChords, PRESETS } from "../theory/transitions";
 import { BASS_RANGE, movement, REGISTER, SPREADS, voice, voicesOf, type Voiced } from "../theory/voicing";
 import type { MidiDevice, MidiStatus } from "./contract";
 import type { Send, Slot, TendView } from "./contract";
-import { altsFor, altsWith, initialState, isTop, shapeChords, leadsOf, reduce, slideFrom, RING_CHOICES, SLIDE_CHOICES, type Effect, type Internal, type State, type VoiceCommand } from "./reduce";
+import { altsFor, altsWith, initialState, toggleSoundingPad, isTop, shapeChords, leadsOf, reduce, slideFrom, RING_CHOICES, SLIDE_CHOICES, type Effect, type Internal, type State, type VoiceCommand } from "./reduce";
 
 /** The only thing core knows about sound. `voices/bank.ts` is the real one. */
 export interface Sound {
@@ -241,9 +241,11 @@ function views(state: ReadableAtom<State>, catalog: EngineEntry[]) {
         const has = hasAlteration(now.alts, id);
         // A 7th the mode put there isn't this pad's doing, so the pad stays unringed.
         const on = has && !(s.sevenInKey && isTop(id) && !latched && !held);
-        const available = canAlter(now.ref.ring, id);
+        const applicable = canAlter(now.ref.ring, id);
+        // A latch can always be cleared, even on a cell it already agrees with.
+        const available = applicable || latched;
         // What this pad would give: the chord as it is if it has it, or with it added if it hasn't.
-        const c = chordOf(now.ref, s.key, has || !available ? now.alts : toggleAlteration(now.alts, id));
+        const c = chordOf(now.ref, s.key, has || !applicable ? now.alts : toggleSoundingPad(s, now.ref, now.alts, id));
         return { id, chord: available ? c.name : "", on, latched, held, inKey: available ? fitsKey(c, s.key) : null, available, columns: c.pcs.map(columnOf) };
       }),
       sevenInKey: s.sevenInKey,
