@@ -323,7 +323,7 @@ describe("contract.test: every real module behaves", () => {
     r.core.send(touch("up", 1));
     r.core.send(touch("down", 1, "min", 9));
     flushSync();
-    expect(r.target.querySelector(".moved")?.textContent).toBe("Moved 1 semitone");
+    expect(r.target.querySelector(".moved")?.textContent).toBe("Upper voices moved 1 semitone");
     r.done();
   });
 

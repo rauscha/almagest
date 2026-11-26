@@ -80,6 +80,7 @@ export interface TendView {
      * shape's own numeral, how many steps the trail has just played in order (`played`), and which key
      * it's drawn in. Null when none is loaded.
      */
+    shapes: { id: string; label: string }[];
     loaded: {
       numerals: string;
       name: string;
@@ -122,7 +123,7 @@ export interface TendView {
     presets: { id: string; name: string; short: string }[];
     menuOpen: boolean;
     /** The likely next chords, the same as the ribbon's, for looks that list them here. */
-    next: { name: string; numeral: string; p: number; measured: boolean; cost: number }[];
+    next: { name: string; counted: string; numeral: string; p: number; measured: boolean; cost: number }[];
   };
   /** The sound settings, behind Menu: the synth controls sit behind a menu. */
   menu: {
@@ -191,7 +192,7 @@ export interface TendView {
     /** Only the voices that changed note. */
     moves: VoiceMove[];
     /** Where a held chord might go, strongest first, the numbers behind the circle's arrows. */
-    next: { name: string; numeral: string; p: number; measured: boolean; cost: number }[];
+    next: { name: string; counted: string; numeral: string; p: number; measured: boolean; cost: number }[];
     /** Semitones the upper voices moved to reach this chord. Null on the first. */
     cost: number | null;
     /**

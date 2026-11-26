@@ -66,3 +66,11 @@ What was decided, why, and how it was checked. Newest at the bottom.
 - **Why:** strict spelling is correct but hard to read, and C♭m taught nothing a reader of Bm wouldn't already know.
 - **Checked:** a test runs every chord in every key, plain and with each pad, and finds none of the four; the Tonal comparisons map Tonal's strict spellings to the plain names. Before the change 1,018 of those chords had one.
 - **Extended the same day:** no double flat or double sharp is shown either, on the circle or in the voices. G♭m in F minor is G♭ A D♭, and the raised V in G♯ minor is D♯ G A♯. Strict spelling suits a melodic line in a key; around the circle it's only harder to read.
+
+## D11: Put the star guide and collection choice on the playing surface
+
+A returning pianist enjoyed free play and a second player recognized a cadence, but neither discovered how to trace one. The chart now offers an optional progression picker beside the stars. The first step names the chord to play. Players can change the comparison collection at the odds table, or use the existing menu controls.
+
+The table keeps each frequency on its counted triad. An arrow shows the result of playing that cell with alterations, and movement refers to the four upper voices. Keyboard presses share the touch press/release path.
+
+The C-to-Am regression is covered with Major latched. The browser smoke test traces the Andalusian cadence, then compares collections while a chord sustains.

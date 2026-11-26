@@ -151,11 +151,33 @@
   const dimSpokes = $derived([-15, 15].map((a) => [pol(RING.dim.i, homeDeg + a), pol(RING.dim.o, homeDeg + a)]));
   const ticks = [...Array(60).keys()].map((t) => ({ a: t * 6, major: t % 5 === 0 }));
   const pointer = $derived([pol(RING.dim.i - 0.5, homeDeg), pol(HUB - 6, homeDeg + 7), pol(HUB - 6, homeDeg - 7)]);
+  // Keyboard presses use the same press/release path as a finger, including sustain and ring time.
+  const keyboardPointer = -1;
+  let keyHeld = false;
+  function pressKey(e: KeyboardEvent, ref: ChordRef) {
+    if (e.key !== " " && e.key !== "Enter") return;
+    e.preventDefault();
+    if (e.repeat || keyHeld) return;
+    keyHeld = true;
+    send({ type: "touch", phase: "down", pointer: keyboardPointer, ref,
+      r: ANCHOR[ref.ring], theta: ref.col * 30, time: e.timeStamp });
+  }
+  function releaseKey(e: Event) {
+    if (!keyHeld || (e instanceof KeyboardEvent && e.key !== " " && e.key !== "Enter")) return;
+    keyHeld = false;
+    send({ type: "touch", phase: "up", pointer: keyboardPointer, ref: null, r: 0, theta: 0, time: e.timeStamp });
+  }
   const isHome = (c: CircleChord) => c.ref.ring === "dim";
 </script>
 
-<svelte:window onpointermove={report("move")} onpointerup={report("up")} onpointercancel={report("cancel")} />
+<svelte:window onblur={releaseKey} onpointermove={report("move")} onpointerup={report("up")} onpointercancel={report("cancel")} />
 
+{#if !loaded}
+  <select class="guide" aria-label="Trace a progression" value="" onchange={(e) => send({ type: "shapeChosen", shape: e.currentTarget.value })}>
+    <option value="" disabled>Trace a progression…</option>
+    {#each $view.shapes as shape (shape.id)}<option value={shape.id}>{shape.label}</option>{/each}
+  </select>
+{/if}
 <svg bind:this={svg} viewBox="-222 -222 444 444" role="group" aria-label="Circle of fifths" onpointerdown={down}>
   <defs>
     <radialGradient id="atlas-mist" gradientUnits="userSpaceOnUse" cx="0" cy="0" r={RING.maj.o}>
@@ -166,7 +188,11 @@
 
   <!-- Cells: every chord is a touch target; the key's seven are lit. -->
   {#each $view.chords as c (`${c.ref.ring}-${isHome(c) ? "home" : c.ref.col}`)}
-    <path class="cell" class:lit={c.inKey} data-ring={c.ref.ring} data-col={c.ref.col} data-chord={c.plain} d={cellPath(c.ref)} />
+    <path class="cell" role="button" tabindex="0" aria-label={`Play ${c.name}`}
+      onmousedown={(e) => e.preventDefault()}
+      onkeydown={(e) => pressKey(e, c.ref)} onkeyup={releaseKey} onblur={releaseKey}
+      class:first={!$view.current && !loaded && c.inKey && (c.numeral === "I" || c.numeral === "i")}
+      class:lit={c.inKey} data-ring={c.ref.ring} data-col={c.ref.col} data-chord={c.plain} d={cellPath(c.ref)} />
   {/each}
 
   <g class="rules">
@@ -297,7 +323,7 @@
         >{#each loaded.steps as st, i (i)}<tspan dy={i && loaded.steps[i - 1].top ? cornerSize * 0.38 : 0}>{i ? "–" : ""}{st.numeral}</tspan
           >{#if st.top}<tspan class="sup" dy={-cornerSize * 0.38} font-size={cornerSize * 0.62}>{st.top}</tspan>{/if}{/each}</text>
       <text class="loaded-name" x="-216" y="-189">{loaded.name}</text>
-      <text class="loaded-name" x="-216" y="-176">in {loaded.where}</text>
+      <text class="loaded-name" x="-216" y="-176">{loaded.played === 0 ? "Start at ① · " + loaded.steps[0].name : "in " + loaded.where}</text>
       <g class="put-away" role="button" tabindex="0" aria-label="Put the shape away"
         onclick={() => send({ type: "shapeChosen", shape: null })}
         onkeydown={(e) => (e.key === "Enter" || e.key === " ") && send({ type: "shapeChosen", shape: null })}>
@@ -345,6 +371,9 @@
 <style>
   svg { display: block; width: 100%; height: 100%; overflow: visible; touch-action: none; }
   .cell { fill: transparent; stroke: none; pointer-events: all; }
+  .guide { position: absolute; z-index: 1; top: 0; left: 0; width: 130px; height: 26px; font: 13px var(--font-serif); color: var(--ink); background: var(--ground); border: 1px solid var(--rule-2); }
+  .cell.first { stroke: var(--ink-2); stroke-width: 1.5; }
+  .cell:focus-visible { outline: none; stroke: var(--ink); stroke-width: 3; }
   .cell.lit { fill: url(#atlas-mist); }
   .rules { fill: none; stroke: var(--rule); stroke-width: 1; pointer-events: none; }
   .wedge { fill: none; stroke: var(--rule-2); stroke-width: 1; pointer-events: none; }

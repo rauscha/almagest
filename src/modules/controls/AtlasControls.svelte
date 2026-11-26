@@ -11,7 +11,7 @@
   const starR = (p: number) => 2 + 6 * strength(p);
   const starFill = (p: number) => `rgb(${FAINT.map((f, i) => Math.round(f + (CHALK[i] - f) * strength(p))).join(",")})`;
   const word = (s: string) => s[0].toUpperCase() + s.slice(1);
-  const presetName = $derived($view.presets.find((p) => p.id === $view.preset)?.name ?? "Off");
+
 
   // Voicing slider: three dots packed at Close, spread at Wide; a touch picks the nearest stop.
   const TRACK = { from: 22, to: 118, y: 14 };
@@ -73,21 +73,34 @@
     </div>
   </div>
 
-  <div class="section"><span class="cap">NEXT · {presetName.toUpperCase()}</span><span class="hair"></span></div>
+  <div class="section">
+    <label class="cap" for="next-collection">NEXT CHORD IN</label>
+    <select id="next-collection" value={$view.preset ?? ""} onchange={(e) => send({ type: "presetChanged", preset: e.currentTarget.value || null })}>
+      {#each $view.presets as p (p.id)}<option value={p.id}>{p.name}</option>{/each}
+      <option value="">Off</option>
+    </select>
+    <button class="info" popovertarget="odds-help" aria-label="About next-chord odds">?</button>
+    <div popover id="odds-help">
+      <strong>Where the stars come from</strong>
+      <p>Each percentage counts the next different chord in this collection. Repeated chords collapse, extensions count with their triad, and unclassified changes break the sequence.</p>
+      <p>An arrow shows what the cell plays after alterations. Moves add up the semitones traveled by the four upper voices. A tilde (~) marks a theory-based estimate.</p>
+      <button popovertarget="odds-help" popovertargetaction="hide">Back to playing</button>
+    </div>
+  </div>
   {#if $view.next.length}
     <div class="head-row"><span></span><span></span><span></span><span class="h">odds</span><span class="h">moves</span></div>
     {#each $view.next as n, i (n.name + i)}
       <div class="row" data-rank={i + 1}>
         <svg class="star" viewBox="-8 -8 16 16" aria-hidden="true"><circle r={starR(n.p)} style={`fill: ${starFill(n.p)}`} /></svg>
-        <span class="name">{n.name}</span>
-        <span class="num">{n.numeral}</span>
+        <span class="name">{n.counted}</span>
+        <span class="num" class:altered={n.name !== n.counted}>{n.name !== n.counted ? "→ " + n.name : n.numeral}</span>
         <span class="val">{n.measured ? "" : "~"}{pct(n.p)}</span>
         <span class="val">{n.cost} st</span>
       </div>
     {/each}
     {#if estimated}<div class="foot">~ estimated, not measured</div>{/if}
   {:else}
-    <div class="empty">{$view.preset ? "Play a chord; where it can go shows here." : "Next chords are off. Turn them on in the Menu."}</div>
+    <div class="empty">{$view.preset ? "Tap a chord on the circle to see what follows." : "Choose a collection above to show stars."}</div>
   {/if}
 </div>
 
@@ -114,8 +127,13 @@
   .thumb { fill: var(--ground); stroke: var(--ink); stroke-width: 1.6; }
   .thumb-dot { fill: var(--ink); }
   .section { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
-  .hair { flex: 1; height: 1px; background: var(--rule-2); }
-  .head-row, .row { display: grid; grid-template-columns: 18px minmax(0, 1fr) 36px 44px 40px; align-items: baseline; column-gap: 4px; }
+  select, .info, [popover] button { font: 13px var(--font-text); background: var(--ground); color: var(--ink); border: 1px solid var(--rule-2); }
+  .info { border-radius: 50%; width: 21px; height: 21px; padding: 0; }
+  .section { gap: 4px; margin-top: 8px; }
+  [popover] { max-width: min(360px, 80vw); padding: 16px; background: var(--ground); color: var(--ink); border: 1px solid var(--ink-3); font: 16px var(--font-text); }
+  [popover]::backdrop { background: #080d18aa; }
+  .num.altered { font-size: 12px; }
+  .head-row, .row { display: grid; grid-template-columns: 16px minmax(30px, 1fr) auto 38px 36px; align-items: baseline; column-gap: 4px; }
   .head-row { margin-top: 6px; }
   .h { font: 400 11px var(--font-text); color: var(--ink-3); text-align: right; white-space: nowrap; }
   .row { height: 27px; }

@@ -8,16 +8,16 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 # Never run two deploys at once; let one in flight finish.
 concurrency:
-  group: pages
+  group: pages-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: false
 
 jobs:
@@ -35,11 +35,26 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: npm run build
+      - run: npx playwright install --with-deps chromium --only-shell
+      - name: Play a guided progression in Chromium
+        env:
+          ALMAGEST_URL: http://127.0.0.1:4173/
+        run: |
+          npm run preview > /tmp/almagest-preview.log 2>&1 &
+          server=$!
+          trap 'kill "$server"' EXIT
+          curl --fail --retry 20 --retry-connrefused --retry-delay 1 "$ALMAGEST_URL" -o /dev/null
+          node tools/verify/star-guide.cjs
       - uses: actions/upload-pages-artifact@v5
+        if: github.ref == 'refs/heads/main'
         with:
           path: dist
 
   deploy:
+    if: github.ref == 'refs/heads/main'
+    permissions:
+      pages: write
+      id-token: write
     needs: build
     runs-on: ubuntu-latest
     environment:

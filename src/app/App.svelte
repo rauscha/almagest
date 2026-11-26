@@ -62,7 +62,7 @@
   {#if !isInstalled()}<div class="install">To install: in your browser's menu, choose Add to Home screen.</div>{/if}
 </div>
 
-<div class="stage" style="transform: translate(-50%, -50%) scale({scale})">
+<div class="stage" inert={phase !== "ready"} style="transform: translate(-50%, -50%) scale({scale})">
   {#each slots as [slot, [x, y, w, h]] (slot)}
     {@const Module = active[slot]}
     <div class="slot" class:overlay={slot === "menu"} data-slot={slot} style="left:{x}px;top:{y}px;width:{w}px;height:{h}px;{h ? '' : 'overflow:hidden'}">

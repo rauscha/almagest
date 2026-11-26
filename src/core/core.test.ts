@@ -1041,13 +1041,18 @@ describe("next chords (shown from the press until the sound ends)", () => {
     expect(ps).toEqual([...ps].sort((a, b) => b - a));
     expect(r.core.views.ribbon.get().next).toHaveLength(3);
   });
-  it("a latch that makes two cells the same chord lists it once, odds together", () => {
+  it("keeps the modern pop frequency on Am when the Major latch plays A", () => {
     const r = rig();
+    r.press(C);
+    const original = r.core.views.controls.get().next.find((n) => n.counted === "Am")!;
+    expect(Math.round(original.p * 100)).toBe(12);
+    r.lift();
     r.core.send({ type: "padDown", pad: "major", pointer: 20 });
     r.core.send({ type: "padUp", pointer: 20 });
-    r.press({ ring: "min", col: 2 }); // Bm made B
-    const names = r.core.views.ribbon.get().next.map((n) => n.name);
-    expect(new Set(names).size).toBe(names.length);
+    r.press(C);
+    expect(r.core.views.controls.get().next).toContainEqual(expect.objectContaining({
+      counted: "Am", name: "A", numeral: "vi", measured: true, p: original.p,
+    }));
   });
   it("they stay while the chord rings on after a lift, and go when the sound ends", () => {
     const r = rig();

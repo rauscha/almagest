@@ -87,7 +87,7 @@
       {/if}
       {#if $view.shape && shown === "below"}<span class="shape-below" data-shape={$view.shape.numerals}>{$view.shape.numerals}</span>{/if}
     </div>
-    {#if $view.moved !== null}<div class="moved">Moved {$view.moved} semitone{$view.moved === 1 ? "" : "s"}</div>{/if}
+    {#if $view.moved !== null}<div class="moved">Upper voices moved {$view.moved} semitone{$view.moved === 1 ? "" : "s"}</div>{/if}
   {:else}
     <div class="line">
       <span class="chord">{$view.key.name}</span>

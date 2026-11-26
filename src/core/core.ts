@@ -83,18 +83,13 @@ function arrowsOf(s: State): TendView["circle"]["next"] {
     return { ref: target, p, measured: source === "measured", cost: movement(voiced.upper, to.upper) };
   });
 }
-/** The next chords as the ribbon and left column list them: named as a press would give them. */
+/** Keep the odds attached to the counted triad, even when a pad changes the sound of its cell. */
 function nextNamed(s: State): TendView["ribbon"]["next"] {
-  // A latch can make two cells give the same chord (Am and A, with Major latched): that's one choice,
-  // so they're listed once, with their odds together.
-  const merged: TendView["ribbon"]["next"] = [];
-  for (const { ref, p, measured, cost } of arrowsOf(s)) {
-    const { name, numeral } = chordOf(ref, s.key, altsFor(s, ref));
-    const same = merged.find((m) => m.name === name);
-    if (same) same.p = Math.round((same.p + p) * 1e4) / 1e4;
-    else merged.push({ name, numeral, p, measured, cost });
-  }
-  return merged.sort((a, b) => b.p - a.p).slice(0, NEXT_SHOWN);
+  return arrowsOf(s).slice(0, NEXT_SHOWN).map(({ ref, p, measured, cost }) => {
+    const counted = chordOf(ref, s.key);
+    const played = chordOf(ref, s.key, altsFor(s, ref));
+    return { name: played.name, counted: counted.name, numeral: counted.numeral, p, measured, cost };
+  });
 }
 
 /** The chord a long press lit, named as it would play. */
@@ -194,6 +189,7 @@ function views(state: ReadableAtom<State>, catalog: EngineEntry[]) {
       leads: leadsNamed(s),
       trail: s.history.map((h) => h.ref),
       shape: shapeOf(s),
+      shapes: SHAPE_LIST,
       loaded: loadedOf(s),
     };
   });
