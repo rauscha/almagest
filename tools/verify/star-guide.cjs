@@ -42,7 +42,7 @@ async function run() {
     await page.getByRole("button", { name: "Menu", exact: true }).tap();
     await page.locator("[data-slot=menu]").getByRole("button", { name: "Jazz", exact: true }).tap();
     await page.locator("[data-slot=menu]").getByRole("button", { name: "Done", exact: true }).tap();
-    await page.locator('.cap[data-preset="jazz"]').waitFor();
+    await page.locator('.likely[data-preset="jazz"]').waitFor();
     assert.notDeepEqual(await odds.allTextContents(), modern);
     const pad = (name) => page.locator(".pads").getByRole("button", { name, exact: true });
     const chord = (name) => page.locator(`[data-chord="${name}"]`);
@@ -68,9 +68,9 @@ async function run() {
     await page.getByRole("button", { name: "Put the shape away" }).press("Enter");
     await auto.press("Enter");
     await chord("C").tap();
-    await auto.getByText("Cmaj7", { exact: true }).waitFor();
+    await page.locator(".readout .chord").filter({ hasText: /^Cmaj7$/ }).waitFor();
     await chord("Dm").tap();
-    await auto.getByText("Dm7", { exact: true }).waitFor();
+    await page.locator(".readout .chord").filter({ hasText: /^Dm7$/ }).waitFor();
     await chord("G").tap();
     await page.locator(".readout .chord").filter({ hasText: /^G7$/ }).waitFor();
     assert.equal(await auto.getAttribute("aria-pressed"), "true");

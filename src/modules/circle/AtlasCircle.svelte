@@ -4,7 +4,7 @@
   // trail is a constellation. One meaning per mark: size is likelihood, a ring is engaged, line style is
   // function. After a long press, the chord that leads to the one held wears a dotted ring (dotted is
   // tension, as in the function arcs) and the words "leads here", and is named as the 7th it plays. The hub is the key dial. Touch areas are the shared ones, so this plays like every circle.
-  import type { ChordRef, CircleChord, Fn, ModuleProps, TendView } from "../../core/contract";
+  import type { ChordRef, CircleChord, Fn, ModuleProps } from "../../core/contract";
   import { cellPath, pol, RING, touches, xy } from "./geometry";
 
   let { view, send }: ModuleProps<"circle"> = $props();
@@ -46,21 +46,7 @@
   const nameWidth = (c: CircleChord) => c.name.length * (c.ref.ring === "maj" ? 6.6 : 6);
 
   const chordAt = (r: ChordRef) => $view.chords.find((c) => same(c.ref, r));
-  // The stars outlast the sound by a moment, so a quick tap still shows where the chord could go.
-  // Another chord sounding clears them at once.
-  const LINGER_MS = 2500;
-  type Stars = TendView["circle"]["next"];
-  let lingering = $state.raw<Stars>([]);
-  let lingerTimer: ReturnType<typeof setTimeout> | undefined;
-  $effect(() => {
-    const now = $view.next, sounding = $view.sounding;
-    clearTimeout(lingerTimer);
-    if (now.length) lingering = now;
-    else if (sounding) lingering = [];
-    else lingerTimer = setTimeout(() => (lingering = []), LINGER_MS);
-    return () => clearTimeout(lingerTimer);
-  });
-  const stars = $derived($view.next.length ? $view.next : lingering);
+  const stars = $derived($view.next);
   const rankOf = $derived(new Map(stars.map((n, i) => [keyOf(n.ref), i])));
   const pOf = $derived(new Map(stars.map((n) => [keyOf(n.ref), n.p])));
   const homeDeg = $derived($view.key.col * 30);
@@ -186,7 +172,6 @@
   let picking = $state(false);
   let picker = $state<HTMLDivElement>();
   let opener = $state<SVGGElement>();
-  const COUNT = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
   const toggle = (e?: KeyboardEvent) => {
     if (e && e.key !== "Enter" && e.key !== " ") return;
     e?.preventDefault();
@@ -200,6 +185,10 @@
     const t = e.target as Node;
     if (picking && !picker?.contains(t) && !opener?.contains(t)) picking = false;
   }
+  const dimLit = $derived(
+    `M${xy(pol(RING.dim.o, homeDeg - 15))}A${RING.dim.o} ${RING.dim.o} 0 0 1 ${xy(pol(RING.dim.o, homeDeg + 15))}` +
+      `L${xy(pol(RING.dim.i, homeDeg + 15))}A${RING.dim.i} ${RING.dim.i} 0 0 0 ${xy(pol(RING.dim.i, homeDeg - 15))}Z`,
+  );
   const isHome = (c: CircleChord) => c.ref.ring === "dim";
 </script>
 
@@ -234,8 +223,11 @@
       onmousedown={(e) => e.preventDefault()}
       onkeydown={(e) => pressKey(e, c.ref)} onkeyup={releaseKey} onblur={releaseKey}
       class:first={!$view.current && !loaded && c.inKey && (c.numeral === "I" || c.numeral === "i")}
-      class:lit={c.inKey} data-ring={c.ref.ring} data-col={c.ref.col} data-chord={c.plain} d={cellPath(c.ref)} />
+      class:lit={c.inKey && !isHome(c)} data-ring={c.ref.ring} data-col={c.ref.col} data-chord={c.plain} d={cellPath(c.ref)} />
   {/each}
+
+  <!-- The diminished cell takes touches wider than it's drawn, so its light is drawn to its own lines. -->
+  <path class="dim-lit" d={dimLit} />
 
   <g class="rules">
     {#each [RING.maj.o, RING.min.o, RING.min.i, RING.dim.i] as r (r)}<circle {r} />{/each}
@@ -381,16 +373,15 @@
     </g>
   {/if}
 
-  <!-- The way in to the progressions: a title cartouche in the chart's open corner, as on an atlas plate. -->
+  <!-- The way in to the progressions: a framed word in the chart's open corner, well clear of the circle. One rule: a double one means selected. -->
   {#if !loaded}
     <g class="trace" bind:this={opener} role="button" tabindex="0" aria-label="Progressions" aria-expanded={picking}
       onclick={() => toggle()} onmousedown={(e) => e.preventDefault()} onkeydown={toggle}>
-      <rect class="frame" x="-221" y="-221" width="116" height="44" />
-      <rect class="frame inner" x="-218" y="-218" width="110" height="38" />
-      <polyline class="glyph-line" points="-211,-190 -204,-207 -194,-197" />
-      <circle class="glyph-star" cx="-211" cy="-190" r="2" /><circle class="glyph-star lead" cx="-204" cy="-207" r="2.8" /><circle class="glyph-star" cx="-194" cy="-197" r="1.8" />
-      <text class="trace-word" x="-186" y="-201">Progressions</text>
-      <text class="trace-sub" x="-186" y="-188">{COUNT[$view.shapes.length] ?? $view.shapes.length} to trace</text>
+      <rect class="hit" x="-221" y="-221" width="116" height="44" />
+      <rect class="frame" x="-220.5" y="-220.5" width="112" height="30" />
+      <polyline class="glyph-line" points="-212,-197 -206,-212 -197,-203" />
+      <circle class="glyph-star" cx="-212" cy="-197" r="1.9" /><circle class="glyph-star lead" cx="-206" cy="-212" r="2.6" /><circle class="glyph-star" cx="-197" cy="-203" r="1.7" />
+      <text class="trace-word" x="-189" y="-200.5">Progressions</text>
     </g>
   {/if}
 
@@ -424,8 +415,8 @@
     onkeydown={(e) => (e.key === "Enter" || e.key === " ") && send({ type: "sustainToggled" })}>
     <circle class="sustain-disc" class:on={$view.sustain} cx="201" cy="188" r="30" />
     {#if $view.sustain}<circle class="sustain-ring" cx="201" cy="188" r="25.5" />{/if}
-    <text class="sustain-word" x="201" y="189">Sustain</text>
-    <text class="sustain-state" x="201" y="203">{$view.sustain ? "on" : "off"}</text>
+    <!-- On is the second ring, as a latched pad wears a second rule: no word needed. -->
+    <text class="sustain-word" x="201" y="192.5">Sustain</text>
   </g>
 </svg>
 
@@ -434,13 +425,12 @@
   .cell { fill: transparent; stroke: none; pointer-events: all; }
   .trace { cursor: pointer; }
   .trace:focus:not(:focus-visible) { outline: none; }
-  .trace .frame { fill: var(--ground); stroke: var(--rule-2); stroke-width: 1; pointer-events: all; }
-  .trace .frame.inner { fill: none; pointer-events: none; }
+  .trace .hit { fill: transparent; pointer-events: all; }
+  .trace .frame { fill: var(--ground); stroke: var(--rule-2); stroke-width: 1; pointer-events: none; }
   .glyph-line { fill: none; stroke: var(--ink-3); stroke-width: 0.9; pointer-events: none; }
   .glyph-star { fill: var(--ink-2); pointer-events: none; }
   .glyph-star.lead { fill: var(--ink); }
   .trace-word { font: 400 14px var(--font-serif); fill: var(--ink); stroke: none; text-anchor: start; }
-  .trace-sub { font: italic 400 10.5px var(--font-serif); fill: var(--ink-2); stroke: none; text-anchor: start; }
   .change { cursor: pointer; }
   .change:focus:not(:focus-visible) { outline: none; }
   .change rect { fill: transparent; pointer-events: all; }
@@ -465,7 +455,12 @@
   .picker button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
   .cell.first { stroke: var(--ink-2); stroke-width: 2.5; }
   .cell:focus-visible { outline: none; stroke: var(--ink); stroke-width: 3; }
-  .cell.lit { fill: url(#atlas-mist); }
+  .cell.lit, .dim-lit { fill: url(#atlas-mist); }
+  .dim-lit { stroke: none; pointer-events: none; }
+  /* A tap mustn't leave the browser's focus box on a cell; a keyboard gets the heavy outline above. */
+  .cell:focus { outline: none; }
+  .cell, .trace, .change, .put-away, .sustain { -webkit-tap-highlight-color: transparent; }
+  .put-away:focus:not(:focus-visible) { outline: none; }
   .rules { fill: none; stroke: var(--rule); stroke-width: 1; pointer-events: none; }
   .wedge { fill: none; stroke: var(--rule-2); stroke-width: 1; pointer-events: none; }
   .constellation { fill: none; stroke: var(--ink); stroke-width: 1.2; stroke-linecap: round; pointer-events: none; }
@@ -522,7 +517,6 @@
   .sustain-disc.on { stroke: var(--faint); }
   .sustain-ring { fill: none; stroke: var(--ink); stroke-width: 2; pointer-events: none; }
   .sustain-word { font: 400 14px var(--font-serif); fill: var(--ink); stroke: none; }
-  .sustain-state { font: italic 400 12px var(--font-serif); fill: var(--ink-2); stroke: none; }
   .put-away { cursor: pointer; }
   .put-away rect { fill: transparent; pointer-events: all; }
 </style>

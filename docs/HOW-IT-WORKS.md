@@ -16,7 +16,7 @@ In a minor key, the wedge shows the natural v. The Major pad turns it into the r
 
 ## Next chords
 
-When you hold a chord, the chords that most often follow it light up as stars, brighter and larger for more likely, as magnitude works on a sky chart. One absolute scale (60, 30, 10 and 3 percent) is drawn in the corner, so a star means the same thing on every chord. The table shows rounded percentages for the counted triads, each with its Roman numeral. If an alteration changes what a cell plays, a small name after an arrow says what. The last column counts the semitones the four upper voices would move. The stars stay on the chart for a moment after the sound ends, so a quick tap shows them too.
+When you hold a chord, the chords that most often follow it light up as stars, brighter and larger for more likely, as magnitude works on a sky chart. One absolute scale (60, 30, 10 and 3 percent) is drawn in the corner, so a star means the same thing on every chord. The table shows rounded percentages for the counted triads, each with its Roman numeral. If an alteration changes what a cell plays, a small name after an arrow says what. The last column counts the semitones the four upper voices would move. The stars and the table stay until the next chord, like the chord's name, so a quick tap leaves time to read them.
 
 The odds are counted from real music by `tools/corpus/transitions.py`, from three published corpora:
 

@@ -67,13 +67,14 @@ export const NEXT_SHOWN = 3;
 
 /**
  * Where the chord sounding might go, likeliest first: every chord the counts give (the circle shows each,
- * brighter for likelier), of which the table lists the top three. Shown from the press until the
- * sound ends, and each is the chord a press would really give, latch included.
+ * brighter for likelier), of which the table lists the top three. Shown from the press until the next
+ * chord, like the chord's name, so there's time to read them after a tap; each is the chord a press
+ * would really give, latch included.
  */
 function arrowsOf(s: State): TendView["circle"]["next"] {
   // Mid-slide, the stars stay the chord pressed's, so the finger can move among them and back.
   const from = slideFrom(s);
-  if (!from || !s.sounding || !s.preset) return NO_ARROWS;
+  if (!from || !s.preset) return NO_ARROWS;
   const { ref, alts, voiced } = from;
   const ranked = [...nextChords(ref, s.key, s.preset, alts)].sort((a, b) => b.p - a.p);
   return ranked.map(({ ref: target, p, source }) => {

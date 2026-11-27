@@ -31,14 +31,12 @@
 <div class="wrap">
   <div class="section">
     <span class="cap">Alter <span class:chord-name={!!$view.chordName}>{$view.chordName || "chord"}</span></span>
-    <button class="auto" aria-label="Auto 7ths" aria-pressed={$view.sevenInKey}
+    <!-- A framed word like the pads, acting on touch as they do; on, it wears their double border. -->
+    <button class="auto" class:engaged={$view.sevenInKey} aria-label="Auto 7ths" aria-pressed={$view.sevenInKey}
       aria-describedby="auto-explanation"
-      onclick={() => send({ type: "sevenInKeyToggled" })}>
-      <span class="auto-copy">Auto 7ths
-        <!-- Named only while it's what sounds: a 7th or 9th pad replaces it. -->
-        {#if $view.sevenInKey && $view.sevenChord && $view.sevenChord === $view.chordName}<small>{$view.sevenChord}</small>{/if}
-      </span><span class="switch">{$view.sevenInKey ? "On" : "Off"}</span>
-    </button>
+      onpointerdown={(e) => e.button === 0 && send({ type: "sevenInKeyToggled" })}
+      onmousedown={(e) => e.preventDefault()}
+      onclick={(e) => e.detail === 0 && send({ type: "sevenInKeyToggled" })}><span>Auto 7ths</span></button>
     <span hidden id="auto-explanation">Give each chord its own seventh in the key. {$view.sevenChord}</span>
   </div>
   <div class="pads">
@@ -63,11 +61,12 @@
   .section { height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 4px; }
   .cap { font: 500 9px var(--font-caps); text-transform: uppercase; letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
   .chord-name { text-transform: none; }
-  .auto-copy { text-align: left; line-height: 1; }
-  .auto-copy small { display: block; margin-top: 2px; color: var(--ink-2); font: italic 11px/1 var(--font-text); }
-  .auto { display: flex; align-items: center; gap: 5px; height: 100%; padding: 0 2px; color: var(--ink); border: 0; background: transparent; font: 14px var(--font-serif); }
-  .switch { min-width: 24px; padding: 1px 3px; border: 1px solid var(--rule-2); border-radius: 12px; font: 11px var(--font-text); }
-  .auto[aria-pressed=true] .switch { background: var(--ink); color: var(--ground); }
+  .auto {
+    all: unset; position: relative; box-sizing: border-box; height: 30px; padding: 0 12px; touch-action: none;
+    border: 1px solid var(--rule-2); background: var(--chart-lo); color: var(--ink); font: 400 15px/28px var(--font-serif); white-space: nowrap;
+  }
+  .auto::after { content: ""; position: absolute; inset: -8px -6px; }
+  .auto.engaged { box-shadow: inset 0 0 0 1px var(--ink); outline: 1px solid var(--ink); outline-offset: -4px; }
   .pads { flex: 1; min-height: 0; display: grid; grid-template: repeat(4, 1fr) / repeat(2, 1fr); }
   .pad { all: unset; box-sizing: border-box; position: relative; min-width: 0; touch-action: none; border: 1px solid var(--rule-2); }
   .pad:nth-child(even) { border-left: 0; }
@@ -88,10 +87,6 @@
   .pad.engaged.held { outline-color: var(--ground); box-shadow: inset 0 0 0 1px var(--ink), inset 0 0 0 2px var(--ground); }
   /* Said to a screen reader, not drawn: the border says it on screen. */
   .spoken { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  /* Auto 7ths: the finger's area reaches past the words. */
-  .auto { position: relative; }
-  .auto::after { content: ""; position: absolute; inset: -5px -4px; }
-  .pad:disabled, .pad:disabled .chord { color: var(--ink-3); }
   .pad.held { background: var(--ink); color: var(--ground); }
   .pad.held .chord, .pad.held .out { color: var(--ground); }
   button:focus-visible { outline: 2px solid var(--ink); outline-offset: -3px; }

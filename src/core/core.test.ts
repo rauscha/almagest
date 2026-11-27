@@ -1022,7 +1022,7 @@ describe("alteration pads", () => {
   });
 });
 
-describe("next chords (shown from the press until the sound ends)", () => {
+describe("next chords (shown from the press until the next chord)", () => {
   const next = (r: ReturnType<typeof rig>) => r.core.views.circle.get().next;
   const names = (r: ReturnType<typeof rig>) =>
     next(r).map((a) => r.core.views.circle.get().chords.find((c) => c.ref.ring === a.ref.ring && c.ref.col === a.ref.col)?.numeral);
@@ -1054,13 +1054,16 @@ describe("next chords (shown from the press until the sound ends)", () => {
       counted: "Am", name: "A", numeral: "vi", measured: true, p: original.p,
     }));
   });
-  it("they stay while the chord rings on after a lift, and go when the sound ends", () => {
+  it("they stay after the sound ends, like the chord's name, so a quick tap leaves time to read them", () => {
     const r = rig();
     r.press(G);
     r.lift();
-    expect(next(r).length).toBeGreaterThan(0);
+    const ringing = next(r);
+    expect(ringing.length).toBeGreaterThan(0);
     r.fireTimers();
-    expect(next(r)).toEqual([]);
+    expect(r.core.state.get().sounding).toBeNull();
+    expect(next(r).map((n) => n.ref)).toEqual(ringing.map((n) => n.ref));
+    expect(r.core.views.controls.get().next.length).toBeGreaterThan(0);
   });
   it("a new chord replaces them with its own", () => {
     const r = rig();
@@ -1068,11 +1071,12 @@ describe("next chords (shown from the press until the sound ends)", () => {
     r.press(C, 2);
     expect(names(r)[0]).toBe("IV");
   });
-  it("a canceled touch clears them with the sound", () => {
+  it("a canceled touch ends the sound and leaves them, as it leaves the chord's name", () => {
     const r = rig();
     r.press(G);
     r.cancel();
-    expect(next(r)).toEqual([]);
+    expect(r.core.state.get().sounding).toBeNull();
+    expect(next(r).length).toBeGreaterThan(0);
   });
   it("from G in C major, C is the likeliest", () => {
     const r = rig();
