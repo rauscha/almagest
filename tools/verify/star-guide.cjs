@@ -10,7 +10,7 @@ async function run() {
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto(BASE);
     await page.getByRole("button", { name: "Tap to start" }).tap();
-    const guide = page.getByRole("button", { name: "Trace a progression" });
+    const guide = page.getByRole("button", { name: "Progressions", exact: true });
     const trace = async (id) => {
       await guide.tap();
       await page.locator(`.picker [data-shape="${id}"]`).tap();
@@ -21,6 +21,14 @@ async function run() {
       await page.locator(`[data-chord="${chord}"]`).press("Space");
     }
     await page.locator("[data-slot=ribbon]").getByText("ANDALUSIAN", { exact: true }).waitFor();
+    await page.locator('[data-progress="done"]').waitFor();
+    // Change straight to another from the caption, step off it, then put it away.
+    await page.getByRole("button", { name: "Change progression" }).tap();
+    await page.locator('.picker [data-shape="axis"]').tap();
+    await page.locator('[data-chord="C"]').tap();
+    await page.locator('[data-progress="1"]').waitFor();
+    await page.locator('[data-chord="D"]').tap();
+    await page.locator('[data-progress="off"]').waitFor();
     await page.getByRole("button", { name: "Put the shape away" }).press("Enter");
     await guide.waitFor();
 
@@ -36,9 +44,6 @@ async function run() {
     await page.locator("[data-slot=menu]").getByRole("button", { name: "Done", exact: true }).tap();
     await page.locator('.cap[data-preset="jazz"]').waitFor();
     assert.notDeepEqual(await odds.allTextContents(), modern);
-    await page.getByLabel("About next-chord odds").tap();
-    await page.getByText("Where the stars come from").waitFor();
-    await page.getByRole("button", { name: "Back to playing" }).tap();
     const pad = (name) => page.locator(".pads").getByRole("button", { name, exact: true });
     const chord = (name) => page.locator(`[data-chord="${name}"]`);
     await chord("Am").tap();
@@ -71,7 +76,7 @@ async function run() {
     assert.equal(await auto.getAttribute("aria-pressed"), "true");
     await auto.tap();
     assert.deepEqual(errors, []);
-    console.log("Passed guided cadence, keyboard playing, touch, corpus switching and odds help.");
+    console.log("Passed guided cadence, keyboard playing, touch, changing progression, stepping off the path and corpus switching.");
   } finally {
     await browser.close();
   }

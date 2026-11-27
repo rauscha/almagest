@@ -2,7 +2,7 @@
 import { atom, computed, type ReadableAtom } from "nanostores";
 import { ALTERATIONS, canAlter, cellOf, chordOf, DOMINANT_7, circleChords, fitsKey, FUNCTION_WORD, hasAlteration, PLAIN } from "../theory/keyLens";
 import { majorName, minorName, withOctave } from "../theory/spell";
-import { findShapes, placeShape, SHAPES, stepsPlayed } from "../theory/shapes";
+import { findShapes, leftPath, placeShape, SHAPES, stepsMatched, stepsPlayed } from "../theory/shapes";
 import { ownSeventh } from "../theory/keyLens";
 import { nextChords, PRESETS } from "../theory/transitions";
 import { BASS_RANGE, movement, REGISTER, SPREADS, voice, voicesOf, type Voiced } from "../theory/voicing";
@@ -118,12 +118,16 @@ function loadedOf(s: State): TendView["circle"]["loaded"] {
     const plain = chordOf(ref, s.key).numeral, with7 = chordOf(ref, s.key, { ...PLAIN, top: color }).numeral;
     return { ref, numeral: st.numeral, top: with7.startsWith(plain) ? with7.slice(plain.length) : color, name };
   });
+  const chords = shapeChords(s);
   return {
+    id: def.id,
+    done: stepsMatched(placed, chords) === steps.length,
+    off: leftPath(placed, chords),
     numerals: drawn.map((st) => st.numeral + st.top).join("–"),
     name: def.name,
     where: `${tonicName} ${tonic.ring === "min" ? "minor" : "major"}`,
     steps: drawn,
-    played: stepsPlayed(placed, shapeChords(s)),
+    played: stepsPlayed(placed, chords),
   };
 }
 
@@ -189,7 +193,8 @@ function views(state: ReadableAtom<State>, catalog: EngineEntry[]) {
       leads: leadsNamed(s),
       trail: s.history.map((h) => h.ref),
       shape: shapeOf(s),
-      shapes: SHAPE_LIST,
+      // Each with its numerals as they fall in this key's mode, for the list on the chart.
+      shapes: SHAPE_LIST.map((sh) => ({ ...sh, numerals: placeShape(sh.id, s.key)?.steps.map((st) => st.numeral).join(" – ") ?? "" })),
       loaded: loadedOf(s),
     };
   });

@@ -1954,6 +1954,9 @@ describe("a progression loaded from the library", () => {
     expect(r.core.views.menu.get().shape).toBe("circle");
     // With its 7ths, as it's usually played: each step names the pad and the chord it makes.
     expect(r.core.views.circle.get().loaded).toEqual({
+      id: "circle",
+      done: false,
+      off: false,
       numerals: "vi7–ii7–V7–Imaj7",
       name: "circle progression",
       where: "C major",

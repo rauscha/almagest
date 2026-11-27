@@ -87,7 +87,9 @@
       {/if}
       {#if $view.shape && shown === "below"}<span class="shape-below" data-shape={$view.shape.numerals}>{$view.shape.numerals}</span>{/if}
     </div>
-    {#if $view.moved !== null}<div class="moved">Upper voices moved {$view.moved} semitone{$view.moved === 1 ? "" : "s"}</div>{/if}
+    <!-- Finishing a progression is said in words here whenever its name didn't fit beside the chord. -->
+    {#if $view.shape && shown !== "full"}<div class="moved finished" data-finished={$view.shape.name}>{$view.shape.name[0].toUpperCase() + $view.shape.name.slice(1)}{$view.shape.where ? ` in ${$view.shape.where}` : ""} · complete</div>
+    {:else if $view.moved !== null}<div class="moved">Upper voices moved {$view.moved} semitone{$view.moved === 1 ? "" : "s"}</div>{/if}
   {:else}
     <div class="line">
       <span class="chord">{$view.key.name}</span>
@@ -125,6 +127,7 @@
   .word.quiet { font-size: 13.5px; color: var(--ink-2); }
   .term { font: 400 12.5px var(--font-text); color: var(--ink-3); }
   .moved { font: 400 12.5px var(--font-text); color: var(--ink-3); margin-top: 8px; white-space: nowrap; }
+  .moved.finished { font: italic 400 17px var(--font-serif); color: var(--ink); }
   .audio {
     position: absolute; right: 0; top: 0; font: 400 10px var(--font-text); color: var(--ink); white-space: nowrap;
     padding: 3px 7px; border: 1px solid var(--ink-2); border-radius: 999px;

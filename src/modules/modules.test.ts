@@ -5,7 +5,7 @@
  */
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { flushSync, mount, unmount, type Component } from "svelte";
 import App from "../app/App.svelte";
 import { createCore, type Sound } from "../core/core";
@@ -251,7 +251,8 @@ describe("contract.test: every real module behaves", () => {
     done();
   });
 
-  it("every likely next chord gets a star, larger and brighter for likelier, for as long as the chord sounds", () => {
+  it("every likely next chord gets a star, larger and brighter for likelier, while the chord sounds and a moment after", () => {
+    vi.useFakeTimers();
     const fired: (() => void)[] = [];
     const { core, target, done } = mounted("circle", atlas.modules.circle, { fired });
     core.send(touch("down", 1, "maj", 1)); // G
@@ -271,7 +272,20 @@ describe("contract.test: every real module behaves", () => {
     expect(target.querySelectorAll(".star.next[data-p]").length).toBe(stars.length); // still ringing
     fired.splice(0).forEach((f) => f());
     flushSync();
+    // The sound has ended; the stars stay a moment, so a quick tap still shows them, then go.
+    expect(target.querySelectorAll(".star.next[data-p]").length).toBe(stars.length);
+    vi.advanceTimersByTime(3000);
+    flushSync();
     expect(target.querySelectorAll(".star.next[data-p]")).toHaveLength(0);
+    // Another chord with next chords off clears them at once.
+    core.send(touch("down", 1, "maj", 1));
+    flushSync();
+    core.send({ type: "presetChanged", preset: null });
+    core.send(touch("up", 1));
+    core.send(touch("down", 2, "maj", 0));
+    flushSync();
+    expect(target.querySelectorAll(".star.next[data-p]")).toHaveLength(0);
+    vi.useRealTimers();
     done();
   });
 

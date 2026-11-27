@@ -80,8 +80,13 @@ export interface TendView {
      * shape's own numeral, how many steps the trail has just played in order (`played`), and which key
      * it's drawn in. Null when none is loaded.
      */
-    shapes: { id: string; label: string; name: string }[];
+    shapes: { id: string; label: string; name: string; numerals: string }[];
     loaded: {
+      id: string;
+      /** The last chords played are the whole progression: it's just been finished. */
+      done: boolean;
+      /** The last chord left the progression part-way through. */
+      off: boolean;
       numerals: string;
       name: string;
       where: string;

@@ -31,7 +31,7 @@
       </div>
 
       <div class="group">
-        <div class="cap">NEXT CHORDS</div>
+        <div class="cap">NEXT CHORDS · HOW OFTEN, IN REAL SONGS</div>
         <div class="seg">
           {#each $view.presets as p (p.id)}
             <button class:on={p.id === $view.preset} onclick={() => send({ type: "presetChanged", preset: p.id })}>{p.short}</button>
@@ -41,7 +41,7 @@
       </div>
 
       <div class="group">
-        <div class="cap">SHAPE · DRAW ONE ON THE CIRCLE</div>
+        <div class="cap">PROGRESSION · DRAW ONE ON THE CIRCLE</div>
         <div class="seg">
           <button class="shape" class:on={$view.shape === null} onclick={() => send({ type: "shapeChosen", shape: null })}>Off</button>
           {#each $view.shapes.slice(0, FIRST_ROW) as s (s.id)}
@@ -57,7 +57,7 @@
 
       <!-- Whether a loaded shape asks for its 7ths and add9s (ii7–V7–Imaj7) or plain chords. -->
       <div class="group">
-        <div class="cap">SHAPE CHORDS</div>
+        <div class="cap">PROGRESSION CHORDS</div>
         <div class="seg">
           <button class:on={!$view.colored} onclick={() => send({ type: "shapeColored", colored: false })}>Plain</button>
           <button class="colored" class:on={$view.colored} onclick={() => send({ type: "shapeColored", colored: true })}>With 7ths and add9s</button>

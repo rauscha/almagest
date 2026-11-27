@@ -4,7 +4,7 @@
   // trail is a constellation. One meaning per mark: size is likelihood, a ring is engaged, line style is
   // function. After a long press, the chord that leads to the one held wears a dotted ring (dotted is
   // tension, as in the function arcs) and the words "leads here", and is named as the 7th it plays. The hub is the key dial. Touch areas are the shared ones, so this plays like every circle.
-  import type { ChordRef, CircleChord, Fn, ModuleProps } from "../../core/contract";
+  import type { ChordRef, CircleChord, Fn, ModuleProps, TendView } from "../../core/contract";
   import { cellPath, pol, RING, touches, xy } from "./geometry";
 
   let { view, send }: ModuleProps<"circle"> = $props();
@@ -46,8 +46,23 @@
   const nameWidth = (c: CircleChord) => c.name.length * (c.ref.ring === "maj" ? 6.6 : 6);
 
   const chordAt = (r: ChordRef) => $view.chords.find((c) => same(c.ref, r));
-  const rankOf = $derived(new Map($view.next.map((n, i) => [keyOf(n.ref), i])));
-  const pOf = $derived(new Map($view.next.map((n) => [keyOf(n.ref), n.p])));
+  // The stars outlast the sound by a moment, so a quick tap still shows where the chord could go.
+  // Another chord sounding clears them at once.
+  const LINGER_MS = 2500;
+  type Stars = TendView["circle"]["next"];
+  let lingering = $state.raw<Stars>([]);
+  let lingerTimer: ReturnType<typeof setTimeout> | undefined;
+  $effect(() => {
+    const now = $view.next, sounding = $view.sounding;
+    clearTimeout(lingerTimer);
+    if (now.length) lingering = now;
+    else if (sounding) lingering = [];
+    else lingerTimer = setTimeout(() => (lingering = []), LINGER_MS);
+    return () => clearTimeout(lingerTimer);
+  });
+  const stars = $derived($view.next.length ? $view.next : lingering);
+  const rankOf = $derived(new Map(stars.map((n, i) => [keyOf(n.ref), i])));
+  const pOf = $derived(new Map(stars.map((n) => [keyOf(n.ref), n.p])));
   const homeDeg = $derived($view.key.col * 30);
 
   /** Where a chord's star sits: left of its numeral (or name, outside the key), at the numeral's height. */
@@ -171,6 +186,12 @@
   let picking = $state(false);
   let picker = $state<HTMLDivElement>();
   let opener = $state<SVGGElement>();
+  const COUNT = ["no", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"];
+  const toggle = (e?: KeyboardEvent) => {
+    if (e && e.key !== "Enter" && e.key !== " ") return;
+    e?.preventDefault();
+    picking = !picking;
+  };
   function choose(shape: string) {
     picking = false;
     send({ type: "shapeChosen", shape });
@@ -184,14 +205,19 @@
 
 <svelte:window onblur={releaseKey} onpointerdown={outside} onkeydown={(e) => e.key === "Escape" && (picking = false)} onpointermove={report("move")} onpointerup={report("up")} onpointercancel={report("cancel")} />
 
-{#if picking && !loaded}
-  <!-- The progressions to trace, in the chart's own lines. A tap outside it, or Escape, puts it away. -->
-  <div class="picker" bind:this={picker} role="dialog" aria-label="Trace a progression">
-    <div class="picker-head"><span class="picker-cap">TRACE A PROGRESSION</span>
+{#if picking}
+  <!-- The progressions, in the chart's own lines, each with its numerals. A tap outside it, or Escape, closes it. -->
+  <div class="picker" bind:this={picker} role="dialog" aria-label="Progressions">
+    <div class="picker-head"><span class="picker-cap">PROGRESSIONS</span>
       <button class="picker-close" aria-label="Close" onclick={() => (picking = false)}>×</button></div>
-    {#each $view.shapes as shape (shape.id)}
-      <button class="picker-row" data-shape={shape.id} onclick={() => choose(shape.id)}>{shape.name}</button>
-    {/each}
+    <div class="picker-rows">
+      {#each $view.shapes as shape (shape.id)}
+        <button class="picker-row" class:now={loaded?.id === shape.id} aria-current={loaded?.id === shape.id} data-shape={shape.id} onclick={() => choose(shape.id)}>
+          <span class="picker-name">{shape.name}{#if loaded?.id === shape.id}<span class="picker-on"> · on the chart</span>{/if}</span>
+          <span class="picker-numerals">{shape.numerals}</span>
+        </button>
+      {/each}
+    </div>
   </div>
 {/if}
 <svg bind:this={svg} viewBox="-222 -222 444 444" role="group" aria-label="Circle of fifths" onpointerdown={down}>
@@ -335,32 +361,41 @@
   <!-- What's loaded, in the open corner, and how to put it away. -->
   {#if loaded && figure}
     <g class="legend loaded" data-loaded={loaded.numerals}>
-      <text class="loaded-numerals" x="-216" y="-203" style:font-size="{cornerSize}px"
-        >{#each loaded.steps as st, i (i)}<tspan dy={i && loaded.steps[i - 1].top ? cornerSize * 0.38 : 0}>{i ? "–" : ""}{st.numeral}</tspan
-          >{#if st.top}<tspan class="sup" dy={-cornerSize * 0.38} font-size={cornerSize * 0.62}>{st.top}</tspan>{/if}{/each}</text>
-      <text class="loaded-name" x="-216" y="-189">{loaded.name}</text>
-      <text class="loaded-name" x="-216" y="-176">{loaded.played === 0 ? "Start at ① · " + loaded.steps[0].name : "in " + loaded.where}</text>
+      <!-- The step to play next is the heavy one; the steps behind it are dim. The whole caption opens the list, to change progression. -->
+      <g class="change" bind:this={opener} role="button" tabindex="0" aria-label="Change progression" aria-expanded={picking}
+        onclick={() => toggle()} onmousedown={(e) => e.preventDefault()} onkeydown={toggle}>
+        <rect x="-221" y="-221" width="150" height="38" />
+        <text class="loaded-numerals" x="-216" y="-203" style:font-size="{cornerSize}px"
+          >{#each loaded.steps as st, i (i)}<tspan class:past={i < loaded.played} class:next={i === loaded.played} dy={i && loaded.steps[i - 1].top ? cornerSize * 0.38 : 0}><tspan class="dash">{i ? "–" : ""}</tspan>{st.numeral}</tspan
+            >{#if st.top}<tspan class="sup" class:past={i < loaded.played} class:next={i === loaded.played} dy={-cornerSize * 0.38} font-size={cornerSize * 0.62}>{st.top}</tspan>{/if}{/each}</text>
+        <text class="loaded-name" x="-216" y="-189">{loaded.name}<tspan class="loaded-change">{"\u00a0· change"}</tspan></text>
+      </g>
+      <text class="loaded-name" class:said={loaded.done || loaded.off} x="-216" y="-176" data-progress={loaded.done ? "done" : loaded.off ? "off" : loaded.played}
+        >{loaded.done ? "Complete · again from ①" : loaded.off ? "Off the path · back to ①" : loaded.played === 0 ? "Start at ① · " + loaded.steps[0].name : "in " + loaded.where}</text>
       <g class="put-away" role="button" tabindex="0" aria-label="Put the shape away"
         onclick={() => send({ type: "shapeChosen", shape: null })}
         onkeydown={(e) => (e.key === "Enter" || e.key === " ") && send({ type: "shapeChosen", shape: null })}>
-        <rect x="-220" y="-173" width="74" height="22" />
+        <rect x="-221" y="-174" width="70" height="32" />
         <text class="small left" x="-216" y="-158">× put away</text>
       </g>
     </g>
   {/if}
 
+  <!-- The way in to the progressions: a title cartouche in the chart's open corner, as on an atlas plate. -->
   {#if !loaded}
-    <g class="trace" bind:this={opener} role="button" tabindex="0" aria-label="Trace a progression" aria-expanded={picking}
-      onclick={() => (picking = !picking)}
-      onmousedown={(e) => e.preventDefault()}
-      onkeydown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), (picking = !picking))}>
-      <rect x="-220" y="-221" width="124" height="26" />
-      <text class="trace-word" x="-212" y="-203.5">Trace a progression</text>
+    <g class="trace" bind:this={opener} role="button" tabindex="0" aria-label="Progressions" aria-expanded={picking}
+      onclick={() => toggle()} onmousedown={(e) => e.preventDefault()} onkeydown={toggle}>
+      <rect class="frame" x="-221" y="-221" width="116" height="44" />
+      <rect class="frame inner" x="-218" y="-218" width="110" height="38" />
+      <polyline class="glyph-line" points="-211,-190 -204,-207 -194,-197" />
+      <circle class="glyph-star" cx="-211" cy="-190" r="2" /><circle class="glyph-star lead" cx="-204" cy="-207" r="2.8" /><circle class="glyph-star" cx="-194" cy="-197" r="1.8" />
+      <text class="trace-word" x="-186" y="-201">Progressions</text>
+      <text class="trace-sub" x="-186" y="-188">{COUNT[$view.shapes.length] ?? $view.shapes.length} to trace</text>
     </g>
   {/if}
 
   <!-- The legends sit in the corners, beside what they explain. -->
-  {#if $view.next.length}
+  {#if stars.length}
     <g class="legend">
       <text class="cap end" x="214" y="-200">LIKELY NEXT</text>
       {#each SCALE as p, i (p)}
@@ -399,19 +434,34 @@
   .cell { fill: transparent; stroke: none; pointer-events: all; }
   .trace { cursor: pointer; }
   .trace:focus:not(:focus-visible) { outline: none; }
-  .trace rect { fill: transparent; stroke: var(--rule-2); stroke-width: 1; pointer-events: all; }
-  .trace-word { font: 400 13px var(--font-text); fill: var(--ink); stroke: var(--ground); text-anchor: start; }
+  .trace .frame { fill: var(--ground); stroke: var(--rule-2); stroke-width: 1; pointer-events: all; }
+  .trace .frame.inner { fill: none; pointer-events: none; }
+  .glyph-line { fill: none; stroke: var(--ink-3); stroke-width: 0.9; pointer-events: none; }
+  .glyph-star { fill: var(--ink-2); pointer-events: none; }
+  .glyph-star.lead { fill: var(--ink); }
+  .trace-word { font: 400 14px var(--font-serif); fill: var(--ink); stroke: none; text-anchor: start; }
+  .trace-sub { font: italic 400 10.5px var(--font-serif); fill: var(--ink-2); stroke: none; text-anchor: start; }
+  .change { cursor: pointer; }
+  .change:focus:not(:focus-visible) { outline: none; }
+  .change rect { fill: transparent; pointer-events: all; }
   .picker {
-    position: absolute; z-index: 2; top: 0; left: 0; width: 186px; box-sizing: border-box; padding: 0 10px 4px;
+    position: absolute; z-index: 2; top: 0; left: 0; width: 226px; max-height: 100%; box-sizing: border-box; padding: 0 10px 2px;
+    display: flex; flex-direction: column;
     background: var(--ground); border: 1px solid var(--rule-2); color: var(--ink); font-family: var(--font-serif);
   }
-  .picker-head { display: flex; align-items: center; justify-content: space-between; height: 30px; }
+  .picker-head { flex: none; display: flex; align-items: center; justify-content: space-between; height: 40px; }
+  .picker-rows { min-height: 0; overflow-y: auto; }
   .picker-cap { font: 500 9px var(--font-caps); letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
-  .picker-close { all: unset; width: 30px; height: 30px; margin-right: -10px; text-align: center; font: 400 18px var(--font-text); color: var(--ink-2); }
+  .picker-close { all: unset; width: 44px; height: 40px; margin-right: -10px; text-align: center; font: 400 18px/40px var(--font-text); color: var(--ink-2); }
   .picker-row {
-    all: unset; display: block; box-sizing: border-box; width: 100%; height: 31px; line-height: 30px;
-    border-top: 1px solid var(--rule); font: italic 400 15px/30px var(--font-serif); color: var(--ink); white-space: nowrap;
+    all: unset; box-sizing: border-box; width: 100%; height: 44px; display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    border-top: 1px solid var(--rule); color: var(--ink); white-space: nowrap;
   }
+  .picker-name { font: italic 400 15px/1 var(--font-serif); }
+  .picker-numerals { font: 400 12.5px/1 var(--font-serif); color: var(--ink-2); letter-spacing: 0.02em; }
+  /* The one on the chart is the heavy one, and says so. */
+  .picker-row.now .picker-name { font-weight: 600; }
+  .picker-on { font-style: normal; font-weight: 400; font-size: 11px; color: var(--ink-2); }
   .picker button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
   .cell.first { stroke: var(--ink-2); stroke-width: 2.5; }
   .cell:focus-visible { outline: none; stroke: var(--ink); stroke-width: 3; }
@@ -458,8 +508,13 @@
   .step-ring.lit { stroke: var(--ink); stroke-width: 1.3; }
   .step-n { font: 500 12.5px var(--font-text); fill: var(--ink-3); stroke-width: 3px; }
   .step-n.lit { fill: var(--ink); }
-  .loaded-numerals { font: 400 19px var(--font-serif); fill: var(--ink); text-anchor: start; }
+  .loaded-numerals { font: 400 19px var(--font-serif); fill: var(--ink-2); text-anchor: start; }
+  .loaded-numerals .past { fill: var(--ink-3); }
+  .loaded-numerals .next { fill: var(--ink); font-weight: 600; }
+  .loaded-numerals .dash { fill: var(--ink-3); font-weight: 400; }
   .loaded-name { font: italic 400 10.5px var(--font-serif); fill: var(--ink-2); text-anchor: start; }
+  .loaded-change { font-style: normal; fill: var(--ink); }
+  .loaded-name.said { fill: var(--ink); font-style: normal; }
   .sustain { cursor: pointer; }
   /* A tap mustn't leave the browser's focus box on it. A keyboard still gets one. */
   .sustain:focus:not(:focus-visible) { outline: none; }

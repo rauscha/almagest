@@ -1,8 +1,9 @@
 <script lang="ts">
   // The pads in the star atlas: four pairs, each row two versions of one idea (7 and maj7, 9 and add9,
   // sus2 and sus4, Major and Minor). Shaded ground keeps you in the key; unshaded ground plus the word
-  // "out" leaves it (line style is kept for function alone). A ring means latched: it stays for every
-  // chord until tapped off. A color the loaded shape gave this one step says "this chord" instead.
+  // "out" leaves it (line style is kept for function alone). A latched pad wears a double border, as a
+  // chart's edge is ruled: it stays for every chord until tapped off. A color the loaded progression
+  // gave this one step says "this chord" instead.
   // A pad under the finger fills solid. Auto 7ths is a mode, not a pad, so it sits in the heading.
   import type { Alteration, ModuleProps } from "../../core/contract";
 
@@ -50,7 +51,7 @@
         onpointerdown={(e) => down(e, o.id)} onclick={(e) => activate(e, o.id)}
         onkeydown={(e) => { if (e.repeat && (e.key === "Enter" || e.key === " ")) e.preventDefault(); }}>
         <span class="label" class:word={!!LABEL[o.id]}><span class="ring">{label}</span></span>
-        <span class="scope" id={`pad-scope-${o.id}`}>{temporary ? "this chord" : o.latched && !o.held ? "latched" : ""}</span>
+        <span class="scope" id={`pad-scope-${o.id}`}>{#if temporary}this chord{:else if o.latched && !o.held}<span class="spoken">latched</span>{/if}</span>
         <span class="chord" id={`pad-result-${o.id}`}>{o.available ? o.chord : "—"}{#if o.inKey === false}<span class="out">out</span>{/if}</span>
       </button>
     {/each}
@@ -82,9 +83,17 @@
   .chord { bottom: 4px; left: 13px; font: italic 12px var(--font-text); color: var(--ink-2); }
   .out { margin-left: .35em; font-style: normal; color: var(--lamp); }
   .scope { position: absolute; top: 3px; right: 4px; font: 10px var(--font-text); color: var(--ink); }
-  .pad.engaged .ring { border-color: var(--ink); }
+  /* Latched: a bright edge with a second rule just inside it. */
+  .pad.engaged { box-shadow: inset 0 0 0 1px var(--ink); outline: 1px solid var(--ink); outline-offset: -5px; z-index: 1; }
+  .pad.engaged.held { outline-color: var(--ground); box-shadow: inset 0 0 0 1px var(--ink), inset 0 0 0 2px var(--ground); }
+  /* Said to a screen reader, not drawn: the border says it on screen. */
+  .spoken { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  /* Auto 7ths: the finger's area reaches past the words. */
+  .auto { position: relative; }
+  .auto::after { content: ""; position: absolute; inset: -5px -4px; }
   .pad:disabled, .pad:disabled .chord { color: var(--ink-3); }
   .pad.held { background: var(--ink); color: var(--ground); }
   .pad.held .chord, .pad.held .out { color: var(--ground); }
   button:focus-visible { outline: 2px solid var(--ink); outline-offset: -3px; }
+  .pad.engaged:focus-visible { outline-width: 2px; outline-offset: -6px; }
 </style>
