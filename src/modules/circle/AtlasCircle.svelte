@@ -167,16 +167,32 @@
     keyHeld = false;
     send({ type: "touch", phase: "up", pointer: keyboardPointer, ref: null, r: 0, theta: 0, time: e.timeStamp });
   }
+  // The progression list opens from the chart's open corner, so it's found without the Menu.
+  let picking = $state(false);
+  let picker = $state<HTMLDivElement>();
+  let opener = $state<SVGGElement>();
+  function choose(shape: string) {
+    picking = false;
+    send({ type: "shapeChosen", shape });
+  }
+  function outside(e: PointerEvent) {
+    const t = e.target as Node;
+    if (picking && !picker?.contains(t) && !opener?.contains(t)) picking = false;
+  }
   const isHome = (c: CircleChord) => c.ref.ring === "dim";
 </script>
 
-<svelte:window onblur={releaseKey} onpointermove={report("move")} onpointerup={report("up")} onpointercancel={report("cancel")} />
+<svelte:window onblur={releaseKey} onpointerdown={outside} onkeydown={(e) => e.key === "Escape" && (picking = false)} onpointermove={report("move")} onpointerup={report("up")} onpointercancel={report("cancel")} />
 
-{#if !loaded}
-  <select class="guide" aria-label="Trace a progression" value="" onchange={(e) => send({ type: "shapeChosen", shape: e.currentTarget.value })}>
-    <option value="" disabled>Trace a progression</option>
-    {#each $view.shapes as shape (shape.id)}<option value={shape.id}>{shape.label}</option>{/each}
-  </select>
+{#if picking && !loaded}
+  <!-- The progressions to trace, in the chart's own lines. A tap outside it, or Escape, puts it away. -->
+  <div class="picker" bind:this={picker} role="dialog" aria-label="Trace a progression">
+    <div class="picker-head"><span class="picker-cap">TRACE A PROGRESSION</span>
+      <button class="picker-close" aria-label="Close" onclick={() => (picking = false)}>×</button></div>
+    {#each $view.shapes as shape (shape.id)}
+      <button class="picker-row" data-shape={shape.id} onclick={() => choose(shape.id)}>{shape.name}</button>
+    {/each}
+  </div>
 {/if}
 <svg bind:this={svg} viewBox="-222 -222 444 444" role="group" aria-label="Circle of fifths" onpointerdown={down}>
   <defs>
@@ -333,6 +349,16 @@
     </g>
   {/if}
 
+  {#if !loaded}
+    <g class="trace" bind:this={opener} role="button" tabindex="0" aria-label="Trace a progression" aria-expanded={picking}
+      onclick={() => (picking = !picking)}
+      onmousedown={(e) => e.preventDefault()}
+      onkeydown={(e) => (e.key === "Enter" || e.key === " ") && (e.preventDefault(), (picking = !picking))}>
+      <rect x="-220" y="-221" width="124" height="26" />
+      <text class="trace-word" x="-212" y="-203.5">Trace a progression</text>
+    </g>
+  {/if}
+
   <!-- The legends sit in the corners, beside what they explain. -->
   {#if $view.next.length}
     <g class="legend">
@@ -371,7 +397,22 @@
 <style>
   svg { display: block; width: 100%; height: 100%; overflow: visible; touch-action: none; }
   .cell { fill: transparent; stroke: none; pointer-events: all; }
-  .guide { position: absolute; z-index: 1; top: 0; left: 0; width: 147px; height: 42px; padding-left: 4px; font: 14px var(--font-serif); color: var(--ink); background: var(--ground); border: 1px solid var(--rule-2); }
+  .trace { cursor: pointer; }
+  .trace:focus:not(:focus-visible) { outline: none; }
+  .trace rect { fill: transparent; stroke: var(--rule-2); stroke-width: 1; pointer-events: all; }
+  .trace-word { font: 400 13px var(--font-text); fill: var(--ink); stroke: var(--ground); text-anchor: start; }
+  .picker {
+    position: absolute; z-index: 2; top: 0; left: 0; width: 186px; box-sizing: border-box; padding: 0 10px 4px;
+    background: var(--ground); border: 1px solid var(--rule-2); color: var(--ink); font-family: var(--font-serif);
+  }
+  .picker-head { display: flex; align-items: center; justify-content: space-between; height: 30px; }
+  .picker-cap { font: 500 9px var(--font-caps); letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
+  .picker-close { all: unset; width: 30px; height: 30px; margin-right: -10px; text-align: center; font: 400 18px var(--font-text); color: var(--ink-2); }
+  .picker-row {
+    all: unset; display: block; box-sizing: border-box; width: 100%; height: 31px; line-height: 30px;
+    border-top: 1px solid var(--rule); font: italic 400 15px/30px var(--font-serif); color: var(--ink); white-space: nowrap;
+  }
+  .picker button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
   .cell.first { stroke: var(--ink-2); stroke-width: 2.5; }
   .cell:focus-visible { outline: none; stroke: var(--ink); stroke-width: 3; }
   .cell.lit { fill: url(#atlas-mist); }

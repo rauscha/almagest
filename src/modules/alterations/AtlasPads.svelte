@@ -1,4 +1,9 @@
 <script lang="ts">
+  // The pads in the star atlas: four pairs, each row two versions of one idea (7 and maj7, 9 and add9,
+  // sus2 and sus4, Major and Minor). Shaded ground keeps you in the key; unshaded ground plus the word
+  // "out" leaves it (line style is kept for function alone). A ring means latched: it stays for every
+  // chord until tapped off. A color the loaded shape gave this one step says "this chord" instead.
+  // A pad under the finger fills solid. Auto 7ths is a mode, not a pad, so it sits in the heading.
   import type { Alteration, ModuleProps } from "../../core/contract";
 
   let { view, send }: ModuleProps<"alterations"> = $props();
@@ -43,7 +48,7 @@
         aria-label={label} aria-describedby={`pad-result-${o.id} pad-scope-${o.id}`}
         onpointerdown={(e) => down(e, o.id)} onclick={(e) => activate(e, o.id)}
         onkeydown={(e) => { if (e.repeat && (e.key === "Enter" || e.key === " ")) e.preventDefault(); }}>
-        <span class="label"><span class="ring">{label}</span></span>
+        <span class="label" class:word={!!LABEL[o.id]}><span class="ring">{label}</span></span>
         <span class="scope" id={`pad-scope-${o.id}`}>{temporary ? "this chord" : o.latched && !o.held ? "latched" : ""}</span>
         <span class="chord" id={`pad-result-${o.id}`}>{o.available ? o.chord : "—"}{#if o.inKey === false}<span class="out">out</span>{/if}</span>
       </button>
@@ -67,9 +72,12 @@
   .pad:nth-child(3), .pad:nth-child(4) { border-top: 0; }
   .pad:nth-child(n+5) { margin-top: 3px; }
   .pad.shaded { background: var(--chart-lo); }
+  /* Pinned in place, whatever appears beneath. */
   .label, .chord { position: absolute; left: 8px; right: 2px; white-space: nowrap; }
   .label { top: 5px; line-height: 1; }
   .ring { display: inline-block; padding: 1px 4px 2px; border: 1px solid transparent; border-radius: 12px; font-size: 20px; }
+  /* Major and Minor are words: a little smaller, so the ring clears the note at the pad's corner. */
+  .word .ring { font-size: 17px; padding: 2px 5px 3px; }
   .chord { bottom: 4px; left: 13px; font: italic 12px var(--font-text); color: var(--ink-2); }
   .out { margin-left: .35em; font-style: normal; color: var(--lamp); }
   .scope { position: absolute; top: 3px; right: 4px; font: 10px var(--font-text); color: var(--ink); }

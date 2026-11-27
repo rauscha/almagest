@@ -10,8 +10,12 @@ async function run() {
     page.on("pageerror", (error) => errors.push(error.message));
     await page.goto(BASE);
     await page.getByRole("button", { name: "Tap to start" }).tap();
-    const guide = page.getByLabel("Trace a progression");
-    await guide.selectOption("andalusian");
+    const guide = page.getByRole("button", { name: "Trace a progression" });
+    const trace = async (id) => {
+      await guide.tap();
+      await page.locator(`.picker [data-shape="${id}"]`).tap();
+    };
+    await trace("andalusian");
     await page.getByText("Start at ① · Am", { exact: true }).waitFor();
     for (const chord of ["Am", "G", "F", "E"]) {
       await page.locator(`[data-chord="${chord}"]`).press("Space");
@@ -26,7 +30,9 @@ async function run() {
     const odds = page.locator("[data-slot=controls] .row");
     await odds.first().waitFor();
     const modern = await odds.allTextContents();
-    await page.getByLabel("NEXT CHORD IN").selectOption("jazz");
+    const collection = page.locator(".collection");
+    for (let i = 0; i < 4 && (await collection.getAttribute("data-preset")) !== "jazz"; i++) await collection.tap();
+    assert.equal(await collection.getAttribute("data-preset"), "jazz");
     assert.notDeepEqual(await odds.allTextContents(), modern);
     await page.getByLabel("About next-chord odds").tap();
     await page.getByText("Where the stars come from").waitFor();
@@ -47,7 +53,7 @@ async function run() {
     assert.equal(await pad("add9").getAttribute("aria-pressed"), "true");
     await pad("add9").tap();
 
-    await guide.selectOption("two-five-one");
+    await trace("two-five-one");
     await chord("Dm").tap();
     await pad("7").getByText("this chord").waitFor();
     assert.equal(await pad("7").getAttribute("aria-pressed"), "false");

@@ -64,7 +64,7 @@ export const atlas: Skin = {
   slots: {
     practice: [24, 8, 216, 0],
     controls: [24, 14, 216, 180],
-    alterations: [24, 186, 216, 254],
+    alterations: [24, 196, 216, 244],
     readout: [262, 14, 258, 110],
     ribbon: [262, 128, 258, 300],
     circle: [534, 4, 440, 440],

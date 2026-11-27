@@ -80,3 +80,9 @@ The C-to-Am regression is covered with Major latched. The browser smoke test tra
 Four fixed rows place comparable alterations beside each other. Auto 7ths has its own switch and chord preview. A ring identifies a latch the player can release on any cell. A step-specific alteration carries a “this chord” label. Pointer-down still acts immediately; keyboard and assistive clicks can toggle the same pads.
 
 The browser smoke test clears a Major latch on sustained C, compares 9 and add9, distinguishes a guided seventh from a latch, and checks the automatic seventh on different degrees.
+
+## D13: The star guide and collection choice in the chart's own lines, and numerals in every row
+
+- **Decided:** the progression picker is a framed caption in the chart's open corner that opens the app's own list of the nine. The collection is one framed word above the odds; a tap moves to the next, Off last, with a pip per stop. The odds table always shows the Roman numeral; what an altered cell will play is a small name after an arrow, beside the counted chord. The pads give back the height D12 took, so they no longer overlap the table.
+- **Why:** the browser's own dropdowns broke the chart's look. With a pad or Auto 7ths on, the arrow had replaced the numeral in every row, and the numerals are what the table teaches.
+- **Checked:** `star-guide.cjs` traces through the new picker and steps the collection to jazz; `layout.cjs` and `drive_app.cjs` pass; a grayscale screenshot with Major latched and Auto 7ths on.

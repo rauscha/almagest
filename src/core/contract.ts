@@ -80,7 +80,7 @@ export interface TendView {
      * shape's own numeral, how many steps the trail has just played in order (`played`), and which key
      * it's drawn in. Null when none is loaded.
      */
-    shapes: { id: string; label: string }[];
+    shapes: { id: string; label: string; name: string }[];
     loaded: {
       numerals: string;
       name: string;
@@ -148,7 +148,7 @@ export interface TendView {
     /** The library of progressions to draw on the circle, and the one loaded. */
     /** MIDI out: `device` is the word for its button, a device's name or what's in the way. */
     midi: { on: boolean; device: string; channel: number; ownSound: boolean };
-    shapes: { id: string; label: string }[];
+    shapes: { id: string; label: string; name: string }[];
     shape: string | null;
     /** Shapes drawn with their usual 7ths and add9s, or plain. */
     colored: boolean;
