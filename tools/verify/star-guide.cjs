@@ -30,9 +30,11 @@ async function run() {
     const odds = page.locator("[data-slot=controls] .row");
     await odds.first().waitFor();
     const modern = await odds.allTextContents();
-    const collection = page.locator(".collection");
-    for (let i = 0; i < 4 && (await collection.getAttribute("data-preset")) !== "jazz"; i++) await collection.tap();
-    assert.equal(await collection.getAttribute("data-preset"), "jazz");
+    // The collection is a Menu setting; the chord keeps sounding while it's open.
+    await page.getByRole("button", { name: "Menu", exact: true }).tap();
+    await page.locator("[data-slot=menu]").getByRole("button", { name: "Jazz", exact: true }).tap();
+    await page.locator("[data-slot=menu]").getByRole("button", { name: "Done", exact: true }).tap();
+    await page.locator('.cap[data-preset="jazz"]').waitFor();
     assert.notDeepEqual(await odds.allTextContents(), modern);
     await page.getByLabel("About next-chord odds").tap();
     await page.getByText("Where the stars come from").waitFor();

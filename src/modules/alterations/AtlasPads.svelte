@@ -34,7 +34,8 @@
       aria-describedby="auto-explanation"
       onclick={() => send({ type: "sevenInKeyToggled" })}>
       <span class="auto-copy">Auto 7ths
-        {#if $view.sevenInKey && $view.sevenChord}<small>{$view.sevenChord}</small>{/if}
+        <!-- Named only while it's what sounds: a 7th or 9th pad replaces it. -->
+        {#if $view.sevenInKey && $view.sevenChord && $view.sevenChord === $view.chordName}<small>{$view.sevenChord}</small>{/if}
       </span><span class="switch">{$view.sevenInKey ? "On" : "Off"}</span>
     </button>
     <span hidden id="auto-explanation">Give each chord its own seventh in the key. {$view.sevenChord}</span>
@@ -59,7 +60,7 @@
 <style>
   .wrap { height: 100%; display: flex; flex-direction: column; color: var(--ink); font-family: var(--font-serif); }
   .section { height: 34px; display: flex; align-items: center; justify-content: space-between; gap: 4px; }
-  .cap { font: 500 10px var(--font-caps); text-transform: uppercase; letter-spacing: .08em; color: var(--lamp); }
+  .cap { font: 500 9px var(--font-caps); text-transform: uppercase; letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
   .chord-name { text-transform: none; }
   .auto-copy { text-align: left; line-height: 1; }
   .auto-copy small { display: block; margin-top: 2px; color: var(--ink-2); font: italic 11px/1 var(--font-text); }

@@ -83,6 +83,7 @@ The browser smoke test clears a Major latch on sustained C, compares 9 and add9,
 
 ## D13: The star guide and collection choice in the chart's own lines, and numerals in every row
 
-- **Decided:** the progression picker is a framed caption in the chart's open corner that opens the app's own list of the nine. The collection is one framed word above the odds; a tap moves to the next, Off last, with a pip per stop. The odds table always shows the Roman numeral; what an altered cell will play is a small name after an arrow, beside the counted chord. The pads give back the height D12 took, so they no longer overlap the table.
+- **Decided:** the progression picker is a framed caption in the chart's open corner that opens the app's own list of the nine. The collection stays a Menu setting, named in the table's heading: it only changes the percentages, which isn't what the surface is for. The odds table always shows the Roman numeral; what an altered cell will play is a small name after an arrow, beside the counted chord. The pads give back the height D12 took, so they no longer overlap the table.
 - **Why:** the browser's own dropdowns broke the chart's look. With a pad or Auto 7ths on, the arrow had replaced the numeral in every row, and the numerals are what the table teaches.
-- **Checked:** `star-guide.cjs` traces through the new picker and steps the collection to jazz; `layout.cjs` and `drive_app.cjs` pass; a grayscale screenshot with Major latched and Auto 7ths on.
+- **Checked:** `star-guide.cjs` traces through the new picker and changes the collection to jazz in the Menu; `layout.cjs` and `drive_app.cjs` pass; a grayscale screenshot with Major latched and Auto 7ths on.
+- **Also:** Auto 7ths names its chord only while that chord is what sounds, since a 7th or 9th pad replaces it.

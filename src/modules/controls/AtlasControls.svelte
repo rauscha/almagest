@@ -11,10 +11,7 @@
   const starR = (p: number) => 2 + 6 * strength(p);
   const starFill = (p: number) => `rgb(${FAINT.map((f, i) => Math.round(f + (CHALK[i] - f) * strength(p))).join(",")})`;
   const word = (s: string) => s[0].toUpperCase() + s.slice(1);
-  // The collection is one framed word: a tap moves to the next, and Off comes last. The pips count the stops.
-  const choices = $derived<(string | null)[]>([...$view.presets.map((p) => p.id), null]);
   const presetName = $derived($view.presets.find((p) => p.id === $view.preset)?.name ?? "Off");
-  const nextChoice = () => send({ type: "presetChanged", preset: choices[(choices.indexOf($view.preset) + 1) % choices.length] });
 
   // Voicing slider: three dots packed at Close, spread at Wide; a touch picks the nearest stop.
   const TRACK = { from: 22, to: 118, y: 14 };
@@ -77,11 +74,7 @@
   </div>
 
   <div class="section">
-    <span class="cap">NEXT IN</span>
-    <button class="collection" data-preset={$view.preset ?? "off"} aria-label={`Next chords in: ${presetName}. Tap to change.`} onclick={nextChoice}>
-      <span class="collection-name">{presetName}</span>
-      <span class="pips" aria-hidden="true">{#each choices as c (c)}<i class:now={c === $view.preset}></i>{/each}</span>
-    </button>
+    <span class="cap" data-preset={$view.preset ?? "off"}>NEXT · {presetName.toUpperCase()}</span>
     <span class="hair"></span>
     <button class="info" popovertarget="odds-help" aria-label="About next-chord odds">?</button>
     <div popover id="odds-help">
@@ -96,7 +89,7 @@
     {#each $view.next as n, i (n.name + i)}
       <div class="row" data-rank={i + 1}>
         <svg class="star" viewBox="-8 -8 16 16" aria-hidden="true"><circle r={starR(n.p)} style={`fill: ${starFill(n.p)}`} /></svg>
-        <span class="name">{n.counted}{#if n.name !== n.counted}<span class="plays"> <span class="arrow">→</span> {n.name}</span>{/if}</span>
+        <span class="name">{n.counted}{#if n.name !== n.counted}<span class="plays"><span class="arrow">→</span> {n.name}</span>{/if}</span>
         <span class="num">{n.numeral}</span>
         <span class="val">{n.measured ? "" : "~"}{pct(n.p)}</span>
         <span class="val">{n.cost} st</span>
@@ -104,7 +97,7 @@
     {/each}
     {#if estimated}<div class="foot">~ estimated, not measured</div>{/if}
   {:else}
-    <div class="empty">{$view.preset ? "Tap a chord on the circle to see what follows." : "Next chords are off. Tap Off above to show stars."}</div>
+    <div class="empty">{$view.preset ? "Tap a chord on the circle to see what follows." : "Next chords are off. Turn them on in the Menu."}</div>
   {/if}
 </div>
 
@@ -133,14 +126,6 @@
   .section { display: flex; align-items: center; }
   .section { gap: 6px; margin-top: 8px; height: 24px; }
   .hair { flex: 1; height: 1px; background: var(--rule-2); }
-  .collection {
-    all: unset; box-sizing: border-box; display: flex; align-items: center; gap: 7px; height: 24px; padding: 0 7px;
-    border: 1px solid var(--rule-2); font: 400 13px var(--font-text); color: var(--ink); white-space: nowrap;
-  }
-  /* One pip per stop: the chosen one is solid and larger, the rest are hollow. */
-  .pips { display: flex; align-items: center; gap: 3px; }
-  .pips i { box-sizing: border-box; width: 5px; height: 5px; border-radius: 50%; border: 1px solid var(--ink-3); }
-  .pips i.now { width: 7px; height: 7px; background: var(--ink); border-color: var(--ink); }
   .info, [popover] button { font: 13px var(--font-text); background: var(--ground); color: var(--ink); border: 1px solid var(--rule-2); }
   .info { flex: none; border-radius: 50%; width: 24px; height: 24px; padding: 0; color: var(--ink-2); }
   [popover] { max-width: min(360px, 80vw); padding: 16px; background: var(--ground); color: var(--ink); border: 1px solid var(--ink-3); font: 16px var(--font-text); }
@@ -148,7 +133,7 @@
   [popover] button { height: 32px; padding: 0 12px; }
   button:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
   /* What the cell will play with the pads as they are, small beside the chord the odds were counted for. */
-  .plays { font-size: 11.5px; color: var(--ink-2); }
+  .plays { margin-left: 5px; font-size: 11.5px; color: var(--ink-2); }
   .arrow { position: relative; top: -2px; font-style: normal; }
   .head-row, .row { display: grid; grid-template-columns: 16px minmax(0, 1fr) 32px 34px 32px; align-items: baseline; column-gap: 4px; }
   .head-row { margin-top: 6px; }
