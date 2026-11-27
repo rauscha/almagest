@@ -171,13 +171,27 @@ export function placeShape(id: string, key: Key): PlacedShape | null {
  * of vi–ii–V–I. A finished shape counts as none played, so a loop (the axis) starts over.
  */
 export function stepsPlayed(shape: PlacedShape, chords: ShapeChord[]): number {
+  const k = stepsMatched(shape, chords);
+  return k === shape.steps.length ? 0 : k;
+}
+
+/** How many of the shape's steps the trail's last chords are, in order: all of them when it's just been finished. */
+export function stepsMatched(shape: PlacedShape, chords: ShapeChord[]): number {
   const groups = grouped(chords);
   const n = shape.steps.length;
   for (let k = Math.min(n, groups.length); k > 0; k--) {
     const tail = groups.slice(groups.length - k);
-    if (tail.every((g, i) => g.chord.root === shape.steps[i].root && shape.steps[i].rings.includes(g.chord.ring))) return k === n ? 0 : k;
+    if (tail.every((g, i) => g.chord.root === shape.steps[i].root && shape.steps[i].rings.includes(g.chord.ring))) return k;
   }
   return 0;
+}
+
+/** True when the last chord left a shape that was under way: the one before it was on the path, and this one isn't. */
+export function leftPath(shape: PlacedShape, chords: ShapeChord[]): boolean {
+  const groups = grouped(chords);
+  if (groups.length < 2 || stepsMatched(shape, chords) > 0) return false;
+  const before = stepsMatched(shape, groups.slice(0, -1).map((g) => g.chord));
+  return before > 0 && before < shape.steps.length;
 }
 
 function match(groups: { chord: ShapeChord }[], end: number): { def: ShapeDef; start: number } | null {

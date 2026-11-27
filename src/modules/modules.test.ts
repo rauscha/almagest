@@ -251,7 +251,7 @@ describe("contract.test: every real module behaves", () => {
     done();
   });
 
-  it("every likely next chord gets a star, larger and brighter for likelier, for as long as the chord sounds", () => {
+  it("every likely next chord gets a star, larger and brighter for likelier, from the press until the next chord", () => {
     const fired: (() => void)[] = [];
     const { core, target, done } = mounted("circle", atlas.modules.circle, { fired });
     core.send(touch("down", 1, "maj", 1)); // G
@@ -270,6 +270,10 @@ describe("contract.test: every real module behaves", () => {
     flushSync();
     expect(target.querySelectorAll(".star.next[data-p]").length).toBe(stars.length); // still ringing
     fired.splice(0).forEach((f) => f());
+    flushSync();
+    // The sound has ended; the stars stay to be read, until another chord takes their place.
+    expect(target.querySelectorAll(".star.next[data-p]").length).toBe(stars.length);
+    core.send({ type: "presetChanged", preset: null });
     flushSync();
     expect(target.querySelectorAll(".star.next[data-p]")).toHaveLength(0);
     done();
@@ -297,7 +301,7 @@ describe("contract.test: every real module behaves", () => {
     core.send(touch("up", 1));
     fired.splice(0).forEach((f) => f()); // the ring ends
     flushSync();
-    expect(rows()).toEqual([]);
+    expect(rows()).toHaveLength(3); // they stay to be read until the next chord
     core.send({ type: "presetChanged", preset: "classic" });
     core.send(touch("down", 1, "min", 4)); // C♯m in C: too rare in the classic counts for a row
     flushSync();
@@ -323,7 +327,7 @@ describe("contract.test: every real module behaves", () => {
     r.core.send(touch("up", 1));
     r.core.send(touch("down", 1, "min", 9));
     flushSync();
-    expect(r.target.querySelector(".moved")?.textContent).toBe("Moved 1 semitone");
+    expect(r.target.querySelector(".moved")?.textContent).toBe("Upper voices moved 1 semitone");
     r.done();
   });
 
@@ -420,7 +424,7 @@ describe("contract.test: every real module behaves", () => {
     expect(pad("maj7").classList.contains("shaded")).toBe(false);
     expect(pad("Major").disabled).toBe(true); // G is already major
     expect(pad("Minor").querySelector(".out")).toBeTruthy();
-    expect(target.textContent).toContain("ON G");
+    expect(target.textContent).toContain("Alter G");
     done();
   });
 
@@ -438,14 +442,14 @@ describe("contract.test: every real module behaves", () => {
     done();
   });
 
-  it("7 in key keeps the pads three by three, and wears a ring when on", () => {
+  it("Auto 7ths sits outside the eight paired modifiers and reports its state", () => {
     const { core, target, done } = mounted("alterations", atlas.modules.alterations);
-    expect(target.querySelectorAll(".pads > .pad")).toHaveLength(9);
-    const seven = target.querySelector<HTMLButtonElement>(".pad.seven")!;
+    expect(target.querySelectorAll(".pads > .pad")).toHaveLength(8);
+    const seven = target.querySelector<HTMLButtonElement>(".section .auto")!;
     seven.click();
     flushSync();
     expect(core.state.get().sevenInKey).toBe(true);
-    expect(seven.classList.contains("engaged")).toBe(true);
+    expect(seven.getAttribute("aria-pressed")).toBe("true");
     done();
   });
 

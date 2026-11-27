@@ -16,7 +16,7 @@ In a minor key, the wedge shows the natural v. The Major pad turns it into the r
 
 ## Next chords
 
-When you hold a chord, the chords that most often follow it light up as stars, brighter and larger for more likely, as magnitude works on a sky chart. One absolute scale (60, 30, 10 and 3 percent) is drawn in the corner, so a star means the same thing on every chord. The table on the left gives the exact odds.
+When you hold a chord, the chords that most often follow it light up as stars, brighter and larger for more likely, as magnitude works on a sky chart. One absolute scale (60, 30, 10 and 3 percent) is drawn in the corner, so a star means the same thing on every chord. The table shows rounded percentages for the counted triads, each with its Roman numeral. If an alteration changes what a cell plays, a small name after an arrow says what. The last column counts the semitones the four upper voices would move. The stars and the table stay until the next chord, like the chord's name, so a quick tap leaves time to read them.
 
 The odds are counted from real music by `tools/corpus/transitions.py`, from three published corpora:
 
@@ -55,7 +55,7 @@ The pads add a 7, maj7, 9 or add9, suspend the chord (sus2, sus4), or switch its
 `shapes.ts` holds the named progressions: ii–V–I, the circle progression (vi–ii–V–I), the axis progression (I–V–vi–IV), the Andalusian cadence (i–♭VII–♭VI–V), the doo-wop changes (I–vi–IV–V), Pachelbel's Canon (I–V–vi–iii–IV–I–IV–V), the twelve-bar blues (I–IV–I–V–IV), the ragtime progression (III–VI–II–V–I) and the rock vamp (I–♭VII–IV).
 
 - **Recognized.** A progression is matched by root motion and chord quality, measured from its own tonic, so it's found in any key. When you play one, the readout names it, and if it isn't in the home key, says where it is ("in D minor").
-- **Loaded.** Pick one in the Menu and it's drawn on the circle as a constellation still to trace, with the next move lit. Steps you play leave the figure and become the trail.
+- **Loaded.** Tap **Progressions** on the chart or pick one in the Menu and it's drawn on the circle as a constellation still to trace, with the next move lit. Steps you play leave the figure and become the trail. The caption in the corner marks the step to play next, says when a chord leaves the path, and says when the progression is complete; tapping it opens the list again to change progression.
 - **With its 7ths.** Each progression carries the color it's usually played with: ii7–V7–Imaj7, vi7–ii7–V7–Imaj7, Iadd9–V–vi7–IVmaj7, I7–IV7–I7–V7–IV7, E7–A7–D7–G7–C in C, and V7 to end the Andalusian and the doo-wop changes. Pressing the next step plays it that way without touching a pad. A pad you've tapped or are holding wins. A Menu setting turns this off.
 
 ## Secondary dominants

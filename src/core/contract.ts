@@ -80,7 +80,13 @@ export interface TendView {
      * shape's own numeral, how many steps the trail has just played in order (`played`), and which key
      * it's drawn in. Null when none is loaded.
      */
+    shapes: { id: string; label: string; name: string; numerals: string }[];
     loaded: {
+      id: string;
+      /** The last chords played are the whole progression: it's just been finished. */
+      done: boolean;
+      /** The last chord left the progression part-way through. */
+      off: boolean;
       numerals: string;
       name: string;
       where: string;
@@ -122,7 +128,7 @@ export interface TendView {
     presets: { id: string; name: string; short: string }[];
     menuOpen: boolean;
     /** The likely next chords, the same as the ribbon's, for looks that list them here. */
-    next: { name: string; numeral: string; p: number; measured: boolean; cost: number }[];
+    next: { name: string; counted: string; numeral: string; p: number; measured: boolean; cost: number }[];
   };
   /** The sound settings, behind Menu: the synth controls sit behind a menu. */
   menu: {
@@ -147,7 +153,7 @@ export interface TendView {
     /** The library of progressions to draw on the circle, and the one loaded. */
     /** MIDI out: `device` is the word for its button, a device's name or what's in the way. */
     midi: { on: boolean; device: string; channel: number; ownSound: boolean };
-    shapes: { id: string; label: string }[];
+    shapes: { id: string; label: string; name: string }[];
     shape: string | null;
     /** Shapes drawn with their usual 7ths and add9s, or plain. */
     colored: boolean;
@@ -191,7 +197,7 @@ export interface TendView {
     /** Only the voices that changed note. */
     moves: VoiceMove[];
     /** Where a held chord might go, strongest first, the numbers behind the circle's arrows. */
-    next: { name: string; numeral: string; p: number; measured: boolean; cost: number }[];
+    next: { name: string; counted: string; numeral: string; p: number; measured: boolean; cost: number }[];
     /** Semitones the upper voices moved to reach this chord. Null on the first. */
     cost: number | null;
     /**

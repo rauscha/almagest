@@ -33,10 +33,10 @@ const broken = () => [...document.querySelectorAll(".stage button, .stage .cap, 
     await page.waitForTimeout(300);
     check(`${lookName}: nothing wraps or overflows on the main screen`, (await page.evaluate(broken)).length === 0, (await page.evaluate(broken)).join(" | "));
 
-    // Pads: nine cells touching, edge to edge.
+    // Pads: four fixed pairs, with a shared edge inside each pair.
     const gaps = await page.evaluate(() => {
       const cells = [...document.querySelectorAll(".pads .pad")].map((p) => p.getBoundingClientRect());
-      return Math.max(Math.abs(cells[1].left - cells[0].right), Math.abs(cells[3].top - cells[0].bottom));
+      return Math.max(...[0, 2, 4, 6].map((i) => Math.abs(cells[i + 1].left - cells[i].right)));
     });
     check(`${lookName}: pads share their lines, no gaps`, gaps < 0.5, `gap ${gaps.toFixed(2)} px`);
 

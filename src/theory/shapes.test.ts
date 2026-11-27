@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { findShapes, placeShape, stepsPlayed, type ShapeChord } from "./shapes";
+import { findShapes, leftPath, placeShape, stepsMatched, stepsPlayed, type ShapeChord } from "./shapes";
 import type { Key } from "./spell";
 
 const C_MAJOR: Key = { col: 0, mode: "major" };
@@ -74,6 +74,15 @@ describe("named shapes", () => {
     expect(stepsPlayed(circle, chords("C", "Am"))).toBe(1);
     expect(stepsPlayed(circle, chords("C", "Am", "Dm"))).toBe(2);
     expect(stepsPlayed(circle, chords("Am", "Dm", "Dm", "G"))).toBe(3); // a repeat is one step
+    // Finished is told apart from not started, and stepping off part-way from never having been on.
+    expect(stepsMatched(circle, chords("Am", "Dm", "G", "C"))).toBe(4);
+    expect(stepsPlayed(circle, chords("Am", "Dm", "G", "C"))).toBe(0);
+    expect(leftPath(circle, chords("Am", "Dm", "F"))).toBe(true);
+    expect(leftPath(circle, chords("Am", "Dm", "F", "F"))).toBe(true); // a repeat doesn't forgive it
+    expect(leftPath(circle, chords("Am", "Dm", "F", "E"))).toBe(false); // already off: nothing new to say
+    expect(leftPath(circle, chords("Am", "Dm", "G", "C", "F"))).toBe(false); // moving on after finishing isn't leaving
+    expect(leftPath(circle, chords("Am", "Dm", "Am"))).toBe(false); // back to the first step is a fresh start
+    expect(leftPath(circle, chords("F"))).toBe(false);
     expect(stepsPlayed(circle, chords("Am", "Dm", "F"))).toBe(0); // off the path
     expect(stepsPlayed(circle, chords("Am", "Dm", "G", "C"))).toBe(0); // finished: start again
     expect(stepsPlayed(circle, chords("Am", "Dm", "G", "C", "Am"))).toBe(1);

@@ -115,10 +115,7 @@
     </linearGradient>
   </defs>
 
-  <!-- Section rule, in the atlas manner. -->
   <text class="cap" x="0" y="11">VOICES</text>
-  <line class="rule" x1="58" y1="8" x2={W - 3} y2="8" />
-  <circle class="node" cx="58" cy="8" r="1.4" /><circle class="node" cx={W - 2} cy="8" r="1.4" />
 
   <!-- Rows: accidental rows shaded across the roll; C rows ruled and labeled. -->
   {#each keyRows as m (m)}
@@ -174,10 +171,10 @@
         <text class="bracket-name" class:now={s.now} x={(x1 + x2) / 2} y="301">{s.short}</text>
       {/each}
     {:else}
-      <line class="rule" x1={colX(0) + 6} y1="288" x2={W - 2} y2="288" />
+      <!-- The line under the trail ends at the chord now: it's what's been played, not what's to come. -->
+      <line class="rule" x1={colX(0) + 6} y1="288" x2={colX(last) + 6} y2="288" />
       {#each columns as _, j (j)}<line class="tick" x1={colX(j) + 6} y1="285.5" x2={colX(j) + 6} y2="290.5" />{/each}
     {/if}
-    <text class="small" x="0" y="291">trail</text>
   {/if}
 </svg>
 
@@ -185,7 +182,6 @@
   .ribbon { display: block; width: 100%; height: 100%; overflow: visible; }
   .cap { font: 500 9px var(--font-caps); letter-spacing: 0.14em; fill: var(--lamp); }
   .rule { stroke: var(--rule-2); stroke-width: 1; }
-  .node { fill: var(--faint); }
   .row-acc { fill: var(--chart-lo); }
   .key { fill: var(--hub); stroke: var(--ground); stroke-width: 0.6; }
   .key.acc { fill: var(--rule-2); }

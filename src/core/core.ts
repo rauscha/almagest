@@ -1,14 +1,14 @@
 /** Holds the state, runs intents, plays the sound first, then lets modules redraw. */
 import { atom, computed, type ReadableAtom } from "nanostores";
-import { ALTERATIONS, canAlter, cellOf, chordOf, DOMINANT_7, circleChords, fitsKey, FUNCTION_WORD, hasAlteration, PLAIN, toggleAlteration } from "../theory/keyLens";
+import { ALTERATIONS, canAlter, cellOf, chordOf, DOMINANT_7, circleChords, fitsKey, FUNCTION_WORD, hasAlteration, PLAIN } from "../theory/keyLens";
 import { majorName, minorName, withOctave } from "../theory/spell";
-import { findShapes, placeShape, SHAPES, stepsPlayed } from "../theory/shapes";
+import { findShapes, leftPath, placeShape, SHAPES, stepsMatched, stepsPlayed } from "../theory/shapes";
 import { ownSeventh } from "../theory/keyLens";
 import { nextChords, PRESETS } from "../theory/transitions";
 import { BASS_RANGE, movement, REGISTER, SPREADS, voice, voicesOf, type Voiced } from "../theory/voicing";
 import type { MidiDevice, MidiStatus } from "./contract";
 import type { Send, Slot, TendView } from "./contract";
-import { altsFor, altsWith, initialState, isTop, shapeChords, leadsOf, reduce, slideFrom, RING_CHOICES, SLIDE_CHOICES, type Effect, type Internal, type State, type VoiceCommand } from "./reduce";
+import { altsFor, altsWith, initialState, toggleSoundingPad, isTop, shapeChords, leadsOf, reduce, slideFrom, RING_CHOICES, SLIDE_CHOICES, type Effect, type Internal, type State, type VoiceCommand } from "./reduce";
 
 /** The only thing core knows about sound. `voices/bank.ts` is the real one. */
 export interface Sound {
@@ -67,13 +67,14 @@ export const NEXT_SHOWN = 3;
 
 /**
  * Where the chord sounding might go, likeliest first: every chord the counts give (the circle shows each,
- * brighter for likelier), of which the table lists the top three. Shown from the press until the
- * sound ends, and each is the chord a press would really give, latch included.
+ * brighter for likelier), of which the table lists the top three. Shown from the press until the next
+ * chord, like the chord's name, so there's time to read them after a tap; each is the chord a press
+ * would really give, latch included.
  */
 function arrowsOf(s: State): TendView["circle"]["next"] {
   // Mid-slide, the stars stay the chord pressed's, so the finger can move among them and back.
   const from = slideFrom(s);
-  if (!from || !s.sounding || !s.preset) return NO_ARROWS;
+  if (!from || !s.preset) return NO_ARROWS;
   const { ref, alts, voiced } = from;
   const ranked = [...nextChords(ref, s.key, s.preset, alts)].sort((a, b) => b.p - a.p);
   return ranked.map(({ ref: target, p, source }) => {
@@ -83,18 +84,13 @@ function arrowsOf(s: State): TendView["circle"]["next"] {
     return { ref: target, p, measured: source === "measured", cost: movement(voiced.upper, to.upper) };
   });
 }
-/** The next chords as the ribbon and left column list them: named as a press would give them. */
+/** Keep the odds attached to the counted triad, even when a pad changes the sound of its cell. */
 function nextNamed(s: State): TendView["ribbon"]["next"] {
-  // A latch can make two cells give the same chord (Am and A, with Major latched): that's one choice,
-  // so they're listed once, with their odds together.
-  const merged: TendView["ribbon"]["next"] = [];
-  for (const { ref, p, measured, cost } of arrowsOf(s)) {
-    const { name, numeral } = chordOf(ref, s.key, altsFor(s, ref));
-    const same = merged.find((m) => m.name === name);
-    if (same) same.p = Math.round((same.p + p) * 1e4) / 1e4;
-    else merged.push({ name, numeral, p, measured, cost });
-  }
-  return merged.sort((a, b) => b.p - a.p).slice(0, NEXT_SHOWN);
+  return arrowsOf(s).slice(0, NEXT_SHOWN).map(({ ref, p, measured, cost }) => {
+    const counted = chordOf(ref, s.key);
+    const played = chordOf(ref, s.key, altsFor(s, ref));
+    return { name: played.name, counted: counted.name, numeral: counted.numeral, p, measured, cost };
+  });
 }
 
 /** The chord a long press lit, named as it would play. */
@@ -123,19 +119,23 @@ function loadedOf(s: State): TendView["circle"]["loaded"] {
     const plain = chordOf(ref, s.key).numeral, with7 = chordOf(ref, s.key, { ...PLAIN, top: color }).numeral;
     return { ref, numeral: st.numeral, top: with7.startsWith(plain) ? with7.slice(plain.length) : color, name };
   });
+  const chords = shapeChords(s);
   return {
+    id: def.id,
+    done: stepsMatched(placed, chords) === steps.length,
+    off: leftPath(placed, chords),
     numerals: drawn.map((st) => st.numeral + st.top).join("–"),
     name: def.name,
     where: `${tonicName} ${tonic.ring === "min" ? "minor" : "major"}`,
     steps: drawn,
-    played: stepsPlayed(placed, shapeChords(s)),
+    played: stepsPlayed(placed, chords),
   };
 }
 
 /** The Menu's order, as they'd be learned. */
 const SHAPE_LIST = ["two-five-one", "circle", "axis", "andalusian", "doo-wop", "canon", "blues", "ragtime", "rock"].map((id) => {
   const d = SHAPES.find((x) => x.id === id)!;
-  return { id: d.id, label: d.label };
+  return { id: d.id, label: d.label, name: d.name[0].toUpperCase() + d.name.slice(1) };
 });
 
 /** The shape the chord now completes, if the trail ends in one. */
@@ -194,6 +194,8 @@ function views(state: ReadableAtom<State>, catalog: EngineEntry[]) {
       leads: leadsNamed(s),
       trail: s.history.map((h) => h.ref),
       shape: shapeOf(s),
+      // Each with its numerals as they fall in this key's mode, for the list on the chart.
+      shapes: SHAPE_LIST.map((sh) => ({ ...sh, numerals: placeShape(sh.id, s.key)?.steps.map((st) => st.numeral).join(" – ") ?? "" })),
       loaded: loadedOf(s),
     };
   });
@@ -245,9 +247,11 @@ function views(state: ReadableAtom<State>, catalog: EngineEntry[]) {
         const has = hasAlteration(now.alts, id);
         // A 7th the mode put there isn't this pad's doing, so the pad stays unringed.
         const on = has && !(s.sevenInKey && isTop(id) && !latched && !held);
-        const available = canAlter(now.ref.ring, id);
+        const applicable = canAlter(now.ref.ring, id);
+        // A latch can always be cleared, even on a cell it already agrees with.
+        const available = applicable || latched;
         // What this pad would give: the chord as it is if it has it, or with it added if it hasn't.
-        const c = chordOf(now.ref, s.key, has || !available ? now.alts : toggleAlteration(now.alts, id));
+        const c = chordOf(now.ref, s.key, has || !applicable ? now.alts : toggleSoundingPad(s, now.ref, now.alts, id));
         return { id, chord: available ? c.name : "", on, latched, held, inKey: available ? fitsKey(c, s.key) : null, available, columns: c.pcs.map(columnOf) };
       }),
       sevenInKey: s.sevenInKey,

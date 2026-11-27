@@ -46,8 +46,9 @@
   const nameWidth = (c: CircleChord) => c.name.length * (c.ref.ring === "maj" ? 6.6 : 6);
 
   const chordAt = (r: ChordRef) => $view.chords.find((c) => same(c.ref, r));
-  const rankOf = $derived(new Map($view.next.map((n, i) => [keyOf(n.ref), i])));
-  const pOf = $derived(new Map($view.next.map((n) => [keyOf(n.ref), n.p])));
+  const stars = $derived($view.next);
+  const rankOf = $derived(new Map(stars.map((n, i) => [keyOf(n.ref), i])));
+  const pOf = $derived(new Map(stars.map((n) => [keyOf(n.ref), n.p])));
   const homeDeg = $derived($view.key.col * 30);
 
   /** Where a chord's star sits: left of its numeral (or name, outside the key), at the numeral's height. */
@@ -151,11 +152,63 @@
   const dimSpokes = $derived([-15, 15].map((a) => [pol(RING.dim.i, homeDeg + a), pol(RING.dim.o, homeDeg + a)]));
   const ticks = [...Array(60).keys()].map((t) => ({ a: t * 6, major: t % 5 === 0 }));
   const pointer = $derived([pol(RING.dim.i - 0.5, homeDeg), pol(HUB - 6, homeDeg + 7), pol(HUB - 6, homeDeg - 7)]);
+  // Keyboard presses use the same press/release path as a finger, including sustain and ring time.
+  const keyboardPointer = -1;
+  let keyHeld = false;
+  function pressKey(e: KeyboardEvent, ref: ChordRef) {
+    if (e.key !== " " && e.key !== "Enter") return;
+    e.preventDefault();
+    if (e.repeat || keyHeld) return;
+    keyHeld = true;
+    send({ type: "touch", phase: "down", pointer: keyboardPointer, ref,
+      r: ANCHOR[ref.ring], theta: ref.col * 30, time: e.timeStamp });
+  }
+  function releaseKey(e: Event) {
+    if (!keyHeld || (e instanceof KeyboardEvent && e.key !== " " && e.key !== "Enter")) return;
+    keyHeld = false;
+    send({ type: "touch", phase: "up", pointer: keyboardPointer, ref: null, r: 0, theta: 0, time: e.timeStamp });
+  }
+  // The progression list opens from the chart's open corner, so it's found without the Menu.
+  let picking = $state(false);
+  let picker = $state<HTMLDivElement>();
+  let opener = $state<SVGGElement>();
+  const toggle = (e?: KeyboardEvent) => {
+    if (e && e.key !== "Enter" && e.key !== " ") return;
+    e?.preventDefault();
+    picking = !picking;
+  };
+  function choose(shape: string) {
+    picking = false;
+    send({ type: "shapeChosen", shape });
+  }
+  function outside(e: PointerEvent) {
+    const t = e.target as Node;
+    if (picking && !picker?.contains(t) && !opener?.contains(t)) picking = false;
+  }
+  const dimLit = $derived(
+    `M${xy(pol(RING.dim.o, homeDeg - 15))}A${RING.dim.o} ${RING.dim.o} 0 0 1 ${xy(pol(RING.dim.o, homeDeg + 15))}` +
+      `L${xy(pol(RING.dim.i, homeDeg + 15))}A${RING.dim.i} ${RING.dim.i} 0 0 0 ${xy(pol(RING.dim.i, homeDeg - 15))}Z`,
+  );
   const isHome = (c: CircleChord) => c.ref.ring === "dim";
 </script>
 
-<svelte:window onpointermove={report("move")} onpointerup={report("up")} onpointercancel={report("cancel")} />
+<svelte:window onblur={releaseKey} onpointerdown={outside} onkeydown={(e) => e.key === "Escape" && (picking = false)} onpointermove={report("move")} onpointerup={report("up")} onpointercancel={report("cancel")} />
 
+{#if picking}
+  <!-- The progressions, in the chart's own lines, each with its numerals. A tap outside it, or Escape, closes it. -->
+  <div class="picker" bind:this={picker} role="dialog" aria-label="Progressions">
+    <div class="picker-head"><span class="picker-cap">PROGRESSIONS</span>
+      <button class="picker-close" aria-label="Close" onclick={() => (picking = false)}>×</button></div>
+    <div class="picker-rows">
+      {#each $view.shapes as shape (shape.id)}
+        <button class="picker-row" class:now={loaded?.id === shape.id} aria-current={loaded?.id === shape.id} data-shape={shape.id} onclick={() => choose(shape.id)}>
+          <span class="picker-name">{shape.name}{#if loaded?.id === shape.id}<span class="picker-on"> · on the chart</span>{/if}</span>
+          <span class="picker-numerals">{shape.numerals}</span>
+        </button>
+      {/each}
+    </div>
+  </div>
+{/if}
 <svg bind:this={svg} viewBox="-222 -222 444 444" role="group" aria-label="Circle of fifths" onpointerdown={down}>
   <defs>
     <radialGradient id="atlas-mist" gradientUnits="userSpaceOnUse" cx="0" cy="0" r={RING.maj.o}>
@@ -166,8 +219,15 @@
 
   <!-- Cells: every chord is a touch target; the key's seven are lit. -->
   {#each $view.chords as c (`${c.ref.ring}-${isHome(c) ? "home" : c.ref.col}`)}
-    <path class="cell" class:lit={c.inKey} data-ring={c.ref.ring} data-col={c.ref.col} data-chord={c.plain} d={cellPath(c.ref)} />
+    <path class="cell" role="button" tabindex="0" aria-label={`Play ${c.name}`}
+      onmousedown={(e) => e.preventDefault()}
+      onkeydown={(e) => pressKey(e, c.ref)} onkeyup={releaseKey} onblur={releaseKey}
+      class:first={!$view.current && !loaded && c.inKey && (c.numeral === "I" || c.numeral === "i")}
+      class:lit={c.inKey && !isHome(c)} data-ring={c.ref.ring} data-col={c.ref.col} data-chord={c.plain} d={cellPath(c.ref)} />
   {/each}
+
+  <!-- The diminished cell takes touches wider than it's drawn, so its light is drawn to its own lines. -->
+  <path class="dim-lit" d={dimLit} />
 
   <g class="rules">
     {#each [RING.maj.o, RING.min.o, RING.min.i, RING.dim.i] as r (r)}<circle {r} />{/each}
@@ -293,22 +353,40 @@
   <!-- What's loaded, in the open corner, and how to put it away. -->
   {#if loaded && figure}
     <g class="legend loaded" data-loaded={loaded.numerals}>
-      <text class="loaded-numerals" x="-216" y="-203" style:font-size="{cornerSize}px"
-        >{#each loaded.steps as st, i (i)}<tspan dy={i && loaded.steps[i - 1].top ? cornerSize * 0.38 : 0}>{i ? "–" : ""}{st.numeral}</tspan
-          >{#if st.top}<tspan class="sup" dy={-cornerSize * 0.38} font-size={cornerSize * 0.62}>{st.top}</tspan>{/if}{/each}</text>
-      <text class="loaded-name" x="-216" y="-189">{loaded.name}</text>
-      <text class="loaded-name" x="-216" y="-176">in {loaded.where}</text>
+      <!-- The step to play next is the heavy one; the steps behind it are dim. The whole caption opens the list, to change progression. -->
+      <g class="change" bind:this={opener} role="button" tabindex="0" aria-label="Change progression" aria-expanded={picking}
+        onclick={() => toggle()} onmousedown={(e) => e.preventDefault()} onkeydown={toggle}>
+        <rect x="-221" y="-221" width="150" height="38" />
+        <text class="loaded-numerals" x="-216" y="-203" style:font-size="{cornerSize}px"
+          >{#each loaded.steps as st, i (i)}<tspan class:past={i < loaded.played} class:next={i === loaded.played} dy={i && loaded.steps[i - 1].top ? cornerSize * 0.38 : 0}><tspan class="dash">{i ? "–" : ""}</tspan>{st.numeral}</tspan
+            >{#if st.top}<tspan class="sup" class:past={i < loaded.played} class:next={i === loaded.played} dy={-cornerSize * 0.38} font-size={cornerSize * 0.62}>{st.top}</tspan>{/if}{/each}</text>
+        <text class="loaded-name" x="-216" y="-189">{loaded.name}<tspan class="loaded-change">{"\u00a0· change"}</tspan></text>
+      </g>
+      <text class="loaded-name" class:said={loaded.done || loaded.off} x="-216" y="-176" data-progress={loaded.done ? "done" : loaded.off ? "off" : loaded.played}
+        >{loaded.done ? "Complete · again from ①" : loaded.off ? "Off the path · back to ①" : loaded.played === 0 ? "Start at ① · " + loaded.steps[0].name : "in " + loaded.where}</text>
       <g class="put-away" role="button" tabindex="0" aria-label="Put the shape away"
         onclick={() => send({ type: "shapeChosen", shape: null })}
         onkeydown={(e) => (e.key === "Enter" || e.key === " ") && send({ type: "shapeChosen", shape: null })}>
-        <rect x="-220" y="-173" width="74" height="22" />
+        <rect x="-221" y="-174" width="70" height="32" />
         <text class="small left" x="-216" y="-158">× put away</text>
       </g>
     </g>
   {/if}
 
+  <!-- The way in to the progressions: a framed word in the chart's open corner, well clear of the circle. One rule: a double one means selected. -->
+  {#if !loaded}
+    <g class="trace" bind:this={opener} role="button" tabindex="0" aria-label="Progressions" aria-expanded={picking}
+      onclick={() => toggle()} onmousedown={(e) => e.preventDefault()} onkeydown={toggle}>
+      <rect class="hit" x="-221" y="-221" width="116" height="44" />
+      <rect class="frame" x="-220.5" y="-220.5" width="112" height="30" />
+      <polyline class="glyph-line" points="-212,-197 -206,-212 -197,-203" />
+      <circle class="glyph-star" cx="-212" cy="-197" r="1.9" /><circle class="glyph-star lead" cx="-206" cy="-212" r="2.6" /><circle class="glyph-star" cx="-197" cy="-203" r="1.7" />
+      <text class="trace-word" x="-189" y="-200.5">Progressions</text>
+    </g>
+  {/if}
+
   <!-- The legends sit in the corners, beside what they explain. -->
-  {#if $view.next.length}
+  {#if stars.length}
     <g class="legend">
       <text class="cap end" x="214" y="-200">LIKELY NEXT</text>
       {#each SCALE as p, i (p)}
@@ -337,15 +415,52 @@
     onkeydown={(e) => (e.key === "Enter" || e.key === " ") && send({ type: "sustainToggled" })}>
     <circle class="sustain-disc" class:on={$view.sustain} cx="201" cy="188" r="30" />
     {#if $view.sustain}<circle class="sustain-ring" cx="201" cy="188" r="25.5" />{/if}
-    <text class="sustain-word" x="201" y="189">Sustain</text>
-    <text class="sustain-state" x="201" y="203">{$view.sustain ? "on" : "off"}</text>
+    <!-- On is the second ring, as a latched pad wears a second rule: no word needed. -->
+    <text class="sustain-word" x="201" y="192.5">Sustain</text>
   </g>
 </svg>
 
 <style>
   svg { display: block; width: 100%; height: 100%; overflow: visible; touch-action: none; }
   .cell { fill: transparent; stroke: none; pointer-events: all; }
-  .cell.lit { fill: url(#atlas-mist); }
+  .trace { cursor: pointer; }
+  .trace:focus:not(:focus-visible) { outline: none; }
+  .trace .hit { fill: transparent; pointer-events: all; }
+  .trace .frame { fill: var(--ground); stroke: var(--rule-2); stroke-width: 1; pointer-events: none; }
+  .glyph-line { fill: none; stroke: var(--ink-3); stroke-width: 0.9; pointer-events: none; }
+  .glyph-star { fill: var(--ink-2); pointer-events: none; }
+  .glyph-star.lead { fill: var(--ink); }
+  .trace-word { font: 400 14px var(--font-serif); fill: var(--ink); stroke: none; text-anchor: start; }
+  .change { cursor: pointer; }
+  .change:focus:not(:focus-visible) { outline: none; }
+  .change rect { fill: transparent; pointer-events: all; }
+  .picker {
+    position: absolute; z-index: 2; top: 0; left: 0; width: 226px; max-height: 100%; box-sizing: border-box; padding: 0 10px 2px;
+    display: flex; flex-direction: column;
+    background: var(--ground); border: 1px solid var(--rule-2); color: var(--ink); font-family: var(--font-serif);
+  }
+  .picker-head { flex: none; display: flex; align-items: center; justify-content: space-between; height: 40px; }
+  .picker-rows { min-height: 0; overflow-y: auto; }
+  .picker-cap { font: 500 9px var(--font-caps); letter-spacing: 0.14em; color: var(--lamp); white-space: nowrap; }
+  .picker-close { all: unset; width: 44px; height: 40px; margin-right: -10px; text-align: center; font: 400 18px/40px var(--font-text); color: var(--ink-2); }
+  .picker-row {
+    all: unset; box-sizing: border-box; width: 100%; height: 44px; display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    border-top: 1px solid var(--rule); color: var(--ink); white-space: nowrap;
+  }
+  .picker-name { font: italic 400 15px/1 var(--font-serif); }
+  .picker-numerals { font: 400 12.5px/1 var(--font-serif); color: var(--ink-2); letter-spacing: 0.02em; }
+  /* The one on the chart is the heavy one, and says so. */
+  .picker-row.now .picker-name { font-weight: 600; }
+  .picker-on { font-style: normal; font-weight: 400; font-size: 11px; color: var(--ink-2); }
+  .picker button:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; }
+  .cell.first { stroke: var(--ink-2); stroke-width: 2.5; }
+  .cell:focus-visible { outline: none; stroke: var(--ink); stroke-width: 3; }
+  .cell.lit, .dim-lit { fill: url(#atlas-mist); }
+  .dim-lit { stroke: none; pointer-events: none; }
+  /* A tap mustn't leave the browser's focus box on a cell; a keyboard gets the heavy outline above. */
+  .cell:focus { outline: none; }
+  .cell, .trace, .change, .put-away, .sustain { -webkit-tap-highlight-color: transparent; }
+  .put-away:focus:not(:focus-visible) { outline: none; }
   .rules { fill: none; stroke: var(--rule); stroke-width: 1; pointer-events: none; }
   .wedge { fill: none; stroke: var(--rule-2); stroke-width: 1; pointer-events: none; }
   .constellation { fill: none; stroke: var(--ink); stroke-width: 1.2; stroke-linecap: round; pointer-events: none; }
@@ -388,8 +503,13 @@
   .step-ring.lit { stroke: var(--ink); stroke-width: 1.3; }
   .step-n { font: 500 12.5px var(--font-text); fill: var(--ink-3); stroke-width: 3px; }
   .step-n.lit { fill: var(--ink); }
-  .loaded-numerals { font: 400 19px var(--font-serif); fill: var(--ink); text-anchor: start; }
+  .loaded-numerals { font: 400 19px var(--font-serif); fill: var(--ink-2); text-anchor: start; }
+  .loaded-numerals .past { fill: var(--ink-3); }
+  .loaded-numerals .next { fill: var(--ink); font-weight: 600; }
+  .loaded-numerals .dash { fill: var(--ink-3); font-weight: 400; }
   .loaded-name { font: italic 400 10.5px var(--font-serif); fill: var(--ink-2); text-anchor: start; }
+  .loaded-change { font-style: normal; fill: var(--ink); }
+  .loaded-name.said { fill: var(--ink); font-style: normal; }
   .sustain { cursor: pointer; }
   /* A tap mustn't leave the browser's focus box on it. A keyboard still gets one. */
   .sustain:focus:not(:focus-visible) { outline: none; }
@@ -397,7 +517,6 @@
   .sustain-disc.on { stroke: var(--faint); }
   .sustain-ring { fill: none; stroke: var(--ink); stroke-width: 2; pointer-events: none; }
   .sustain-word { font: 400 14px var(--font-serif); fill: var(--ink); stroke: none; }
-  .sustain-state { font: italic 400 12px var(--font-serif); fill: var(--ink-2); stroke: none; }
   .put-away { cursor: pointer; }
   .put-away rect { fill: transparent; pointer-events: all; }
 </style>

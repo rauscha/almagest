@@ -66,3 +66,37 @@ What was decided, why, and how it was checked. Newest at the bottom.
 - **Why:** strict spelling is correct but hard to read, and C♭m taught nothing a reader of Bm wouldn't already know.
 - **Checked:** a test runs every chord in every key, plain and with each pad, and finds none of the four; the Tonal comparisons map Tonal's strict spellings to the plain names. Before the change 1,018 of those chords had one.
 - **Extended the same day:** no double flat or double sharp is shown either, on the circle or in the voices. G♭m in F minor is G♭ A D♭, and the raised V in G♯ minor is D♯ G A♯. Strict spelling suits a melodic line in a key; around the circle it's only harder to read.
+
+## D11: Put the star guide and collection choice on the playing surface
+
+A returning pianist enjoyed free play and a second player recognized a cadence, but neither discovered how to trace one. The chart now offers an optional progression picker beside the stars. The first step names the chord to play. Players can change the comparison collection at the odds table, or use the existing menu controls.
+
+The table keeps each frequency on its counted triad. An arrow shows the result of playing that cell with alterations, and movement refers to the four upper voices. Keyboard presses share the touch press/release path.
+
+The C-to-Am regression is covered with Major latched. The browser smoke test traces the Andalusian cadence, then compares collections while a chord sustains.
+
+## D12: Pair the left-hand modifiers and separate Auto 7ths
+
+Four fixed rows place comparable alterations beside each other. Auto 7ths has its own switch and chord preview. A ring identifies a latch the player can release on any cell. A step-specific alteration carries a “this chord” label. Pointer-down still acts immediately; keyboard and assistive clicks can toggle the same pads.
+
+The browser smoke test clears a Major latch on sustained C, compares 9 and add9, distinguishes a guided seventh from a latch, and checks the automatic seventh on different degrees.
+
+## D13: The star guide and collection choice in the chart's own lines, and numerals in every row
+
+- **Decided:** the progression picker is a framed caption in the chart's open corner that opens the app's own list of the nine. The collection stays a Menu setting, named in the table's heading: it only changes the percentages, which isn't what the surface is for. The odds table always shows the Roman numeral; what an altered cell will play is a small name after an arrow, beside the counted chord. The pads give back the height D12 took, so they no longer overlap the table.
+- **Why:** the browser's own dropdowns broke the chart's look. With a pad or Auto 7ths on, the arrow had replaced the numeral in every row, and the numerals are what the table teaches.
+- **Checked:** `star-guide.cjs` traces through the new picker and changes the collection to jazz in the Menu; `layout.cjs` and `drive_app.cjs` pass; a grayscale screenshot with Major latched and Auto 7ths on.
+- **Also:** Auto 7ths names its chord only while that chord is what sounds, since a 7th or 9th pad replaces it.
+
+## D14: Progressions get a cartouche, a place marker and a finish; latched is a double border
+
+- **Decided:** the way in is a title cartouche named Progressions in the chart's open corner, and its list shows each progression's numerals. A loaded progression marks the step to play next, says "off the path" when a chord leaves it part-way and "complete" when it's finished, and its caption opens the list again to change it. The readout names a finished progression in words when the name didn't fit beside the chord. A latched pad wears a double border in place of a ring around its label. The stars stay 2.5 s after the sound ends. The odds help is one line in the Menu, the table's last column is headed "semitones", and the Menu, voicing slider, Auto 7ths and "put away" take a finger over a larger area than they draw.
+- **Why:** a design review before merging. The entry was 26px tall and read as "trace with a finger"; a ringed 9 looked like step 9; nothing said where you were in a progression or that you'd left it; and a quick tap ended before the stars could be read. The cartouche and the double border come from printed star charts.
+- **Checked:** unit tests for finished and off the path; `star-guide.cjs` finishes one progression, changes to another from the caption and steps off it; `layout.cjs`, `drive_app.cjs` and `alter.cjs` pass; screenshots of each state, one in grayscale. Chosen from mockups.
+
+## D15: One meaning per mark, and fewer words
+
+- **Decided:** a double rule means selected and nothing else, so the Progressions entry has a single frame (smaller, clear of the circle, no subtitle), Auto 7ths is a square framed word that wears the double border when on, and Sustain shows on by its second ring with no "on" or "off". The ruled caps heading over the odds is a line of italic lettering ("Likely next in modern pop"). The rule beside VOICES and the word "trail" are gone, and the line under the trail ends at the chord now. The stars and the odds table stay until the next chord, as the chord's name does. The diminished cell's light is drawn to its own lines. A tap no longer leaves the browser's focus box on a chord.
+- **Why:** played on the phone. The same border was doing two jobs, three rules had three different ends, labels explained what was already plain, Auto 7ths was hard to hit (it waited for a click where the pads act on touch), and the stars outlasted the table.
+- **Checked:** unit tests rewritten for stars that stay; `star-guide.cjs`, `layout.cjs`, `drive_app.cjs` and `alter.cjs` pass; screenshots at rest, after a tap and with Auto 7ths and Sustain on. The focus box needs confirming on a phone.
+

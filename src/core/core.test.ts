@@ -1022,7 +1022,7 @@ describe("alteration pads", () => {
   });
 });
 
-describe("next chords (shown from the press until the sound ends)", () => {
+describe("next chords (shown from the press until the next chord)", () => {
   const next = (r: ReturnType<typeof rig>) => r.core.views.circle.get().next;
   const names = (r: ReturnType<typeof rig>) =>
     next(r).map((a) => r.core.views.circle.get().chords.find((c) => c.ref.ring === a.ref.ring && c.ref.col === a.ref.col)?.numeral);
@@ -1041,21 +1041,29 @@ describe("next chords (shown from the press until the sound ends)", () => {
     expect(ps).toEqual([...ps].sort((a, b) => b - a));
     expect(r.core.views.ribbon.get().next).toHaveLength(3);
   });
-  it("a latch that makes two cells the same chord lists it once, odds together", () => {
+  it("keeps the modern pop frequency on Am when the Major latch plays A", () => {
     const r = rig();
+    r.press(C);
+    const original = r.core.views.controls.get().next.find((n) => n.counted === "Am")!;
+    expect(Math.round(original.p * 100)).toBe(12);
+    r.lift();
     r.core.send({ type: "padDown", pad: "major", pointer: 20 });
     r.core.send({ type: "padUp", pointer: 20 });
-    r.press({ ring: "min", col: 2 }); // Bm made B
-    const names = r.core.views.ribbon.get().next.map((n) => n.name);
-    expect(new Set(names).size).toBe(names.length);
+    r.press(C);
+    expect(r.core.views.controls.get().next).toContainEqual(expect.objectContaining({
+      counted: "Am", name: "A", numeral: "vi", measured: true, p: original.p,
+    }));
   });
-  it("they stay while the chord rings on after a lift, and go when the sound ends", () => {
+  it("they stay after the sound ends, like the chord's name, so a quick tap leaves time to read them", () => {
     const r = rig();
     r.press(G);
     r.lift();
-    expect(next(r).length).toBeGreaterThan(0);
+    const ringing = next(r);
+    expect(ringing.length).toBeGreaterThan(0);
     r.fireTimers();
-    expect(next(r)).toEqual([]);
+    expect(r.core.state.get().sounding).toBeNull();
+    expect(next(r).map((n) => n.ref)).toEqual(ringing.map((n) => n.ref));
+    expect(r.core.views.controls.get().next.length).toBeGreaterThan(0);
   });
   it("a new chord replaces them with its own", () => {
     const r = rig();
@@ -1063,11 +1071,12 @@ describe("next chords (shown from the press until the sound ends)", () => {
     r.press(C, 2);
     expect(names(r)[0]).toBe("IV");
   });
-  it("a canceled touch clears them with the sound", () => {
+  it("a canceled touch ends the sound and leaves them, as it leaves the chord's name", () => {
     const r = rig();
     r.press(G);
     r.cancel();
-    expect(next(r)).toEqual([]);
+    expect(r.core.state.get().sounding).toBeNull();
+    expect(next(r).length).toBeGreaterThan(0);
   });
   it("from G in C major, C is the likeliest", () => {
     const r = rig();
@@ -1897,6 +1906,36 @@ describe("7 in key", () => {
     expect(r.core.views.readout.get().name).toBe("G7sus4");
   });
 
+  it("updates the seventh in the preview, on the sounding chord, and on restrike when changing quality", () => {
+    const r = rig();
+    seven(r);
+    r.press(C);
+    const name = () => r.core.views.readout.get().name;
+    expect(r.core.views.alterations.get().options.find((p) => p.id === "minor")?.chord).toBe("Cm7");
+    tap(r, "minor");
+    expect(name()).toBe("Cm7");
+    r.lift();
+    r.press(C);
+    expect(name()).toBe("Cm7");
+    tap(r, "minor");
+    expect(name()).toBe("Cmaj7");
+    tap(r, "9");
+    tap(r, "minor");
+    expect(name()).toBe("Cm9");
+  });
+
+  it("keeps the diatonic seventh when a carried quality latch already matches the cell", () => {
+    const r = rig();
+    seven(r);
+    r.press({ ring: "min", col: 0 });
+    tap(r, "major");
+    r.lift();
+    r.press(C);
+    expect(r.core.views.readout.get().name).toBe("Cmaj7");
+    tap(r, "major");
+    expect(r.core.views.readout.get().name).toBe("Cmaj7");
+  });
+
   it("is saved with the other settings", () => {
     const saved: boolean[] = [];
     const sound: Sound = { apply: () => {}, useEngine: () => {}, useModel: () => {} };
@@ -1919,6 +1958,9 @@ describe("a progression loaded from the library", () => {
     expect(r.core.views.menu.get().shape).toBe("circle");
     // With its 7ths, as it's usually played: each step names the pad and the chord it makes.
     expect(r.core.views.circle.get().loaded).toEqual({
+      id: "circle",
+      done: false,
+      off: false,
       numerals: "vi7–ii7–V7–Imaj7",
       name: "circle progression",
       where: "C major",
